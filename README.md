@@ -40,4 +40,3 @@ python -m kvarken_eo --demo
 ## Development conventions
 
 Keep source code under `src/`, add a focused test for every behavior change, and update the relevant document in `docs/` when a milestone or architectural decision changes. Do not commit credentials, raw datasets, generated artifacts, or local environment files.
-
