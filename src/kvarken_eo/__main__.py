@@ -2,12 +2,16 @@
 
 import argparse
 import asyncio
+import json
 import tempfile
+import time
 from pathlib import Path
 
 from .catalog import SpatialCatalog
+from .concurrent import ConcurrentEOIngestor
 from .ingestion import AsyncIngestor
 from .provenance import FileProvenanceSink
+from .reports import generate_experiment_report
 from .source import MockEODataSource
 from .spatial import KVARKEN_REGION_BBOX
 from .transform import transform_stac_to_scene
@@ -41,18 +45,75 @@ def _verify_health() -> int:
     return 0
 
 
+def _benchmark_report(output_dir: Path, scenes_count: int, concurrency: int) -> int:
+    if scenes_count < 1 or concurrency < 1:
+        raise ValueError("scenes-count and concurrency must be positive")
+    fixture = Path(__file__).parents[2] / "tests" / "fixtures" / "stac_search_page_1.json"
+    template = json.loads(fixture.read_text(encoding="utf-8"))["features"][0]
+    items = []
+    from .stac import STACItem
+
+    for index in range(scenes_count):
+        item = json.loads(json.dumps(template))
+        item["id"] = f"benchmark-{index}"
+        items.append(
+            STACItem(
+                item["id"],
+                item["collection"],
+                "fixture://benchmark",
+                item["properties"],
+                item,
+            )
+        )
+
+    class OfflineAdapter:
+        async def search(self, **kwargs: object) -> list[STACItem]:
+            return items
+
+    with tempfile.TemporaryDirectory(prefix="kvarken-benchmark-") as directory:
+        root = Path(directory)
+        sink = FileProvenanceSink(root / "provenance")
+        with SpatialCatalog(root / "catalog.sqlite") as catalog:
+            ingestor = ConcurrentEOIngestor(
+                OfflineAdapter(),
+                sink,
+                max_workers=concurrency,
+                catalog=catalog,
+            )
+            results, metrics = asyncio.run(ingestor.ingest_with_metrics(items))
+            started = time.perf_counter()
+            catalog.query_scenes(roi=KVARKEN_REGION_BBOX)
+            latency_ms = (time.perf_counter() - started) * 1000
+            report, _ = generate_experiment_report(
+                metrics,
+                catalog,
+                spatial_query_latency_ms=latency_ms,
+                output_dir=output_dir,
+            )
+    print(
+        f"benchmark report written: {report['metrics']['scenes_ingested']} scenes, "
+        f"{report['metrics']['throughput_items_per_second']:.2f} items/sec"
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--demo", action="store_true", help="ingest one offline sample scene")
     parser.add_argument(
         "command",
         nargs="?",
-        choices=("verify-health",),
+        choices=("verify-health", "benchmark-report"),
         help="run an offline end-to-end repository health check",
     )
+    parser.add_argument("--output-dir", type=Path, default=Path("reports"))
+    parser.add_argument("--scenes-count", type=int, default=100)
+    parser.add_argument("--concurrency", type=int, default=4)
     args = parser.parse_args(argv)
     if args.command == "verify-health":
         return _verify_health()
+    if args.command == "benchmark-report":
+        return _benchmark_report(args.output_dir, args.scenes_count, args.concurrency)
     if args.demo:
         result = asyncio.run(
             AsyncIngestor(
