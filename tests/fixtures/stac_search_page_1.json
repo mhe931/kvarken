@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "S2A_MSIL2A_20260914T100031_N0511_R122_T34WDL_20260914T123456",
+      "collection": "sentinel-2-l2a",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[21.0, 63.0], [21.1, 63.0], [21.1, 63.1], [21.0, 63.0]]]
+      },
+      "bbox": [21.0, 63.0, 21.1, 63.1],
+      "properties": {
+        "datetime": "2026-09-14T10:00:31Z",
+        "eo:cloud_cover": 4.2,
+        "platform": "sentinel-2a"
+      },
+      "assets": {
+        "thumbnail": {
+          "href": "https://example.invalid/sentinel-2-thumbnail.jpg",
+          "type": "image/jpeg"
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "rel": "next",
+      "href": "https://stac.example.invalid/search?page=2",
+      "method": "GET"
+    }
+  ]
+}
