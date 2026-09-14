@@ -40,3 +40,22 @@ python -m kvarken_eo --demo
 ## Development conventions
 
 Keep source code under `src/`, add a focused test for every behavior change, and update the relevant document in `docs/` when a milestone or architectural decision changes. Do not commit credentials, raw datasets, generated artifacts, or local environment files.
+
+### Concurrent ingestion
+
+`ConcurrentEOIngestor` transforms and persists STAC items with a bounded `max_workers` semaphore. The default is four workers; use a lower value when a provider has stricter rate limits:
+
+```python
+from pathlib import Path
+
+from kvarken_eo import ConcurrentEOIngestor, FileProvenanceSink, STACClient
+
+pipeline = ConcurrentEOIngestor(
+    STACClient("https://earth-search.aws.element84.com/v1"),
+    FileProvenanceSink(Path("data/staged")),
+    max_workers=2,
+)
+results = await pipeline.search_and_ingest(collections=("sentinel-2-l2a",))
+```
+
+The provenance sink serializes JSONL appends with an async lock and performs filesystem work in a worker thread, keeping the event loop responsive.

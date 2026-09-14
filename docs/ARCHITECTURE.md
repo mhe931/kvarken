@@ -16,6 +16,8 @@ validated STACItem                FileProvenanceSink
 
 `FileProvenanceSink` writes canonical raw JSON under a content-addressed SHA-256 filename and appends an audit record containing source identity, collection, URI, timestamp, retry attempts, and relative raw-payload path.
 
+`transform_stac_to_scene` maps STAC geometry or bbox, `proj:epsg`, assets, platform, acquisition datetime, and optional `eo:cloud_cover` into `EOScene`. `ConcurrentEOIngestor` uses `asyncio.Semaphore` to cap transformation and persistence workers. `store_async` serializes each sink's manifest append with an `asyncio.Lock` and delegates blocking filesystem operations to a thread.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.
