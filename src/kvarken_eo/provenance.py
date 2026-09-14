@@ -7,6 +7,10 @@ from collections.abc import Mapping
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .catalog import SpatialCatalog
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,3 +70,39 @@ class FileProvenanceSink:
         with self._manifest.open("a", encoding="utf-8") as manifest:
             manifest.write(json.dumps(asdict(record), sort_keys=True) + "\n")
         return record
+
+    def find_orphaned_payloads(
+        self,
+        catalog: "SpatialCatalog | None" = None,
+        older_than: datetime | None = None,
+    ) -> list[Path]:
+        """Return raw payloads absent from the active manifest/catalog or past retention."""
+        active_ids = catalog.scene_ids() if catalog is not None else None
+        referenced: set[str] = set()
+        if self._manifest.exists():
+            for line in self._manifest.read_text(encoding="utf-8").splitlines():
+                record = json.loads(line)
+                if active_ids is None or record.get("source_id") in active_ids:
+                    referenced.add(record["raw_payload_path"])
+        candidates = []
+        for path in self._raw_dir.glob("*.json"):
+            too_old = older_than is not None and datetime.fromtimestamp(
+                path.stat().st_mtime, UTC
+            ) < older_than.astimezone(UTC)
+            if str(path.relative_to(self._root)) not in referenced or too_old:
+                candidates.append(path)
+        return sorted(candidates)
+
+    def prune_raw_payloads(
+        self,
+        catalog: "SpatialCatalog | None" = None,
+        older_than: datetime | None = None,
+        *,
+        dry_run: bool = True,
+    ) -> list[Path]:
+        """Inspect or delete payloads; deletion requires explicit ``dry_run=False``."""
+        candidates = self.find_orphaned_payloads(catalog, older_than)
+        if not dry_run:
+            for path in candidates:
+                path.unlink()
+        return candidates

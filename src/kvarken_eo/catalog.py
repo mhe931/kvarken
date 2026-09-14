@@ -131,6 +131,29 @@ class SpatialCatalog:
             scenes = [scene for scene in scenes if scene_intersects_roi(scene, roi)]
         return scenes
 
+    def scene_ids(self) -> set[str]:
+        with self._lock:
+            rows = self._connection.execute("SELECT scene_id FROM scenes").fetchall()
+        return {row["scene_id"] for row in rows}
+
+    def prune_older_than(self, cutoff: datetime) -> int:
+        """Delete scenes acquired before cutoff and return the number removed."""
+        with self._lock:
+            cursor = self._connection.execute(
+                "DELETE FROM scenes WHERE acquired_at < ?", (cutoff.isoformat(),)
+            )
+            self._connection.commit()
+            return cursor.rowcount
+
+    def vacuum(self) -> None:
+        """Checkpoint WAL, verify integrity, and reclaim unused database pages."""
+        with self._lock:
+            integrity = self._connection.execute("PRAGMA integrity_check").fetchone()[0]
+            if integrity != "ok":
+                raise sqlite3.DatabaseError(f"catalog integrity check failed: {integrity}")
+            self._connection.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            self._connection.execute("VACUUM")
+
     def _row_to_scene(self, row: sqlite3.Row) -> EOScene:
         footprint = tuple(tuple(point) for point in json.loads(row["footprint_json"]))
         return EOScene(

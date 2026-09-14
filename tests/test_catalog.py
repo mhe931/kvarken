@@ -50,3 +50,13 @@ def test_catalog_filters_roi_platform_and_dates(tmp_path):
 def test_catalog_empty_query_is_empty(tmp_path):
     with SpatialCatalog(tmp_path / "scenes.sqlite") as catalog:
         assert catalog.query_scenes(platform="missing") == []
+
+
+def test_catalog_retention_and_vacuum(tmp_path):
+    path = tmp_path / "scenes.sqlite"
+    with SpatialCatalog(path) as catalog:
+        catalog.index_scenes([make_scene(0), make_scene(1)])
+        removed = catalog.prune_older_than(datetime(2026, 1, 2, tzinfo=UTC))
+        catalog.vacuum()
+        assert removed == 1
+        assert [scene.scene_id for scene in catalog.query_scenes()] == ["scene-1"]
