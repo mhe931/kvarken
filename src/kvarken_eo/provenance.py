@@ -1,5 +1,6 @@
 """Filesystem persistence for raw EO payloads and audit metadata."""
 
+import asyncio
 import hashlib
 import json
 from collections.abc import Mapping
@@ -26,6 +27,12 @@ class FileProvenanceSink:
         self._root = root
         self._raw_dir = root / "raw"
         self._manifest = root / "manifest.jsonl"
+        self._lock = asyncio.Lock()
+
+    async def store_async(self, **kwargs: object) -> ProvenanceRecord:
+        """Persist without blocking the event loop and serialize manifest appends."""
+        async with self._lock:
+            return await asyncio.to_thread(self.store, **kwargs)
 
     def store(
         self,

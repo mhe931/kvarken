@@ -1,7 +1,7 @@
 """Typed models and boundary validation for EO scene metadata."""
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 
@@ -18,6 +18,9 @@ class EOScene:
     acquired_at: datetime
     cloud_cover: float
     footprint: tuple[tuple[float, float], ...]
+    bbox: tuple[float, float, float, float] | None = None
+    epsg: int = 4326
+    assets: Mapping[str, str] = field(default_factory=dict)
 
     @classmethod
     def from_payload(cls, payload: Mapping[str, object]) -> "EOScene":
@@ -48,4 +51,27 @@ class EOScene:
         if len(footprint) < 3:
             raise PayloadValidationError("footprint must contain at least three points")
 
-        return cls(scene_id, platform, acquired_at, cloud_cover, footprint)
+        raw_bbox = payload.get("bbox")
+        bbox = None
+        if raw_bbox is not None:
+            try:
+                bbox = tuple(float(value) for value in raw_bbox)
+            except (TypeError, ValueError) as error:
+                raise PayloadValidationError("bbox must contain numeric coordinates") from error
+            if len(bbox) != 4:
+                raise PayloadValidationError("bbox must contain four coordinates")
+        raw_epsg = payload.get("epsg", 4326)
+        try:
+            epsg = int(raw_epsg)
+        except (TypeError, ValueError) as error:
+            raise PayloadValidationError("epsg must be an integer") from error
+        raw_assets = payload.get("assets", {})
+        if not isinstance(raw_assets, Mapping):
+            raise PayloadValidationError("assets must be a mapping")
+        assets = {}
+        for name, href in raw_assets.items():
+            if not isinstance(name, str) or not isinstance(href, str) or not href:
+                raise PayloadValidationError("asset names and hrefs must be non-empty strings")
+            assets[name] = href
+
+        return cls(scene_id, platform, acquired_at, cloud_cover, footprint, bbox, epsg, assets)
