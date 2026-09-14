@@ -1,6 +1,7 @@
 """Async ingestion contracts and bounded transient-failure handling."""
 
 import asyncio
+import random
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Protocol
@@ -30,6 +31,7 @@ class RetryPolicy:
     max_attempts: int = 3
     base_delay: float = 0.05
     max_delay: float = 1.0
+    jitter_ratio: float = 0.0
 
     def __post_init__(self) -> None:
         if self.max_attempts < 1:
@@ -38,9 +40,15 @@ class RetryPolicy:
             raise ValueError("retry delays cannot be negative")
         if self.base_delay > self.max_delay:
             raise ValueError("base_delay cannot exceed max_delay")
+        if not 0 <= self.jitter_ratio <= 1:
+            raise ValueError("jitter_ratio must be between zero and one")
 
-    def delay_for(self, attempt: int) -> float:
-        return min(self.max_delay, self.base_delay * (2 ** max(0, attempt - 1)))
+    def delay_for(self, attempt: int, random_value: float | None = None) -> float:
+        delay = min(self.max_delay, self.base_delay * (2 ** max(0, attempt - 1)))
+        if self.jitter_ratio:
+            value = random.random() if random_value is None else random_value
+            delay *= 1 - self.jitter_ratio + self.jitter_ratio * value
+        return delay
 
 
 @dataclass(frozen=True, slots=True)

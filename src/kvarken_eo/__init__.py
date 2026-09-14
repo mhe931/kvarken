@@ -4,6 +4,7 @@ from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult
 from .ingestion import AsyncIngestor, IngestionResult, RetryPolicy
 from .models import EOScene, PayloadValidationError
 from .provenance import FileProvenanceSink, ProvenanceRecord
+from .spatial import KVARKEN_REGION_BBOX, bbox_intersects, scene_intersects_roi
 from .stac import STACClient, STACItem
 from .transform import transform_stac_to_scene
 
@@ -11,6 +12,7 @@ __all__ = [
     "AsyncIngestor",
     "ConcurrentEOIngestor",
     "ConcurrentIngestionResult",
+    "KVARKEN_REGION_BBOX",
     "EOScene",
     "FileProvenanceSink",
     "IngestionResult",
@@ -19,5 +21,7 @@ __all__ = [
     "RetryPolicy",
     "STACClient",
     "STACItem",
+    "bbox_intersects",
+    "scene_intersects_roi",
     "transform_stac_to_scene",
 ]

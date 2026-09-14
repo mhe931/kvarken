@@ -27,7 +27,7 @@ def transform_stac_to_scene(stac_item: Mapping[str, object]) -> EOScene:
     except ValueError as error:
         raise PayloadValidationError("STAC item datetime is invalid") from error
 
-    platform = properties.get("platform", collection)
+    platform = properties.get("platform") or _platform_from_collection(collection)
     if not isinstance(platform, str) or not platform:
         raise PayloadValidationError("STAC item platform must be a non-empty string")
     cloud_cover = properties.get("eo:cloud_cover", 0.0)
@@ -67,6 +67,17 @@ def transform_stac_to_scene(stac_item: Mapping[str, object]) -> EOScene:
             "assets": assets,
         }
     )
+
+
+def _platform_from_collection(collection: str) -> str:
+    normalized = collection.lower().replace("_", "-")
+    if "landsat" in normalized:
+        return "landsat-8/9"
+    if "sentinel-1" in normalized or "sentinel1" in normalized:
+        return "sentinel-1"
+    if "sentinel-2" in normalized or "sentinel2" in normalized:
+        return "sentinel-2"
+    return collection
 
 
 def _bbox(raw_bbox: object) -> tuple[float, float, float, float] | None:
