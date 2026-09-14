@@ -96,6 +96,12 @@ python -m kvarken_eo verify-health
 
 The command uses a temporary directory, ingests the checked-in STAC fixture, records provenance, indexes and queries the scene, checks retention, runs SQLite integrity/vacuum maintenance, and confirms no payloads are unexpectedly orphaned.
 
+### CI and batch metrics
+
+GitHub Actions runs Ruff, pytest, and the offline health check on pushes and pull requests targeting `main` for Python 3.11 and 3.12. No live provider calls are made.
+
+`ConcurrentEOIngestor.ingest_with_metrics()` returns results plus an `IngestionMetrics` record containing scene count, elapsed seconds, throughput, failures, retry count, and canonical payload bytes. The legacy `ingest()` and `search_and_ingest()` methods remain list-returning APIs; their latest summary is available through `ingestor.last_metrics`.
+
 ### Kvarken spatial filtering
 
 Spatial helpers use dependency-free WGS84 axis-aligned bounds and polygon edge tests:

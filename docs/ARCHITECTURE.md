@@ -26,6 +26,8 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 `python -m kvarken_eo verify-health` runs the complete offline fixture-to-provenance-to-catalog-to-query-to-maintenance path in a temporary directory.
 
+`ConcurrentEOIngestor` exposes standard-library `IngestionMetrics` through `ingest_with_metrics()` and `last_metrics`. Metrics use monotonic elapsed time, canonical UTF-8 JSON byte counts, item attempt metadata for retries, and bounded-worker results. `.github/workflows/ci.yml` runs the same offline checks on Python 3.11 and 3.12 for pushes and pull requests to `main`.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.

@@ -15,6 +15,7 @@ Status: green provider milestone.
 - Added an offline throughput harness with injected latency, burst 429 responses, jittered retry policy, and manifest completeness checks.
 - Added persistent SQLite scene catalog with bbox/platform/time indexes, idempotent upserts, ROI exact filtering, and synthetic 1,200-scene query benchmarking.
 - Added locked catalog retention pruning, integrity/WAL checkpoint/vacuum maintenance, provenance orphan/age inspection with dry-run-safe deletion, and an offline `verify-health` CLI smoke test.
+- Added Python 3.11/3.12 GitHub Actions CI and structured batch ingestion metrics for counts, elapsed time, throughput, failures, retries, and payload bytes.
 
 ## 2026-09-14 - Bootstrap
 
@@ -28,4 +29,4 @@ Status: green foundation.
 
 ## Next checkpoint
 
-Evaluate SQLite maintenance throughput and retention policies against larger research catalogs.
+Evaluate SQLite maintenance throughput and retention policies against larger research catalogs; publish benchmark metrics from scheduled CI maintenance runs.
