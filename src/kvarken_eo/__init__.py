@@ -1,5 +1,6 @@
 """Foundations for the Kvarken Earth Observation pipeline."""
 
+from .catalog import SpatialCatalog
 from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult
 from .ingestion import AsyncIngestor, IngestionResult, RetryPolicy
 from .models import EOScene, PayloadValidationError
@@ -19,6 +20,7 @@ __all__ = [
     "PayloadValidationError",
     "ProvenanceRecord",
     "RetryPolicy",
+    "SpatialCatalog",
     "STACClient",
     "STACItem",
     "bbox_intersects",

@@ -4,6 +4,7 @@ import asyncio
 from collections.abc import Iterable
 from dataclasses import dataclass
 
+from .catalog import SpatialCatalog
 from .models import EOScene
 from .provenance import FileProvenanceSink, ProvenanceRecord
 from .stac import STACClient, STACItem
@@ -25,12 +26,14 @@ class ConcurrentEOIngestor:
         sink: FileProvenanceSink,
         *,
         max_workers: int = 4,
+        catalog: SpatialCatalog | None = None,
     ) -> None:
         if max_workers < 1:
             raise ValueError("max_workers must be at least one")
         self._adapter = adapter
         self._sink = sink
         self._semaphore = asyncio.Semaphore(max_workers)
+        self._catalog = catalog
 
     async def ingest(self, items: Iterable[STACItem]) -> list[ConcurrentIngestionResult]:
         async def worker(item: STACItem) -> ConcurrentIngestionResult:
@@ -42,6 +45,8 @@ class ConcurrentEOIngestor:
                     source_uri=item.source_uri,
                     payload=item.raw_payload,
                 )
+                if self._catalog is not None:
+                    await asyncio.to_thread(self._catalog.index_scene, scene)
                 return ConcurrentIngestionResult(scene, provenance)
 
         return list(await asyncio.gather(*(worker(item) for item in items)))
