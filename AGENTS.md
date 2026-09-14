@@ -29,6 +29,7 @@ python -m kvarken_eo --demo
 - Use `FileProvenanceSink.store_async()` for async pipelines so manifest appends are serialized and filesystem I/O leaves the event loop.
 - Keep retries explicit and bounded. Never retry malformed payloads; retry only transient timeout and rate-limit failures.
 - Keep geospatial transforms deterministic and separate from transport concerns.
+- Use `KVARKEN_REGION_BBOX` and EPSG:4326 spatial helpers for regional filtering; reject unknown CRS instead of silently reprojecting.
 - Prefer standard library types and small modules over framework abstractions.
 - Update `docs/PROJECT_STATUS.md` at each weekly checkpoint and record durable decisions in `docs/ARCHITECTURE.md`.
 
@@ -47,6 +48,7 @@ python -m kvarken_eo --demo
 - [x] Timeout, rate-limit, and corrupted-payload tests added
 - [x] Public STAC adapter, offline fixtures, and provenance sink implemented
 - [x] STAC-to-EOScene transformation and bounded concurrent ingestion implemented
+- [x] Kvarken spatial filtering and offline 429 throughput harness implemented
 - [x] Developer and agent commands documented
 - [x] Add persistent raw/staged storage with provenance metadata
 - [ ] Add spatial index and representative Sentinel-1/Sentinel-2 fixtures

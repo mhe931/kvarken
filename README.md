@@ -59,3 +59,16 @@ results = await pipeline.search_and_ingest(collections=("sentinel-2-l2a",))
 ```
 
 The provenance sink serializes JSONL appends with an async lock and performs filesystem work in a worker thread, keeping the event loop responsive.
+
+### Kvarken spatial filtering
+
+Spatial helpers use dependency-free WGS84 axis-aligned bounds and polygon edge tests:
+
+```python
+from kvarken_eo import KVARKEN_REGION_BBOX, scene_intersects_roi
+
+if scene_intersects_roi(scene, KVARKEN_REGION_BBOX):
+    print("scene overlaps the Kvarken archipelago study region")
+```
+
+The default `KVARKEN_REGION_BBOX` is `(20.5, 62.8, 22.5, 63.8)` in EPSG:4326. Boundary-touching scenes count as intersecting; non-WGS84 scenes are rejected rather than silently reprojected.

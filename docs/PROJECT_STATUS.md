@@ -11,6 +11,8 @@ Status: green provider milestone.
 - Added STAC-to-`EOScene` normalization for geometry/bbox, EPSG, assets, acquisition time, and optional cloud cover.
 - Added semaphore-bounded concurrent transformation and persistence with async-locked provenance writes.
 - Added concurrency tests verifying worker bounds and complete, parseable audit records.
+- Added dependency-free Kvarken EPSG:4326 bbox/polygon filtering with boundary and invalid-geometry tests.
+- Added an offline throughput harness with injected latency, burst 429 responses, jittered retry policy, and manifest completeness checks.
 
 ## 2026-09-14 - Bootstrap
 
@@ -24,4 +26,4 @@ Status: green foundation.
 
 ## Next checkpoint
 
-Evaluate persistent storage throughput and provider rate-limit behavior under bounded concurrent ingestion.
+Benchmark persistent storage throughput and provider rate-limit behavior under bounded concurrent ingestion; add a spatial index for larger scene catalogs.

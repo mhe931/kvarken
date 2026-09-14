@@ -18,6 +18,8 @@ validated STACItem                FileProvenanceSink
 
 `transform_stac_to_scene` maps STAC geometry or bbox, `proj:epsg`, assets, platform, acquisition datetime, and optional `eo:cloud_cover` into `EOScene`. `ConcurrentEOIngestor` uses `asyncio.Semaphore` to cap transformation and persistence workers. `store_async` serializes each sink's manifest append with an `asyncio.Lock` and delegates blocking filesystem operations to a thread.
 
+`spatial.py` provides deterministic EPSG:4326 bbox and polygon intersection utilities. `KVARKEN_REGION_BBOX` is `(20.5, 62.8, 22.5, 63.8)`; closed-boundary intersection is intentional for study-area filtering. The benchmark harness injects latency and burst 429 responses into the STAC transport to verify retry recovery and zero record loss offline.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.
