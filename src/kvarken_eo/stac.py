@@ -76,6 +76,7 @@ class STACItem:
     source_uri: str
     properties: Mapping[str, object]
     raw_payload: Mapping[str, object]
+    attempts: int = 1
 
 
 class STACClient:

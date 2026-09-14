@@ -1,7 +1,7 @@
 """Foundations for the Kvarken Earth Observation pipeline."""
 
 from .catalog import SpatialCatalog
-from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult
+from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult, IngestionMetrics
 from .ingestion import AsyncIngestor, IngestionResult, RetryPolicy
 from .models import EOScene, PayloadValidationError
 from .provenance import FileProvenanceSink, ProvenanceRecord
@@ -13,6 +13,7 @@ __all__ = [
     "AsyncIngestor",
     "ConcurrentEOIngestor",
     "ConcurrentIngestionResult",
+    "IngestionMetrics",
     "KVARKEN_REGION_BBOX",
     "EOScene",
     "FileProvenanceSink",
