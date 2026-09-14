@@ -23,6 +23,8 @@ python -m kvarken_eo --demo
 - Keep application code under `src/kvarken_eo/` and tests under `tests/`.
 - Model external data at the boundary with typed dataclasses; validate before transforms.
 - Keep I/O async and injectable. Production adapters must implement the same protocol as test fakes.
+- Keep provider-specific parsing in adapters; pass validated, transport-neutral records to sinks and transforms.
+- Store raw payloads with a SHA-256 checksum and append-only provenance metadata.
 - Keep retries explicit and bounded. Never retry malformed payloads; retry only transient timeout and rate-limit failures.
 - Keep geospatial transforms deterministic and separate from transport concerns.
 - Prefer standard library types and small modules over framework abstractions.
@@ -41,9 +43,9 @@ python -m kvarken_eo --demo
 - [x] Repository identity and Python packaging established
 - [x] Typed mock ingestion vertical slice implemented
 - [x] Timeout, rate-limit, and corrupted-payload tests added
+- [x] Public STAC adapter, offline fixtures, and provenance sink implemented
 - [x] Developer and agent commands documented
-- [ ] Add a real provider adapter behind `EODataSource`
-- [ ] Add persistent raw/staged storage with provenance metadata
+- [x] Add persistent raw/staged storage with provenance metadata
 - [ ] Add spatial index and representative Sentinel-1/Sentinel-2 fixtures
 - [ ] Benchmark bounded concurrent ingestion and document findings
 

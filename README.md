@@ -24,7 +24,7 @@ python -m ruff check .
 python -m ruff format --check .
 ```
 
-The initial vertical slice uses an in-memory EO source, so it does not require network credentials or external services:
+The package includes a dependency-free STAC client built on the Python standard library. Its transport is injectable, so tests and research runs can remain offline. The initial demo still uses an in-memory EO source:
 
 ```powershell
 python -m kvarken_eo --demo
@@ -32,8 +32,8 @@ python -m kvarken_eo --demo
 
 ## Repository map
 
-- `src/kvarken_eo/` - ingestion contracts, validation, retry policy, and CLI demo
-- `tests/` - unit tests for successful and failure paths
+- `src/kvarken_eo/` - ingestion contracts, STAC adapter, validation, provenance sink, and CLI demo
+- `tests/` - unit tests, offline STAC fixtures, and provenance verification
 - `docs/` - goals, architecture, current status, and roadmap
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 

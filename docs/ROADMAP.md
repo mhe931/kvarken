@@ -7,14 +7,16 @@
 - Explicit transient failure retries
 - Tests and continuity documentation
 
-## Provider integration
+## Provider integration (complete)
 
-- Implement one public EO catalog adapter.
+- Implemented one public STAC catalog adapter with pagination and retry handling.
+- Added representative Sentinel-2 metadata fixtures and offline tests.
 - Add authentication through environment variables or managed identity only.
 - Record request IDs, source URLs, and acquisition timestamps.
 
-## Processing
+## Provenance and processing
 
+- Implemented filesystem raw-payload storage and append-only provenance audit records.
 - Add cloud-optimized raster metadata and spatial reference validation.
 - Introduce deterministic tile/window transforms.
 - Add small fixture-based integration tests.

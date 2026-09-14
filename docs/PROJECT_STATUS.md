@@ -1,5 +1,14 @@
 # Project status
 
+## 2026-09-14 - STAC and provenance milestone
+
+Status: green provider milestone.
+
+- Added a dependency-free async STAC `/search` adapter with pagination and bounded timeout/rate-limit retries.
+- Added representative Sentinel-2 STAC JSON fixtures under `tests/fixtures/`.
+- Added a filesystem provenance sink with canonical raw payloads, SHA-256 checksums, and append-only JSONL audit records.
+- Added offline tests for pagination, retries, schema validation, and provenance persistence.
+
 ## 2026-09-14 - Bootstrap
 
 Status: green foundation.
@@ -12,4 +21,4 @@ Status: green foundation.
 
 ## Next checkpoint
 
-Define the first real provider contract and select a small, redistributable fixture strategy for representative imagery metadata.
+Add a provider-specific scene-to-`EOScene` transformation and evaluate persistent storage behavior under bounded concurrent ingestion.

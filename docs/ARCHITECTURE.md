@@ -3,16 +3,18 @@
 ## Current vertical slice
 
 ```text
-EODataSource
-    |
-    v
-AsyncIngestor -- RetryPolicy --> typed payload validation --> EOScene
-    |
-    v
-IngestionResult (source, scene, attempts)
+STACClient -- RetryPolicy --> STACTransport --> public STAC API
+    |                                  |
+    v                                  v
+validated STACItem                FileProvenanceSink
+                                       |
+                                       v
+                              raw JSON + manifest.jsonl
 ```
 
-`EODataSource` is an async protocol. `MockEODataSource` simulates provider responses without network access. `AsyncIngestor` owns retry decisions and never retries validation failures. The scene model is deliberately transport-neutral so spatial transforms can be added without coupling them to an HTTP client.
+`STACClient` queries the standard `/search` endpoint, follows `next` links, and retries only timeout and rate-limit failures. `STACTransport` is injectable; `UrllibSTACTransport` provides a dependency-free production implementation. `MockEODataSource` remains available for the original scene-ingestion slice.
+
+`FileProvenanceSink` writes canonical raw JSON under a content-addressed SHA-256 filename and appends an audit record containing source identity, collection, URI, timestamp, retry attempts, and relative raw-payload path.
 
 ## Failure taxonomy
 
@@ -22,4 +24,4 @@ IngestionResult (source, scene, attempts)
 
 ## Extension points
 
-Future provider adapters should translate provider-specific responses into the `RawScenePayload` mapping and retain source identifiers and acquisition timestamps. Persistent storage and spatial processing should consume `EOScene`, not provider-specific objects.
+Future provider adapters should translate provider-specific responses into typed records and retain source identifiers and acquisition timestamps. Spatial processing should consume validated records, not provider-specific transport objects.
