@@ -77,6 +77,25 @@ with SpatialCatalog("data/scenes.sqlite") as catalog:
 
 Re-indexing a `scene_id` updates its metadata atomically. `ConcurrentEOIngestor` accepts `catalog=...` to index each successfully persisted scene.
 
+### Maintenance and health verification
+
+Catalog retention and SQLite maintenance are explicit:
+
+```python
+catalog.prune_older_than(cutoff)
+catalog.vacuum()
+sink.prune_raw_payloads(catalog, dry_run=True)  # inspect first
+sink.prune_raw_payloads(catalog, dry_run=False)  # explicit deletion
+```
+
+Run the deterministic end-to-end smoke check without network access:
+
+```powershell
+python -m kvarken_eo verify-health
+```
+
+The command uses a temporary directory, ingests the checked-in STAC fixture, records provenance, indexes and queries the scene, checks retention, runs SQLite integrity/vacuum maintenance, and confirms no payloads are unexpectedly orphaned.
+
 ### Kvarken spatial filtering
 
 Spatial helpers use dependency-free WGS84 axis-aligned bounds and polygon edge tests:

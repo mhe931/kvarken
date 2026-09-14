@@ -22,6 +22,10 @@ validated STACItem                FileProvenanceSink
 
 `SpatialCatalog` uses SQLite with a `scenes` table keyed by `scene_id`, indexed on `(platform, acquired_at)` and bbox columns. `query_scenes` first applies SQL range predicates to reduce candidates, then runs exact EPSG:4326 polygon checks. JSON columns preserve footprint and assets without external database dependencies. Writes use a process-local reentrant lock and explicit commits; `ConcurrentEOIngestor` delegates catalog writes to a worker thread.
 
+Maintenance is explicit and locked: `prune_older_than` deletes records before a cutoff, while `vacuum` runs integrity checking, WAL checkpointing, and SQLite vacuuming. `FileProvenanceSink.find_orphaned_payloads` identifies raw files not referenced by active catalog scene IDs or beyond a filesystem retention cutoff. `prune_raw_payloads` is dry-run by default; deletion requires `dry_run=False`.
+
+`python -m kvarken_eo verify-health` runs the complete offline fixture-to-provenance-to-catalog-to-query-to-maintenance path in a temporary directory.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.
