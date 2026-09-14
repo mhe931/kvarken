@@ -28,6 +28,8 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 `ConcurrentEOIngestor` exposes standard-library `IngestionMetrics` through `ingest_with_metrics()` and `last_metrics`. Metrics use monotonic elapsed time, canonical UTF-8 JSON byte counts, item attempt metadata for retries, and bounded-worker results. `.github/workflows/ci.yml` runs the same offline checks on Python 3.11 and 3.12 for pushes and pull requests to `main`.
 
+`reports.py` converts metrics and catalog size/query latency into stable JSON plus a Markdown table. The `benchmark-report` CLI command synthesizes STAC items, runs the real concurrent ingestion/catalog path in a temporary directory, and exports artifacts to the requested output directory. `.pre-commit-config.yaml` keeps Ruff and basic whitespace checks consistent locally.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.

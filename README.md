@@ -102,6 +102,14 @@ GitHub Actions runs Ruff, pytest, and the offline health check on pushes and pul
 
 `ConcurrentEOIngestor.ingest_with_metrics()` returns results plus an `IngestionMetrics` record containing scene count, elapsed seconds, throughput, failures, retry count, and canonical payload bytes. The legacy `ingest()` and `search_and_ingest()` methods remain list-returning APIs; their latest summary is available through `ingestor.last_metrics`.
 
+Generate a reproducible synthetic benchmark report without network access:
+
+```powershell
+python -m kvarken_eo benchmark-report --output-dir reports --scenes-count 1000 --concurrency 8
+```
+
+This writes `experiment_report.json` and `experiment_report.md`. Local contributors can install the configured Ruff and whitespace hooks with `pre-commit install`.
+
 ### Kvarken spatial filtering
 
 Spatial helpers use dependency-free WGS84 axis-aligned bounds and polygon edge tests:
