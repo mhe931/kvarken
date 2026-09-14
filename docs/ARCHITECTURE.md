@@ -20,6 +20,8 @@ validated STACItem                FileProvenanceSink
 
 `spatial.py` provides deterministic EPSG:4326 bbox and polygon intersection utilities. `KVARKEN_REGION_BBOX` is `(20.5, 62.8, 22.5, 63.8)`; closed-boundary intersection is intentional for study-area filtering. The benchmark harness injects latency and burst 429 responses into the STAC transport to verify retry recovery and zero record loss offline.
 
+`SpatialCatalog` uses SQLite with a `scenes` table keyed by `scene_id`, indexed on `(platform, acquired_at)` and bbox columns. `query_scenes` first applies SQL range predicates to reduce candidates, then runs exact EPSG:4326 polygon checks. JSON columns preserve footprint and assets without external database dependencies. Writes use a process-local reentrant lock and explicit commits; `ConcurrentEOIngestor` delegates catalog writes to a worker thread.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.

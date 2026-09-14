@@ -60,6 +60,23 @@ results = await pipeline.search_and_ingest(collections=("sentinel-2-l2a",))
 
 The provenance sink serializes JSONL appends with an async lock and performs filesystem work in a worker thread, keeping the event loop responsive.
 
+### Persistent scene catalog
+
+`SpatialCatalog` stores normalized scene metadata in a dependency-free SQLite database. Bbox, platform, and acquisition-time columns are indexed; ROI queries use SQL bbox pre-filtering followed by exact polygon intersection:
+
+```python
+from kvarken_eo import SpatialCatalog
+
+with SpatialCatalog("data/scenes.sqlite") as catalog:
+    catalog.index_scene(scene)
+    matches = catalog.query_scenes(
+        roi=(20.5, 62.8, 22.5, 63.8),
+        platform="sentinel-2",
+    )
+```
+
+Re-indexing a `scene_id` updates its metadata atomically. `ConcurrentEOIngestor` accepts `catalog=...` to index each successfully persisted scene.
+
 ### Kvarken spatial filtering
 
 Spatial helpers use dependency-free WGS84 axis-aligned bounds and polygon edge tests:

@@ -13,6 +13,7 @@ Status: green provider milestone.
 - Added concurrency tests verifying worker bounds and complete, parseable audit records.
 - Added dependency-free Kvarken EPSG:4326 bbox/polygon filtering with boundary and invalid-geometry tests.
 - Added an offline throughput harness with injected latency, burst 429 responses, jittered retry policy, and manifest completeness checks.
+- Added persistent SQLite scene catalog with bbox/platform/time indexes, idempotent upserts, ROI exact filtering, and synthetic 1,200-scene query benchmarking.
 
 ## 2026-09-14 - Bootstrap
 
@@ -26,4 +27,4 @@ Status: green foundation.
 
 ## Next checkpoint
 
-Benchmark persistent storage throughput and provider rate-limit behavior under bounded concurrent ingestion; add a spatial index for larger scene catalogs.
+Benchmark persistent storage throughput and provider rate-limit behavior under bounded concurrent ingestion; evaluate catalog vacuum/retention policies.
