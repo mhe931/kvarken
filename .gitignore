@@ -216,3 +216,31 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local credentials and settings
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+secrets.json
+
+# Local data, caches, and generated artifacts
+data/
+cache/
+caches/
+artifacts/
+outputs/
+*.parquet
+*.tif
+*.tiff
+*.nc
+*.h5
+*.hdf5
+*.zip
+
+# Coverage and local tooling
+.vscode/
+.idea/
+.DS_Store
