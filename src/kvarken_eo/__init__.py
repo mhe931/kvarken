@@ -1,6 +1,7 @@
 """Foundations for the Kvarken Earth Observation pipeline."""
 
 from .catalog import SpatialCatalog
+from .cdse import CDSEClient, CDSETokenProvider, OAuthToken
 from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult, IngestionMetrics
 from .ingestion import AsyncIngestor, IngestionResult, RetryPolicy
 from .models import EOScene, PayloadValidationError
@@ -13,6 +14,8 @@ from .transform import transform_stac_to_scene
 
 __all__ = [
     "AsyncIngestor",
+    "CDSEClient",
+    "CDSETokenProvider",
     "ConcurrentEOIngestor",
     "ConcurrentIngestionResult",
     "IngestionMetrics",
@@ -21,6 +24,7 @@ __all__ = [
     "FileProvenanceSink",
     "IngestionResult",
     "PayloadValidationError",
+    "OAuthToken",
     "ProvenanceRecord",
     "generate_experiment_report",
     "SceneQualityProfile",
