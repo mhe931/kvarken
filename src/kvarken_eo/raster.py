@@ -124,6 +124,17 @@ def downsample_band(band: Sequence[Sequence[float]], factor: int) -> RasterGrid:
     return tuple(output)
 
 
+def downsample_scene_bands(
+    bands: dict[str, Sequence[Sequence[float]]],
+    factor: int,
+) -> dict[str, RasterGrid]:
+    """Apply the same spatial reduction to each named scene band."""
+
+    if not bands:
+        raise ValueError("bands must not be empty")
+    return {name: downsample_band(band, factor) for name, band in bands.items()}
+
+
 @dataclass(frozen=True, slots=True)
 class DownsampleBenchmark:
     input_pixels: int

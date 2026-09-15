@@ -15,6 +15,7 @@ from .raster import (
     benchmark_downsample,
     calculate_ndvi,
     downsample_band,
+    downsample_scene_bands,
 )
 from .reports import generate_experiment_report
 from .runner import (
@@ -59,6 +60,7 @@ __all__ = [
     "bbox_intersects",
     "calculate_ndvi",
     "downsample_band",
+    "downsample_scene_bands",
     "scene_intersects_roi",
     "run_live_experiment",
     "transform_stac_to_scene",
