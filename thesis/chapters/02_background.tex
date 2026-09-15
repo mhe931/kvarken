@@ -1,34 +1,150 @@
 \chapter{Background}
 
-\section{Earth Observation metadata and STAC}
+\section{Earth observation information models}
 
-The SpatioTemporal Asset Catalog (STAC) specification defines a common representation for
-geospatial assets, collections, items, properties, and links \cite{stac-spec}. Its separation of
-metadata from asset URLs is useful for this thesis: the ingestion boundary validates the STAC
-item, while later components consume a typed scene record. Sentinel-2 is used as the
-representative optical mission; its multispectral design supports cloud assessment and
-vegetation indices \cite{drusch2012sentinel}.
+Earth observation (EO) systems produce observations whose scientific value depends on both the
+measurement and its context. A pixel array without acquisition time, spatial reference, processing
+level, or a stable identifier is difficult to search, compare, or reproduce. This thesis therefore
+treats metadata as a first-class data product. The representative mission is Sentinel-2, whose
+multispectral instrument provides bands suitable for land-cover and vegetation analysis
+\cite{drusch2012sentinel}. The architectural problem is not only downloading imagery; it is
+maintaining a verifiable chain from a provider record to a queryable, quality-assessed research
+scene.
 
-\section{CDSE and interoperable standards}
+\section{STAC's hierarchical catalog model}
 
-The Copernicus Data Space Ecosystem provides access to Copernicus data and services
-\cite{cdse}. The implementation uses OAuth2 client credentials at the provider boundary and
-retains the existing STAC search semantics. The design is consistent with OGC API Features
-principles for interoperable feature access \cite{ogc-api-features}, while remaining small
-enough for offline teaching and experiments.
+The SpatioTemporal Asset Catalog (STAC) specification provides a JSON-based vocabulary for
+describing geospatial information \cite{stac-spec}. Its hierarchy separates collection-level
+description from observation-level metadata:
 
-\section{Provenance and reproducibility}
+\begin{description}
+\item[Catalog] A navigational root or subcatalog that groups related resources through typed
+links. A catalog can expose multiple collections without prescribing how the data are stored.
+\item[Collection] A logical set of Items sharing a mission, product family, or processing
+definition. Collection metadata describes the spatial and temporal extent, license, providers, and
+available summaries.
+\item[Item] A single spatiotemporal observation. It has a globally meaningful identifier,
+acquisition timestamp, GeoJSON geometry, bounding box, and properties such as platform and cloud
+cover. Items are the unit transformed into the pipeline's typed \texttt{EOScene}.
+\item[Asset] A link to a concrete downloadable resource, such as a spectral band, quicklook, or
+metadata document. Asset roles and media types allow clients to distinguish data required for
+analysis from ancillary resources.
+\end{description}
 
-Reproducible research requires a record of the input, transformation context, and output.
-The pipeline stores canonical JSON payloads under SHA-256 content addresses and appends
-source identifiers, URIs, timestamps, and retry attempts to a manifest. Reports serialize
-metrics as sorted JSON and Markdown so a benchmark can be inspected without a monitoring
-service.
+The distinction between an Item and its Assets is operationally important. Search can remain
+metadata-only, while an analytical task selectively fetches only the bands it needs. A normalized
+scene can consequently be represented as
+\[
+ S = (i, p, t, g, b, a, q),
+\]
+where \(i\) is the item identifier, \(p\) the platform, \(t\) the acquisition instant, \(g\) the
+geometry, \(b\) the bounding box, \(a\) the asset map, and \(q\) optional quality metadata. The
+pipeline validates this tuple before persistence, preventing malformed provider payloads from
+becoming catalog state.
 
-\section{Spatial databases and WAL}
+\section{CDSE provider architecture and authorization}
 
-SQLite provides a compact embedded catalog. The catalog stores scene metadata, footprints,
-bounding boxes, and assets, applies indexed SQL predicates before exact geometry checks, and
-uses write-ahead logging (WAL) to permit readers while a writer commits \cite{sqlite-wal}.
-The implementation additionally serializes operations on a shared connection with a
-process-local reentrant lock.
+The Copernicus Data Space Ecosystem (CDSE) exposes Copernicus data products and services through
+provider-facing APIs \cite{cdse}. In this project, CDSE is an external boundary rather than a
+dependency of the domain model. The asynchronous STAC client consumes search responses, while the
+OAuth2 adapter obtains an access token and injects it into subsequent requests.
+
+The client-credentials flow is appropriate for a non-interactive service account. Let \(c\) be the
+client identifier, \(s\) the client secret, and \(u_t\) the token endpoint. The provider receives a
+form request equivalent to
+\[
+ (c, s, \texttt{grant\_type}=\texttt{client\_credentials}) \longrightarrow
+ (\texttt{access\_token}, \texttt{expires\_in}).
+\]
+The token is then sent as an HTTP bearer credential:
+\[
+\texttt{Authorization: Bearer } access\_token.
+\]
+Secrets are resolved from environment variables and never placed in source code, reports, or
+provenance manifests. A missing or incomplete configuration selects the offline fixture transport,
+which makes tests and teaching exercises deterministic.
+
+The token cache must distinguish validity from mere presence. If \(t_{\mathrm{now}}\) is the
+current time, \(t_{\mathrm{issued}}\) the acquisition time, \(L\) the provider lifetime, and
+\(\delta\) a refresh skew, a cached token is usable only when
+\[
+t_{\mathrm{now}} < t_{\mathrm{issued}} + \max(0, L-\delta).
+\]
+Refreshing before the nominal expiry avoids starting a long search with a token that expires while
+the request is in flight. Network timeouts and HTTP 429 responses are transient; malformed token
+JSON, an absent token, or a non-positive lifetime are permanent protocol errors.
+
+\section{Geospatial filtering and indexing}
+
+The Kvarken region is first approximated by an axis-aligned WGS 84 bounding box
+\[
+B_R=[\lambda_{\min},\lambda_{\max}]\times[\phi_{\min},\phi_{\max}]
+=[20.5,22.5]\times[62.8,63.8].
+\]
+For an Item bounding box \(B_S=[\lambda^-_S,\lambda^+_S]\times[\phi^-_S,\phi^+_S]\), the
+necessary intersection predicate is
+\[
+\lambda^-_S\leq\lambda^+_R \land
+\lambda^+_S\geq\lambda^-_R \land
+\phi^-_S\leq\phi^+_R \land
+\phi^+_S\geq\phi^-_R.
+\]
+This inexpensive predicate is suitable for indexed SQL columns. It is a pre-filter, not a complete
+topological test: two bounding boxes can overlap even when their polygons do not.
+
+The exact second-stage test uses polygon intersection. For point-in-polygon classification, the
+ray-casting algorithm counts crossings of a horizontal ray from point \(P=(x,y)\). For every edge
+\((x_i,y_i)\) to \((x_j,y_j)\), a crossing is counted when
+\[
+(y_i>y)\mathbin{\ne}(y_j>y)
+\quad\land\quad
+x < x_i + \frac{(y-y_i)(x_j-x_i)}{y_j-y_i}.
+\]
+The point is inside when the crossing count is odd:
+\[
+\operatorname{inside}(P)=\left(\sum_i \operatorname{cross}_i(P)\right)\bmod 2=1.
+\]
+Boundary points are treated as intersecting so that observations touching the regional boundary are
+not silently excluded. The implementation keeps this deterministic geometry logic separate from
+HTTP transport and SQL access.
+
+\section{Embedded persistence and SQLite WAL}
+
+SQLite is an embedded relational database with transactional durability and no separate server
+process. The catalog stores stable scene identity, platform, acquisition time, cloud cover,
+bounding-box coordinates, serialized geometry, and serialized assets. B-tree indexes reduce the
+candidate set before exact spatial checks; an idempotent primary-key upsert makes repeated
+ingestion safe.
+
+Write-ahead logging (WAL) changes the commit path: a writer appends changed pages to a WAL file
+and readers continue from a consistent snapshot of the main database plus the WAL
+\cite{sqlite-wal}. A reader that begins at snapshot \(r\) does not observe later commits until it
+starts a new transaction. Consequently, concurrent readers can see different valid counts during a
+write burst, but no reader should observe a half-written row. Checkpointing eventually transfers
+committed pages back to the main database.
+
+The durability contract follows ACID:
+\begin{description}
+\item[Atomicity] A scene upsert commits as one transaction; an error rolls back the complete
+transaction rather than exposing a partial record.
+\item[Consistency] primary-key, type, and application-level geometry invariants hold before and
+after each commit.
+\item[Isolation] readers see a stable committed snapshot and never uncommitted writer state.
+\item[Durability] after a successful commit and connection close, reopening the catalog recovers
+the committed rows, including rows written while WAL was active.
+\end{description}
+
+SQLite's connection objects are not freely shareable across threads. The project uses a
+process-local reentrant lock around operations on the shared catalog connection, explicit
+transactions for writes, and WAL to reduce reader--writer blocking. This is an ownership boundary,
+not a substitute for distributed coordination: multiple processes require separate connections and
+deployment-level locking decisions.
+
+\section{Reproducibility and operational standards}
+
+The OGC API Features model reinforces the separation between interoperable feature access and
+provider-specific storage \cite{ogc-api-features}. In the thesis pipeline, reproducibility is
+implemented through typed boundary validation, canonical JSON serialization, SHA-256 content
+addresses, append-only manifests, deterministic reports, and frozen benchmark artifacts. These
+controls make a synthetic experiment inspectable without a cloud service while leaving a clear
+boundary for authenticated CDSE experiments.
