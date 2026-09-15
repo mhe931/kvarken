@@ -37,6 +37,9 @@ Status: manuscript structure prepared for academic drafting.
   implementation methods, and the exact 256-scene empirical baseline table.
 - Kept the manuscript independent of source code and frozen experiment artifacts; no runtime
   behavior or baseline data was modified.
+- Added a GitHub Actions manuscript workflow that installs TeX Live, runs the
+  `pdflatex`/BibTeX compilation sequence, and uploads `main.pdf` as a workflow artifact for
+  thesis-scoped pushes and pull requests.
 
 ## 2026-09-15 - Release readiness audit
 

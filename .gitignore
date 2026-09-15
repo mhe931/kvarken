@@ -244,3 +244,12 @@ outputs/
 .vscode/
 .idea/
 .DS_Store
+
+# LaTeX manuscript build outputs
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+thesis/*.pdf
