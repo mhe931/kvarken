@@ -15,6 +15,7 @@ from .catalog import SpatialCatalog
 from .cdse import CDSEClient, CDSETokenProvider
 from .concurrent import ConcurrentEOIngestor
 from .provenance import FileProvenanceSink
+from .raster import process_scene_window
 from .reports import generate_experiment_report
 from .stac import STACItem
 
@@ -107,6 +108,42 @@ def _cloud_bucket(value: object) -> str:
     return "50-100"
 
 
+def _window_telemetry(item_count: int) -> dict[str, object]:
+    """Run a deterministic spectral-window slice and record operational telemetry."""
+    if item_count < 1:
+        raise ValueError("item_count must be positive")
+    import tracemalloc
+
+    bands = {
+        "B04": tuple(tuple(0.2 + column / 1000 for column in range(32)) for _ in range(32)),
+        "B08": tuple(tuple(0.5 + column / 1000 for column in range(32)) for _ in range(32)),
+    }
+    started = time.perf_counter()
+    tracemalloc.start()
+    last_ndvi = 0.0
+    for _ in range(item_count):
+        result = process_scene_window(
+            bands,
+            (20.5, 62.8, 22.5, 63.8),
+            (4, 4, 16, 16),
+            2,
+        )
+        last_ndvi = result.ndvi[0][0]
+    _, peak_memory = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    elapsed = time.perf_counter() - started
+    return {
+        "windows_processed": item_count,
+        "window_shape": [16, 16],
+        "downsample_factor": 2,
+        "output_shape": [8, 8],
+        "elapsed_seconds": round(elapsed, 6),
+        "throughput_windows_per_second": round(item_count / elapsed if elapsed else 0.0, 6),
+        "peak_memory_bytes": peak_memory,
+        "sample_ndvi": round(last_ndvi, 6),
+    }
+
+
 async def _run(
     settings: CDSESettings | None,
     fixture: Path,
@@ -165,6 +202,7 @@ async def _run(
                 "search_round_trip_ms": round(query_elapsed * 1000, 6),
             }
             report["derived"]["quality_profiled_scenes"] = len(results)
+            report["window_telemetry"] = _window_telemetry(len(results))
     json_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     markdown = "\n".join(
         [
@@ -183,6 +221,10 @@ async def _run(
             f"| Mean cloud cover | {report['quality']['mean_cloud_cover']:.6f} |",
             f"| Usable scene ratio | {report['quality']['usable_scene_ratio']:.6f} |",
             f"| Search round-trip (ms) | {query_elapsed * 1000:.6f} |",
+            f"| Windows processed | {report['window_telemetry']['windows_processed']} |",
+            f"| Window throughput (windows/sec) | "
+            f"{report['window_telemetry']['throughput_windows_per_second']:.6f} |",
+            f"| Window peak memory (bytes) | {report['window_telemetry']['peak_memory_bytes']} |",
             "",
         ]
     )

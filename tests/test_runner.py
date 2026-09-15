@@ -32,6 +32,10 @@ def test_live_runner_uses_offline_fallback_and_dated_artifact(tmp_path):
     assert report["run"]["mode"] == "offline-fallback"
     assert report["run"]["items_returned"] == 1
     assert report["network"]["search_round_trip_ms"] >= 0
+    assert report["window_telemetry"]["windows_processed"] == 1
+    assert report["window_telemetry"]["output_shape"] == [8, 8]
+    assert report["window_telemetry"]["throughput_windows_per_second"] > 0
+    assert report["window_telemetry"]["peak_memory_bytes"] > 0
     assert (tmp_path / "experiment_report_live_20260915.md").exists()
     with pytest.raises(FileExistsError):
         run_live_experiment(
