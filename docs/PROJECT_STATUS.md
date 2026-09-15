@@ -43,6 +43,8 @@ Status: manuscript structure prepared for academic drafting.
 - Added Chapter 6, `Conclusion and Future Work`, answering all four research questions and
   defining follow-on work for continuous CDSE ingestion, raster operations, distributed catalogs,
   and operational Kvarken deployment.
+- Added formal frontmatter acknowledgements and an operational abbreviation table, plus table of
+  contents, figures, and tables lists to the manuscript.
 
 ## 2026-09-15 - Release readiness audit
 
