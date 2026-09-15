@@ -1,0 +1,34 @@
+\chapter{Background}
+
+\section{Earth Observation metadata and STAC}
+
+The SpatioTemporal Asset Catalog (STAC) specification defines a common representation for
+geospatial assets, collections, items, properties, and links \cite{stac-spec}. Its separation of
+metadata from asset URLs is useful for this thesis: the ingestion boundary validates the STAC
+item, while later components consume a typed scene record. Sentinel-2 is used as the
+representative optical mission; its multispectral design supports cloud assessment and
+vegetation indices \cite{drusch2012sentinel}.
+
+\section{CDSE and interoperable standards}
+
+The Copernicus Data Space Ecosystem provides access to Copernicus data and services
+\cite{cdse}. The implementation uses OAuth2 client credentials at the provider boundary and
+retains the existing STAC search semantics. The design is consistent with OGC API Features
+principles for interoperable feature access \cite{ogc-api-features}, while remaining small
+enough for offline teaching and experiments.
+
+\section{Provenance and reproducibility}
+
+Reproducible research requires a record of the input, transformation context, and output.
+The pipeline stores canonical JSON payloads under SHA-256 content addresses and appends
+source identifiers, URIs, timestamps, and retry attempts to a manifest. Reports serialize
+metrics as sorted JSON and Markdown so a benchmark can be inspected without a monitoring
+service.
+
+\section{Spatial databases and WAL}
+
+SQLite provides a compact embedded catalog. The catalog stores scene metadata, footprints,
+bounding boxes, and assets, applies indexed SQL predicates before exact geometry checks, and
+uses write-ahead logging (WAL) to permit readers while a writer commits \cite{sqlite-wal}.
+The implementation additionally serializes operations on a shared connection with a
+process-local reentrant lock.

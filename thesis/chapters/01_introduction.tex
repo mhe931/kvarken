@@ -1,0 +1,51 @@
+\chapter{Introduction}
+
+\section{Motivation and regional context}
+
+Earth Observation data infrastructure must bridge provider-specific interfaces and research
+questions that evolve over time. The Kvarken Space Center context is especially suitable for a
+research-oriented infrastructure because regional studies require reproducible spatial
+selection, cloud and asset quality checks, and an educational interface that can expose
+catalogued information without requiring a large operational platform. The Kvarken region is
+represented in this work by the EPSG:4326 bounding box $(20.5, 62.8, 22.5, 63.8)$.
+
+The engineering problem is not only downloading scenes. A useful research pipeline must preserve
+the source response, validate it before transformation, bound provider work under rate limits,
+make spatial decisions explicit, and retain enough measurements to compare experiments.
+
+\section{Problem statement}
+
+Provider APIs can time out, return rate-limit responses, paginate results, or evolve their
+metadata schemas. Conversely, an academic prototype must remain installable and testable on a
+developer workstation without credentials, a live provider, or heavyweight GIS libraries. This
+thesis therefore addresses the design of a small but complete infrastructure whose production
+adapters and offline fakes implement the same contracts.
+
+\section{Research questions}
+
+\begin{enumerate}
+  \item How can heterogeneous STAC and CDSE metadata be validated and transformed into a
+    transport-neutral EO scene model while preserving provenance?
+  \item How can asynchronous ingestion remain bounded and recover from transient timeouts,
+    OAuth2 expiration, and HTTP 429 responses without retrying malformed payloads?
+  \item How effectively can a dependency-free SQLite catalog support regional, temporal, quality,
+    and platform queries under concurrent reader/writer contention?
+  \item Which empirical measurements and artifacts are sufficient to make an offline EO
+    pipeline baseline reproducible for research and education?
+\end{enumerate}
+
+\section{Research objectives and contributions}
+
+The objectives are to implement a typed ingestion slice, a CDSE OAuth2 adapter, a persistent
+catalog with spatial and quality filters, a lightweight raster/NDVI analytical slice, and an
+educational query service. The contributions are a standard-library architecture with explicit
+failure taxonomy; content-addressed provenance and deterministic reports; offline tests for
+concurrency, OAuth2 recovery, and SQLite WAL durability; and a frozen 256-scene empirical
+baseline.
+
+\section{Thesis structure}
+
+Chapter 2 reviews the standards and EO data concepts used by the system. Chapter 3 describes
+the architecture and Kvarken filtering model. Chapter 4 explains implementation details and
+failure handling. Chapter 5 evaluates the implementation using the checked-in benchmark and
+verification suite.

@@ -76,13 +76,15 @@ python -m kvarken_eo --demo
 
 ## Release readiness
 
-- Package version: `0.1.0` (release candidate)
+- Package version: `0.1.0` (released baseline)
 - Runtime dependencies: standard library only
 - Verification baseline: 53 offline tests, Ruff lint/format clean, and `verify-health` passing
 - Frozen artifact: `docs/experiments/experiment_report.json`
 - Live artifacts: dated and append-only; cleanup is dry-run by default
-- Release procedure: validate on `main`, create an annotated version tag only after an explicit
-  release decision, and preserve the frozen baseline for regression comparison.
+- Release procedure: preserve the frozen baseline for regression comparison and add future
+  observations as dated artifacts.
+- Thesis manuscript: keep modular LaTeX sources under `thesis/`, transcribe empirical values only
+  from frozen experiment artifacts, and do not commit generated PDF or auxiliary files.
 
 ## Change checklist
 

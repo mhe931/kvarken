@@ -1,0 +1,57 @@
+\chapter{Evaluation}
+
+\section{Experimental configuration}
+
+The frozen report was generated offline with 256 synthetic scenes and concurrency 8. It uses the
+checked-in STAC fixture as a template, temporary SQLite and provenance storage, and the actual
+concurrent ingestion and reporting paths. No external provider, credential, charting package,
+or GIS dependency is required.
+
+\section{Empirical baseline}
+
+Table~\ref{tab:baseline} transcribes the publication-ready report in
+\texttt{docs/experiments/experiment\_report.md}. Time and throughput are measurements of the
+Windows development environment and should be compared only under equivalent conditions.
+
+\begin{table}[htbp]
+\centering
+\caption{Frozen 256-scene synthetic experiment baseline.}
+\label{tab:baseline}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Scenes ingested & 256 \\
+Elapsed seconds & 1.159317 \\
+Throughput (items/sec) & 220.819653 \\
+Failures & 0 \\
+Retries & 0 \\
+Payload bytes & 106130 \\
+Catalog scenes & 256 \\
+Usable scenes & 256 \\
+Usable scene ratio & 1.000000 \\
+Mean cloud cover & 4.200000 \\
+Asset completeness ratio & 1.000000 \\
+Spatial query latency (ms) & 9.117000 \\
+Failure recovery ratio & 1.000000 \\
+Payload megabytes & 0.106130 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Validation results}
+
+The release baseline passes 53 offline tests. Tests cover schema validation, pagination,
+transient recovery, provenance, bounded worker limits, quality filters, raster/NDVI behavior,
+HTTP queries, OAuth2 failure modes, artifact retention, multi-threaded catalog contention, and
+WAL durability after reopening. Ruff lint and format checks pass, and
+\texttt{python -m kvarken\_eo verify-health} completes the fixture-to-provenance-to-catalog
+maintenance path.
+
+\section{Interpretation and limitations}
+
+The results demonstrate a coherent and reproducible baseline rather than a claim about all
+production EO workloads. The measured throughput and latency depend on the local filesystem and
+SQLite build. Full GeoTIFF decoding, large-scale distributed storage, and authenticated live
+CDSE observations remain future evaluation dimensions. The dated live-run mechanism is designed
+to add those observations without changing this frozen comparison point.
