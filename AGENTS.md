@@ -35,6 +35,10 @@ python -m kvarken_eo --demo
 - Use `ingest_with_metrics()` when batch telemetry is needed; preserve `ingest()` compatibility and keep metrics dependency-free.
 - Use `benchmark-report` for reproducible offline reports and run pre-commit hooks before handoff.
 - Keep quality profiling metadata-only; use catalog `max_cloud_cover` and `required_assets` filters before any raw-payload work.
+- Use `CDSETokenProvider` for OAuth2 credentials and inject transports in tests; never put tokens in fixtures or reports.
+- Keep raster access range-based and dependency-free; validate aligned red/NIR arrays before calculating NDVI.
+- Keep the educational HTTP API read-only and backed by `SpatialCatalog`; validate query parameters at the boundary.
+- Treat `docs/experiments/` as durable thesis artifacts generated only from offline, checked-in fixtures.
 - Prefer standard library types and small modules over framework abstractions.
 - Update `docs/PROJECT_STATUS.md` at each weekly checkpoint and record durable decisions in `docs/ARCHITECTURE.md`.
 
@@ -59,6 +63,8 @@ python -m kvarken_eo --demo
 - [x] Matrix CI workflow and structured ingestion telemetry implemented
 - [x] Deterministic experiment reports, benchmark CLI, and pre-commit hooks implemented
 - [x] Scene quality profiler, catalog quality filters, and report quality summaries implemented
+- [x] CDSE OAuth2 adapter, raster range fetch/NDVI slice, and educational catalog API implemented
+- [x] Thesis baseline experiment artifacts generated and documentation freeze recorded
 - [x] Developer and agent commands documented
 - [x] Add persistent raw/staged storage with provenance metadata
 - [ ] Add spatial index and representative Sentinel-1/Sentinel-2 fixtures

@@ -1,0 +1,27 @@
+{
+  "catalog": {
+    "scene_count": 256
+  },
+  "derived": {
+    "failure_recovery_ratio": 1.0,
+    "payload_megabytes": 0.10613
+  },
+  "metrics": {
+    "elapsed_seconds": 1.1593171000131406,
+    "failure_count": 0,
+    "payload_bytes": 106130,
+    "retry_count": 0,
+    "scenes_ingested": 256,
+    "throughput_items_per_second": 220.81965322265867
+  },
+  "quality": {
+    "asset_completeness_ratio": 1.0,
+    "mean_cloud_cover": 4.2,
+    "usable_scene_count": 256,
+    "usable_scene_ratio": 1.0
+  },
+  "schema_version": 1,
+  "spatial_query": {
+    "latency_ms": 9.117
+  }
+}
