@@ -203,3 +203,7 @@ pdflatex main.tex
 ```
 
 Generated PDF and auxiliary files are local build outputs and should not be committed.
+Every push or pull request that changes `thesis/**` is compiled by the
+[Thesis manuscript workflow](.github/workflows/thesis.yml). A successful run publishes
+`main.pdf` as the downloadable `kvarken-thesis` workflow artifact; the local workstation does
+not need a TeX distribution.
