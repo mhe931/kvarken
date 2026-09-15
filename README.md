@@ -36,7 +36,7 @@ python -m kvarken_eo --demo
 - `tests/` - unit tests, offline STAC fixtures, and provenance verification
 - `docs/` - goals, architecture, current status, and roadmap
 - `docs/THESIS_SUMMARY.md` - academic overview of methods, data flow, evidence, and limitations
-- `thesis/` - modular LaTeX manuscript scaffold for the Master's thesis
+- `thesis/` - complete modular LaTeX Master's thesis manuscript (Chapters 1-6 plus bibliography)
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
 ## Development conventions
