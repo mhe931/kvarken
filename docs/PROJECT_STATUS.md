@@ -18,6 +18,10 @@ Status: green provider milestone.
 - Added Python 3.11/3.12 GitHub Actions CI and structured batch ingestion metrics for counts, elapsed time, throughput, failures, retries, and payload bytes.
 - Added deterministic JSON/Markdown experiment reporting, offline `benchmark-report` CLI generation, and pre-commit Ruff/whitespace hooks.
 - Added dependency-free scene quality profiles, catalog cloud/asset filters, and quality distributions in experiment reports.
+- Added CDSE OAuth2 client-credentials token caching/refresh with injectable offline transports.
+- Added dependency-free HTTP range asset fetching and aligned-band NDVI calculation.
+- Added a read-only standard-library catalog query API with health and JSON scene endpoints.
+- Generated the thesis baseline under `docs/experiments/` using 256 synthetic scenes and concurrency 8.
 
 ## 2026-09-14 - Bootstrap
 
@@ -29,6 +33,6 @@ Status: green foundation.
 - Added tests for the happy path and timeout, rate-limit, and corrupted-payload failures.
 - No external credentials or datasets are required.
 
-## Next checkpoint
+## Thesis freeze checkpoint
 
-Evaluate quality distributions and SQLite maintenance throughput against larger research catalogs; publish generated experiment reports from thesis runs.
+Status: baseline implementation and offline empirical artifact freeze complete. The checked-in report records the current 256-scene synthetic run; future live CDSE experiments must add a new dated artifact rather than overwrite this baseline.

@@ -138,3 +138,21 @@ if scene_intersects_roi(scene, KVARKEN_REGION_BBOX):
 ```
 
 The default `KVARKEN_REGION_BBOX` is `(20.5, 62.8, 22.5, 63.8)` in EPSG:4326. Boundary-touching scenes count as intersecting; non-WGS84 scenes are rejected rather than silently reprojected.
+
+### CDSE, raster, and educational API extensions
+
+`CDSETokenProvider` performs OAuth2 client-credentials exchange with bounded, lock-protected token refresh. `CDSEClient` composes it with the existing STAC pagination and validation path; both token and STAC transports are injectable for offline tests. Credentials are supplied by the caller and are never stored in the repository.
+
+`RasterAssetFetcher` performs inclusive HTTP byte-range requests for COG-like assets, while `calculate_ndvi()` computes dependency-free per-pixel NDVI values for aligned red/NIR arrays. Missing bands and shape mismatches fail explicitly.
+
+`create_catalog_server()` exposes a small standard-library HTTP service with `/api/health` and `/api/scenes` endpoints. Scene queries accept `platform`, `start`, `end`, `max_cloud_cover`, and comma-separated `bbox` parameters and return JSON suitable for educational demonstrations.
+
+### Thesis experiment artifacts
+
+Generate the checked-in synthetic baseline with:
+
+```powershell
+python -m kvarken_eo benchmark-report --output-dir docs/experiments --scenes-count 256 --concurrency 8
+```
+
+The resulting [experiment_report.json](docs/experiments/experiment_report.json) and [experiment_report.md](docs/experiments/experiment_report.md) are durable, offline reproducibility records. Re-run the command for a new measurement and record the configuration in the corresponding thesis notebook.

@@ -26,3 +26,12 @@
 - Measure throughput, retry behavior, and memory use under bounded concurrency.
 - Add structured logging and metrics hooks.
 - Document reproducibility and thesis experiment procedures.
+
+## Thesis baseline freeze (complete)
+
+- CDSE OAuth2 client-credentials adapter with offline fallback seams.
+- COG-like byte-range asset fetcher and dependency-free NDVI slice.
+- Read-only educational HTTP catalog service.
+- Checked-in 256-scene benchmark JSON/Markdown artifacts under `docs/experiments/`.
+
+Future work should add live-provider observations as new immutable experiment records and retain the offline baseline for regression comparison.
