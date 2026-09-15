@@ -17,6 +17,7 @@ Status: green provider milestone.
 - Added locked catalog retention pruning, integrity/WAL checkpoint/vacuum maintenance, provenance orphan/age inspection with dry-run-safe deletion, and an offline `verify-health` CLI smoke test.
 - Added Python 3.11/3.12 GitHub Actions CI and structured batch ingestion metrics for counts, elapsed time, throughput, failures, retries, and payload bytes.
 - Added deterministic JSON/Markdown experiment reporting, offline `benchmark-report` CLI generation, and pre-commit Ruff/whitespace hooks.
+- Added dependency-free scene quality profiles, catalog cloud/asset filters, and quality distributions in experiment reports.
 
 ## 2026-09-14 - Bootstrap
 
@@ -30,4 +31,4 @@ Status: green foundation.
 
 ## Next checkpoint
 
-Evaluate SQLite maintenance throughput and retention policies against larger research catalogs; publish generated experiment reports from thesis runs.
+Evaluate quality distributions and SQLite maintenance throughput against larger research catalogs; publish generated experiment reports from thesis runs.

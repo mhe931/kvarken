@@ -110,6 +110,22 @@ python -m kvarken_eo benchmark-report --output-dir reports --scenes-count 1000 -
 
 This writes `experiment_report.json` and `experiment_report.md`. Local contributors can install the configured Ruff and whitespace hooks with `pre-commit install`.
 
+### Scene quality profiling
+
+Quality profiles are computed from stored scene metadata without opening raw payloads:
+
+```python
+from kvarken_eo import profile_scene_quality
+
+profile = profile_scene_quality(
+    scene,
+    required_assets=("red", "nir"),
+    max_cloud_cover=20,
+)
+```
+
+Catalog queries can apply the same indexed metadata filters with `max_cloud_cover=20` and `required_assets=("red", "nir")`. Reports include usable-scene count/ratio, mean cloud cover, and asset completeness.
+
 ### Kvarken spatial filtering
 
 Spatial helpers use dependency-free WGS84 axis-aligned bounds and polygon edge tests:

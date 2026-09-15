@@ -30,6 +30,8 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 `reports.py` converts metrics and catalog size/query latency into stable JSON plus a Markdown table. The `benchmark-report` CLI command synthesizes STAC items, runs the real concurrent ingestion/catalog path in a temporary directory, and exports artifacts to the requested output directory. `.pre-commit-config.yaml` keeps Ruff and basic whitespace checks consistent locally.
 
+`quality.py` evaluates EPSG:4326 geometry, cloud-cover risk, and required asset presence into a `SceneQualityProfile`. `SpatialCatalog.query_scenes` applies the cloud-cover predicate in SQLite and checks required assets against stored JSON metadata, without reading raw provenance files. Experiment reports aggregate usable counts, mean cloud cover, and asset completeness.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.
