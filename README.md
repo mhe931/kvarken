@@ -156,3 +156,15 @@ python -m kvarken_eo benchmark-report --output-dir docs/experiments --scenes-cou
 ```
 
 The resulting [experiment_report.json](docs/experiments/experiment_report.json) and [experiment_report.md](docs/experiments/experiment_report.md) are durable, offline reproducibility records. Re-run the command for a new measurement and record the configuration in the corresponding thesis notebook.
+
+Run the environment-aware live experiment command to query CDSE when all four credentials are
+available, or to exercise the same pipeline against the checked-in fixture when they are absent:
+
+```powershell
+python -m kvarken_eo live-experiment --output-dir docs/experiments --scenes-count 25 --concurrency 4
+```
+
+The command reads `CDSE_TOKEN_URL`, `CDSE_CLIENT_ID`, `CDSE_CLIENT_SECRET`, and
+`CDSE_STAC_URL`. It writes a dated `experiment_report_live_YYYYMMDD.json` plus Markdown companion,
+records network round-trip latency and response distributions, and refuses to overwrite an artifact
+from the same date. It never modifies the frozen `experiment_report.json`.

@@ -12,6 +12,7 @@ from .concurrent import ConcurrentEOIngestor
 from .ingestion import AsyncIngestor
 from .provenance import FileProvenanceSink
 from .reports import generate_experiment_report
+from .runner import run_live_experiment
 from .source import MockEODataSource
 from .spatial import KVARKEN_REGION_BBOX
 from .transform import transform_stac_to_scene
@@ -103,7 +104,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "command",
         nargs="?",
-        choices=("verify-health", "benchmark-report"),
+        choices=("verify-health", "benchmark-report", "live-experiment"),
         help="run an offline end-to-end repository health check",
     )
     parser.add_argument("--output-dir", type=Path, default=Path("reports"))
@@ -114,6 +115,14 @@ def main(argv: list[str] | None = None) -> int:
         return _verify_health()
     if args.command == "benchmark-report":
         return _benchmark_report(args.output_dir, args.scenes_count, args.concurrency)
+    if args.command == "live-experiment":
+        path = run_live_experiment(
+            args.output_dir,
+            limit=args.scenes_count,
+            concurrency=args.concurrency,
+        )
+        print(f"live experiment report written: {path}")
+        return 0
     if args.demo:
         result = asyncio.run(
             AsyncIngestor(

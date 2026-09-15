@@ -39,6 +39,8 @@ python -m kvarken_eo --demo
 - Keep raster access range-based and dependency-free; validate aligned red/NIR arrays before calculating NDVI.
 - Keep the educational HTTP API read-only and backed by `SpatialCatalog`; validate query parameters at the boundary.
 - Treat `docs/experiments/` as durable thesis artifacts generated only from offline, checked-in fixtures.
+- Run `live-experiment` only with explicitly supplied CDSE environment variables; missing or partial credentials must select the offline fixture fallback.
+- Never overwrite `experiment_report.json` or a same-day live artifact; dated live reports are append-only evidence.
 - Prefer standard library types and small modules over framework abstractions.
 - Update `docs/PROJECT_STATUS.md` at each weekly checkpoint and record durable decisions in `docs/ARCHITECTURE.md`.
 

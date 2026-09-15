@@ -10,6 +10,7 @@ from .provenance import FileProvenanceSink, ProvenanceRecord
 from .quality import SceneQualityProfile, profile_scene_quality
 from .raster import RasterAssetFetcher, calculate_ndvi
 from .reports import generate_experiment_report
+from .runner import CDSESettings, resolve_cdse_settings, run_live_experiment
 from .spatial import KVARKEN_REGION_BBOX, bbox_intersects, scene_intersects_roi
 from .stac import STACClient, STACItem
 from .transform import transform_stac_to_scene
@@ -18,6 +19,7 @@ __all__ = [
     "AsyncIngestor",
     "create_catalog_server",
     "CDSEClient",
+    "CDSESettings",
     "CDSETokenProvider",
     "ConcurrentEOIngestor",
     "ConcurrentIngestionResult",
@@ -33,6 +35,7 @@ __all__ = [
     "generate_experiment_report",
     "SceneQualityProfile",
     "profile_scene_quality",
+    "resolve_cdse_settings",
     "RetryPolicy",
     "SpatialCatalog",
     "STACClient",
@@ -40,5 +43,6 @@ __all__ = [
     "bbox_intersects",
     "calculate_ndvi",
     "scene_intersects_roi",
+    "run_live_experiment",
     "transform_stac_to_scene",
 ]
