@@ -1,31 +1,165 @@
 \chapter{Implementation}
 
-\section{Typed validation and transformation}
+\section{Typed domain boundary}
 
-\texttt{EOScene} is a frozen dataclass containing scene identity, platform, acquisition time,
-cloud cover, footprint, optional bounding box, EPSG code, and asset links. Payload validation
-rejects missing identity, invalid cloud ranges, malformed footprints, invalid bounding boxes,
-and malformed assets. STAC geometry and properties are normalized before they reach the catalog.
+The implementation is organized as small standard-library modules. \texttt{EOScene} is a frozen
+dataclass containing an identifier, platform, acquisition time, cloud cover, GeoJSON footprint,
+optional bounding box, EPSG code, and an asset map. The provider adapter parses an untrusted STAC
+Item into this type only after checking required fields, coordinate structure, cloud-cover range,
+asset URLs, and temporal syntax. A frozen value object prevents downstream catalog and report code
+from accidentally mutating the record it is measuring.
 
-\section{Reliability and provenance}
+The transformation boundary is deliberately one-way:
+\[
+\text{provider JSON}\xrightarrow{\text{validate}}\text{STAC item}
+\xrightarrow{\text{normalize}}\text{EOScene}
+\xrightarrow{\text{persist}}\text{catalog and provenance}.
+\]
+Malformed input is a permanent input error. It is not retried, because repeating an invalid payload
+cannot improve its schema.
 
-The retry policy handles only timeouts and provider throttling. OAuth2 token responses are
-validated for a non-empty access token and positive lifetime. A file provenance sink writes
-canonical UTF-8 JSON, hashes it with SHA-256, and appends an audit record. Async writes are
-protected by an async lock and delegated to worker threads so filesystem operations do not block
-the event loop.
+\section{Bounded asynchronous ingestion}
 
-\section{Quality and analytical slices}
+\texttt{ConcurrentEOIngestor} combines asynchronous provider work with synchronous persistence.
+The caller supplies an iterable of items, a transformation function, a provenance sink, and a
+maximum worker count \(k\). A semaphore with capacity \(k\) is acquired immediately before
+provider/transform work and released in a \texttt{finally} block. Thus, for active tasks
+\(A(t)\),
+\[
+0\leq A(t)\leq k\qquad\forall t.
+\]
+This invariant prevents a large provider response from creating an unbounded number of network
+tasks or file operations.
 
-The quality profiler calculates usability, missing assets, geometry validity, cloud risk, and a
-weighted quality score. Catalog queries apply cloud thresholds in SQL and asset requirements
-against stored JSON. \texttt{RasterAssetFetcher} uses the standard-library HTTP Range header;
-\texttt{calculate\_ndvi} computes $(NIR-Red)/(NIR+Red)$ and maps zero denominators to zero.
+The scheduling pattern is summarized below.
 
-\section{Reports and operations}
+\begin{verbatim}
+semaphore = asyncio.Semaphore(max_workers)
 
-\texttt{benchmark-report} creates deterministic JSON/Markdown artifacts from synthetic fixture
-items. \texttt{live-experiment} selects CDSE only when all four environment variables are
-present; otherwise it uses the fixture fallback. Dated live artifacts include network latency
-and response distributions and never overwrite the frozen baseline. The maintenance command
-is dry-run by default and targets only dated live artifact pairs.
+async def ingest_one(item):
+    async with semaphore:
+        scene = transform(item)
+        await provenance.write(scene)
+        await asyncio.to_thread(catalog.upsert, scene)
+        return scene
+
+results = await asyncio.gather(
+    *(ingest_one(item) for item in items),
+    return_exceptions=False,
+)
+\end{verbatim}
+
+The real implementation records counts, elapsed time, payload bytes, retries, and failures in
+\texttt{IngestionMetrics}. \texttt{asyncio.to\_thread} keeps blocking filesystem and SQLite calls
+off the event loop, while an asynchronous lock serializes append operations to the shared
+provenance manifest. A worker-limit stress test observes the peak active count and verifies that
+all valid scenes are eventually persisted.
+
+\section{Provenance and content addressing}
+
+Before hashing, a payload is serialized as canonical UTF-8 JSON with deterministic key ordering and
+compact separators. For byte sequence \(x\), the content address is
+\[
+h=\operatorname{SHA256}(x),
+\]
+represented as a lowercase hexadecimal digest. The raw payload is stored below a digest-derived
+path, while an append-only JSON Lines record stores the digest, source URI, provider identifier,
+timestamp, and retry metadata. Since identical canonical payloads have identical \(h\), repeated
+observations can be detected without trusting a mutable filename.
+
+The manifest is an audit log rather than a mutable status table. A successful write therefore has
+two observable products: the addressed raw document and a manifest line describing how it entered
+the system. The sink writes through a temporary file and atomic replacement for the raw payload,
+then appends a complete line under its lock. This ordering avoids exposing a manifest reference to
+a missing raw object. Provenance cleanup inspects references before deleting stale files and never
+targets the frozen experiment report.
+
+\section{Quality profiling and catalog persistence}
+
+The metadata-only quality profiler evaluates geometry validity, required asset completeness, and
+cloud risk without downloading raster data. A scene is usable when required structural predicates
+hold; the resulting profile records missing assets, risk flags, and a bounded quality score.
+Catalog SQL applies indexed platform, temporal, cloud, and bounding-box filters first. Exact
+polygon checks then remove false positives from the rectangular pre-filter.
+
+\texttt{SpatialCatalog} uses a primary key on scene identity and an idempotent upsert. A write is
+committed in a transaction, and readers use short-lived queries under a reentrant connection lock.
+WAL mode permits readers to continue while a writer appends changes. The mixed-reader/writer
+regression test accepts any committed snapshot between the initial and final counts, checks that
+no reader observes invalid state, and reopens the database to verify durability.
+
+\section{NDVI analytical slice}
+
+The raster module intentionally stops at range retrieval and a small numerical transformation.
+For a pixel with near-infrared reflectance \(N\) and red reflectance \(R\), the Normalized
+Difference Vegetation Index is
+\[
+\operatorname{NDVI}(N,R)=\frac{N-R}{N+R}.
+\]
+The denominator is tested before division:
+\[
+\operatorname{NDVI}(N,R)=
+\begin{cases}
+0, & N+R=0,\\[2mm]
+\dfrac{N-R}{N+R}, & \text{otherwise}.
+\end{cases}
+\]
+The zero result is a deliberate finite sentinel for undefined zero-signal pixels; it avoids a
+floating-point exception and keeps array-free standard-library processing deterministic. The
+\texttt{RasterAssetFetcher} requests byte ranges with an HTTP \texttt{Range} header and leaves
+full raster decoding to a future dependency-backed layer.
+
+\section{OAuth2 recovery workflow}
+
+\texttt{CDSETokenProvider} obtains client-credentials tokens through an injectable transport.
+Environment variables provide the token URL, client ID, client secret, and STAC URL. The provider
+stores the token acquisition instant and refreshes with a skew \(\delta\) before expiry. With
+provider lifetime \(L\), a cached token is valid iff
+\[
+t_{\mathrm{now}} < t_{\mathrm{issued}}+ \max(0,L-\delta).
+\]
+The authorization header is constructed only at the request boundary, so the secret and token are
+not written to reports or logs.
+
+Transient failures use bounded exponential backoff. For retry attempt \(n\), base delay \(d\), cap
+\(D\), and optional provider retry delay \(r\), the sleep duration is
+\[
+\tau_n=\min(D,d\,2^n),
+\qquad
+\tau_n'=\max(\tau_n,r)
+\]
+when \(r\) is supplied. The loop retries timeouts and HTTP 429 responses only; an invalid JSON
+shape, missing access token, or non-positive lifetime raises a protocol error immediately.
+
+\begin{verbatim}
+for attempt in range(policy.max_attempts):
+    try:
+        payload = await transport.post_form(token_url, form)
+        token = validate_token_payload(payload)
+        cache.store(token, clock())
+        return token
+    except (TimeoutError, RateLimited) as error:
+        if attempt + 1 == policy.max_attempts:
+            raise
+        await asyncio.sleep(policy.delay(attempt, error.retry_after))
+\end{verbatim}
+
+An expired cached token is discarded before the next request. If a provider returns an
+authentication failure after caching, the client invalidates the token and performs one bounded
+refresh path. Tests cover expiry, 429 responses, timeouts, exhausted retries, and malformed token
+payloads so that recovery behavior is observable rather than inferred from a successful path.
+
+\section{Reports and live experiment operations}
+
+The reporting layer serializes metrics, catalog counts, quality distributions, spatial query
+latency, recovery ratio, and payload footprint to sorted JSON and human-readable Markdown. The
+offline benchmark uses deterministic fixtures and remains frozen at 256 scenes. The live runner
+resolves CDSE configuration only when all required variables are present; otherwise it uses the
+fixture transport. Each live run writes a date-stamped JSON/Markdown pair and refuses same-day
+overwrite. A dry-run-by-default maintenance command prunes only dated live pairs older than the
+retention threshold.
+
+This separation gives the implementation two operational modes: a reproducible, credential-free
+mode for CI and teaching, and an authenticated mode for empirical provider measurements. Both
+produce the same report schema, allowing live latency and response distributions to be compared
+with the frozen baseline without mutating it.
