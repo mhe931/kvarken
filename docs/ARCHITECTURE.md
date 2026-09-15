@@ -40,6 +40,10 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 The baseline thesis run is stored under `docs/experiments/`. JSON is sorted and newline-terminated; Markdown is generated from the same report object. The benchmark uses synthetic fixture-derived scenes and temporary SQLite/provenance storage, so artifact generation is offline and repeatable.
 
+SQLite uses WAL mode with a process-local reentrant lock around shared-connection operations.
+Mixed-reader/writer regression coverage verifies valid committed intermediate states, zero
+contention errors, WAL activation, and durability after reopening the database.
+
 `runner.py` resolves CDSE settings only when all required environment variables are non-empty.
 Otherwise it uses the checked-in STAC fixture through the same query, ingestion, quality, and
 report path. Live runs measure search round-trip time, capture collection/platform/cloud-cover

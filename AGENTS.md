@@ -69,9 +69,20 @@ python -m kvarken_eo --demo
 - [x] CDSE OAuth2 adapter, raster range fetch/NDVI slice, and educational catalog API implemented
 - [x] Thesis baseline experiment artifacts generated and documentation freeze recorded
 - [x] Developer and agent commands documented
-- [x] Add persistent raw/staged storage with provenance metadata
-- [ ] Add spatial index and representative Sentinel-1/Sentinel-2 fixtures
-- [ ] Benchmark bounded concurrent ingestion and document findings
+- [x] Persistent raw/staged storage with provenance metadata
+- [x] Spatial metadata index and representative Sentinel-2 fixtures
+- [x] Benchmark bounded concurrent ingestion and document findings
+- [x] SQLite WAL mixed-reader/writer throughput and durability regression coverage
+
+## Release readiness
+
+- Package version: `0.1.0` (release candidate)
+- Runtime dependencies: standard library only
+- Verification baseline: 53 offline tests, Ruff lint/format clean, and `verify-health` passing
+- Frozen artifact: `docs/experiments/experiment_report.json`
+- Live artifacts: dated and append-only; cleanup is dry-run by default
+- Release procedure: validate on `main`, create an annotated version tag only after an explicit
+  release decision, and preserve the frozen baseline for regression comparison.
 
 ## Change checklist
 

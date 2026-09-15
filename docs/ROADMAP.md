@@ -11,21 +11,25 @@
 
 - Implemented one public STAC catalog adapter with pagination and retry handling.
 - Added representative Sentinel-2 metadata fixtures and offline tests.
-- Add authentication through environment variables or managed identity only.
-- Record request IDs, source URLs, and acquisition timestamps.
+- Added CDSE OAuth2 client-credentials authentication with environment-based configuration and
+  offline fallback seams.
+- Records source URLs, collection identifiers, retry attempts, checksums, and acquisition
+  timestamps through provenance metadata.
 
-## Provenance and processing
+## Provenance and processing (baseline complete)
 
 - Implemented filesystem raw-payload storage and append-only provenance audit records.
-- Add cloud-optimized raster metadata and spatial reference validation.
-- Introduce deterministic tile/window transforms.
-- Add small fixture-based integration tests.
+- Added COG-like HTTP range access and dependency-free NDVI over aligned numerical bands.
+- Added deterministic geometry, bbox, EPSG:4326, cloud-cover, and asset validation.
+- Added fixture-based unit and smoke tests for transforms, catalog queries, and the educational API.
 
-## Evaluation and operations
+## Evaluation and operations (baseline complete)
 
-- Measure throughput, retry behavior, and memory use under bounded concurrency.
-- Add structured logging and metrics hooks.
-- Document reproducibility and thesis experiment procedures.
+- Measured bounded-ingestion throughput, retries, payload footprint, catalog query latency, and
+  quality distributions in deterministic reports.
+- Added structured ingestion metrics, WAL contention profiling, durability regression coverage,
+  and environment-aware live-run telemetry.
+- Documented reproducibility and thesis experiment procedures in `THESIS_SUMMARY.md`.
 
 ## Thesis baseline freeze (complete)
 
@@ -35,3 +39,9 @@
 - Checked-in 256-scene benchmark JSON/Markdown artifacts under `docs/experiments/`.
 
 Future work should add live-provider observations as new immutable experiment records and retain the offline baseline for regression comparison.
+
+## Release follow-up
+
+- Publish an annotated `v0.1.0` tag after thesis-owner approval.
+- Add authenticated CDSE observations and representative raster windows as dated artifacts.
+- Compare live-provider results with the frozen offline baseline without overwriting it.

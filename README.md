@@ -179,3 +179,11 @@ python -m kvarken_eo prune-live-artifacts --output-dir docs/experiments --retent
 
 The first command is a dry run. Only matching `experiment_report_live_YYYYMMDD` JSON/Markdown
 pairs older than the retention window are selected; `experiment_report.json` is never a target.
+
+### Release readiness
+
+The current release candidate is package version `0.1.0`. Runtime code has no external
+dependencies, the offline suite contains 53 passing tests, Ruff lint and formatting checks are
+clean, and `python -m kvarken_eo verify-health` passes. The frozen baseline remains
+`docs/experiments/experiment_report.json`; live-provider evidence is additive and dated. Create
+an annotated `v0.1.0` tag only after an explicit thesis-owner release decision.
