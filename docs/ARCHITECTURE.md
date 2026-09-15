@@ -32,6 +32,14 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 `quality.py` evaluates EPSG:4326 geometry, cloud-cover risk, and required asset presence into a `SceneQualityProfile`. `SpatialCatalog.query_scenes` applies the cloud-cover predicate in SQLite and checks required assets against stored JSON metadata, without reading raw provenance files. Experiment reports aggregate usable counts, mean cloud cover, and asset completeness.
 
+`cdse.py` keeps OAuth2 token exchange separate from STAC semantics. `CDSETokenProvider` caches tokens behind an async lock and refreshes before expiry; `AuthenticatedSTACTransport` injects bearer credentials into the standard-library transport. OAuth and STAC transports remain injectable so credentials and network access are absent from CI.
+
+`raster.py` provides inclusive HTTP Range access for COG-like assets and a tuple-based NDVI calculation. It intentionally does not decode GeoTIFFs: the thesis slice validates transport/window behavior and numerical analysis without adding GDAL-class dependencies.
+
+`api.py` provides a read-only `ThreadingHTTPServer` wrapper around `SpatialCatalog`. `/api/scenes` translates HTTP query strings into existing catalog filters, and `/api/health` provides a local smoke probe. The handler serializes only normalized metadata and never exposes raw provenance files.
+
+The baseline thesis run is stored under `docs/experiments/`. JSON is sorted and newline-terminated; Markdown is generated from the same report object. The benchmark uses synthetic fixture-derived scenes and temporary SQLite/provenance storage, so artifact generation is offline and repeatable.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.
