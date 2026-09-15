@@ -34,7 +34,26 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 `cdse.py` keeps OAuth2 token exchange separate from STAC semantics. `CDSETokenProvider` caches tokens behind an async lock and refreshes before expiry; `AuthenticatedSTACTransport` injects bearer credentials into the standard-library transport. OAuth and STAC transports remain injectable so credentials and network access are absent from CI.
 
-`raster.py` provides inclusive HTTP Range access for COG-like assets and a tuple-based NDVI calculation. It intentionally does not decode GeoTIFFs: the thesis slice validates transport/window behavior and numerical analysis without adding GDAL-class dependencies.
+`raster.py` provides inclusive HTTP Range access for COG-like assets, tuple-based NDVI
+calculation, and pure-Python multiscale scene transforms. `downsample_band` partitions a band
+into non-overlapping blocks and emits the arithmetic mean:
+
+```text
+output[r, c] = sum(input[y, x] for block(r, c)) / len(block(r, c))
+```
+
+Partial edge blocks use their actual sample count, so a factor of `k` never divides an edge sum by
+`k*k` when fewer pixels exist. This preserves constant-field brightness and avoids the common
+darkening error caused by dividing accumulated values twice. `downsample_scene_bands` applies one
+factor consistently to named spectral grids, while `benchmark_downsample` reports input/output
+pixel counts, monotonic elapsed time, pixels per second, and `tracemalloc` peak bytes.
+
+`AffineGridTransform` provides a deterministic affine alignment seam between local pixel
+coordinates and an EPSG:4326 scene bounding box. For a box
+`(min_lon, min_lat, max_lon, max_lat)` and grid `(width, height)`, pixel `(column, row)` maps to
+`(min_lon + column * dlon, min_lat + row * dlat)`, with an inverse WGS84-to-pixel mapping.
+This is a numerical grid alignment utility, not a substitute for datum-aware UTM/PROJ
+reprojection. The module intentionally does not decode GeoTIFFs or add GDAL-class dependencies.
 
 `api.py` provides a read-only `ThreadingHTTPServer` wrapper around `SpatialCatalog`. `/api/scenes` translates HTTP query strings into existing catalog filters, and `/api/health` provides a local smoke probe. The handler serializes only normalized metadata and never exposes raw provenance files.
 

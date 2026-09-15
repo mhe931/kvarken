@@ -50,6 +50,19 @@ Status: manuscript structure prepared for academic drafting.
   four-pass LaTeX/BibTeX compilation, and `kvarken-thesis` PDF artifact upload all succeeded.
   The downloaded `main.pdf` was verified locally as a non-empty 280,592-byte PDF.
 
+## 2026-09-15 - Multiscale raster milestone
+
+Status: green offline spatial-processing milestone.
+
+- Added brightness-preserving block-average downsampling with correctly normalized partial edge
+  blocks.
+- Added affine local-pixel to EPSG:4326 bounding-box alignment and inverse coordinate mapping.
+- Added multiband scene reduction and throughput/peak-memory benchmark helpers.
+- Added focused raster transform and benchmark regression coverage; the offline suite now passes
+  60 tests.
+- Updated architecture and thesis implementation documentation with the mathematical contract and
+  dependency-free limitations.
+
 ## 2026-09-15 - Release readiness audit
 
 Status: released `0.1.0`; documentation and continuity audit complete.

@@ -109,6 +109,44 @@ floating-point exception and keeps array-free standard-library processing determ
 \texttt{RasterAssetFetcher} requests byte ranges with an HTTP \texttt{Range} header and leaves
 full raster decoding to a future dependency-backed layer.
 
+\section{Multiscale downsampling and grid alignment}
+
+The multiscale raster extension operates on a rectangular numerical band represented as nested
+Python tuples. For reduction factor \(k>0\), output cell \((r,c)\) contains the source block
+\[
+\mathcal{B}_{r,c}=
+\{x_{y,z}\mid rk\leq y<\min((r+1)k,H),\
+ck\leq z<\min((c+1)k,W)\}.
+\]
+The brightness-preserving reduction is the arithmetic mean
+\[
+D_{r,c}=\frac{1}{|\mathcal{B}_{r,c}|}
+\sum_{x\in\mathcal{B}_{r,c}}x.
+\]
+The denominator is the actual block cardinality, including at image edges. Therefore a constant
+input field \(x_{y,z}=v\) remains \(D_{r,c}=v\) for every complete and partial block. The
+implementation never divides an accumulated sum by \(k^2\) after already averaging or normalizing
+the samples, avoiding artificial darkening and preserving the input dynamic range.
+
+\texttt{downsample_scene_bands} applies the same factor to named spectral grids such as B04 and
+B08, preserving their spatial correspondence and relative calibration. The benchmark helper
+records input/output pixel counts, monotonic elapsed time, pixels per second, and Python peak
+allocation measured with \texttt{tracemalloc}. It is a reproducible memory/throughput indicator,
+not a measurement of native raster-library memory or disk I/O.
+
+\texttt{AffineGridTransform} supplies the corresponding numerical alignment contract. Given
+EPSG:4326 bounding box \((\lambda_{\min},\phi_{\min},\lambda_{\max},\phi_{\max})\) and dimensions
+\((W,H)\), its forward mapping is
+\[
+(\lambda,\phi)=
+\left(\lambda_{\min}+\frac{c}{W}(\lambda_{\max}-\lambda_{\min}),
+\phi_{\min}+\frac{r}{H}(\phi_{\max}-\phi_{\min})\right),
+\]
+with the algebraic inverse mapping coordinates back to fractional pixel positions. This utility
+supports deterministic local-grid alignment for synthetic scenes; it does not claim datum-aware
+UTM reprojection and deliberately leaves ellipsoidal projection and GeoTIFF decoding to future
+optional processing layers.
+
 \section{OAuth2 recovery workflow}
 
 \texttt{CDSETokenProvider} obtains client-credentials tokens through an injectable transport.

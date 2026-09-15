@@ -39,6 +39,10 @@ python -m kvarken_eo --demo
 - `thesis/` - complete modular LaTeX Master's thesis manuscript (frontmatter, Chapters 1-6, and bibliography)
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
+The raster slice also provides dependency-free multiscale processing: `downsample_band` and
+`downsample_scene_bands` preserve block means across spectral grids, while
+`AffineGridTransform` aligns local pixel coordinates to a Kvarken EPSG:4326 bounding box.
+
 ## Development conventions
 
 Keep source code under `src/`, add a focused test for every behavior change, and update the relevant document in `docs/` when a milestone or architectural decision changes. Do not commit credentials, raw datasets, generated artifacts, or local environment files.
