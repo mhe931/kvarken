@@ -8,7 +8,7 @@ import time
 from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from .catalog import SpatialCatalog
@@ -25,6 +25,37 @@ class CDSESettings:
     client_id: str
     client_secret: str
     stac_url: str
+
+
+def prune_live_experiment_artifacts(
+    output_dir: Path | str,
+    *,
+    retention_days: int,
+    now: date | None = None,
+    dry_run: bool = True,
+) -> list[Path]:
+    """List or remove dated live artifacts older than the retention window."""
+    if retention_days < 0:
+        raise ValueError("retention_days must be non-negative")
+    directory = Path(output_dir)
+    cutoff = (now or datetime.now(UTC).date()) - timedelta(days=retention_days)
+    candidates: dict[str, list[Path]] = {}
+    for path in directory.glob("experiment_report_live_*.json"):
+        suffix = path.stem.removeprefix("experiment_report_live_")
+        try:
+            artifact_date = datetime.strptime(suffix, "%Y%m%d").date()
+        except ValueError:
+            continue
+        if artifact_date < cutoff:
+            candidates.setdefault(suffix, []).append(path)
+            markdown = directory / f"experiment_report_live_{suffix}.md"
+            if markdown.exists():
+                candidates[suffix].append(markdown)
+    selected = [path for paths in candidates.values() for path in paths]
+    if not dry_run:
+        for path in selected:
+            path.unlink()
+    return selected
 
 
 def resolve_cdse_settings(environ: Mapping[str, str] | None = None) -> CDSESettings | None:

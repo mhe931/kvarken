@@ -41,6 +41,7 @@ python -m kvarken_eo --demo
 - Treat `docs/experiments/` as durable thesis artifacts generated only from offline, checked-in fixtures.
 - Run `live-experiment` only with explicitly supplied CDSE environment variables; missing or partial credentials must select the offline fixture fallback.
 - Never overwrite `experiment_report.json` or a same-day live artifact; dated live reports are append-only evidence.
+- Use `prune-live-artifacts` in dry-run mode first; only dated live JSON/Markdown artifacts may be removed, never the frozen baseline.
 - Prefer standard library types and small modules over framework abstractions.
 - Update `docs/PROJECT_STATUS.md` at each weekly checkpoint and record durable decisions in `docs/ARCHITECTURE.md`.
 

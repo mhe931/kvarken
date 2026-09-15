@@ -23,6 +23,7 @@ Status: green provider milestone.
 - Added a read-only standard-library catalog query API with health and JSON scene endpoints.
 - Generated the thesis baseline under `docs/experiments/` using 256 synthetic scenes and concurrency 8.
 - Added an environment-aware live experiment runner with CDSE credential resolution, offline fallback, network telemetry, response distributions, and immutable dated artifacts.
+- Added automated OAuth recovery coverage for token expiry, rate limits, invalid responses, and timeouts, plus a dry-run-by-default live artifact retention utility.
 
 ## 2026-09-14 - Bootstrap
 
