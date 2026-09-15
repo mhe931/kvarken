@@ -8,7 +8,14 @@ from .ingestion import AsyncIngestor, IngestionResult, RetryPolicy
 from .models import EOScene, PayloadValidationError
 from .provenance import FileProvenanceSink, ProvenanceRecord
 from .quality import SceneQualityProfile, profile_scene_quality
-from .raster import RasterAssetFetcher, calculate_ndvi
+from .raster import (
+    AffineGridTransform,
+    DownsampleBenchmark,
+    RasterAssetFetcher,
+    benchmark_downsample,
+    calculate_ndvi,
+    downsample_band,
+)
 from .reports import generate_experiment_report
 from .runner import (
     CDSESettings,
@@ -37,6 +44,9 @@ __all__ = [
     "OAuthToken",
     "ProvenanceRecord",
     "RasterAssetFetcher",
+    "AffineGridTransform",
+    "DownsampleBenchmark",
+    "benchmark_downsample",
     "generate_experiment_report",
     "SceneQualityProfile",
     "profile_scene_quality",
@@ -48,6 +58,7 @@ __all__ = [
     "STACItem",
     "bbox_intersects",
     "calculate_ndvi",
+    "downsample_band",
     "scene_intersects_roi",
     "run_live_experiment",
     "transform_stac_to_scene",
