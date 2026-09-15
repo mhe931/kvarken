@@ -40,6 +40,9 @@ Status: manuscript structure prepared for academic drafting.
 - Added a GitHub Actions manuscript workflow that installs TeX Live, runs the
   `pdflatex`/BibTeX compilation sequence, and uploads `main.pdf` as a workflow artifact for
   thesis-scoped pushes and pull requests.
+- Added Chapter 6, `Conclusion and Future Work`, answering all four research questions and
+  defining follow-on work for continuous CDSE ingestion, raster operations, distributed catalogs,
+  and operational Kvarken deployment.
 
 ## 2026-09-15 - Release readiness audit
 

@@ -1,0 +1,125 @@
+\chapter{Conclusion and Future Work}
+
+\section{Conclusion}
+
+This thesis designed and implemented a hybrid Earth Observation metadata infrastructure for
+research and education in the Kvarken Space Center context. The central design decision was to
+treat reliability and reproducibility as properties of the complete path from provider response to
+regional query, rather than as features added after ingestion. The resulting system combines
+typed boundary validation, injectable provider transports, bounded asynchronous scheduling,
+content-addressed provenance, a WAL-enabled SQLite spatial catalog, metadata quality profiling,
+an educational HTTP interface, and a small raster/NDVI analytical slice.
+
+\section{Answers to the research questions}
+
+\subsection{Research question 1: metadata normalization and provenance}
+
+Heterogeneous STAC and CDSE metadata can be normalized by validating provider JSON at the
+transport boundary and transforming only accepted Items into a provider-neutral frozen
+\texttt{EOScene} dataclass. The model retains identity, platform, acquisition time, geometry,
+coordinate reference, quality metadata, and asset links without exposing provider-specific
+extensions to downstream code. Provenance is preserved independently: canonical raw payload bytes
+receive a SHA-256 content address, while an append-only JSON Lines manifest records source,
+timestamp, digest, and retry context. This pairing makes the normalized catalog convenient to
+query without discarding the evidence needed to reconstruct an ingestion decision.
+
+\subsection{Research question 2: bounded recovery}
+
+Asynchronous ingestion remains bounded by placing an \texttt{asyncio.Semaphore} around the
+expensive transformation and persistence path. If the configured worker limit is \(k\), no more
+than \(k\) tasks are active at once. Recovery is explicit and selective: timeouts, HTTP 429
+responses, and token expiry use bounded exponential backoff and refresh; malformed payloads and
+invalid token structures are surfaced as permanent errors. The 53-test offline suite demonstrates
+these behaviors with injectable transports rather than relying on nondeterministic provider
+incidents.
+
+\subsection{Research question 3: regional catalog behavior}
+
+A dependency-free SQLite catalog can support the required regional, temporal, quality, and
+platform queries when rectangular predicates are indexed before deterministic polygon checks.
+The Kvarken EPSG:4326 bounding box provides a clear contract, while boundary-touching footprints
+are retained by inclusive intersection semantics. WAL mode permits readers to observe committed
+snapshots while writers append transactions, and contention tests verify valid intermediate
+states and durability after reopening. This is appropriate for an embedded educational and
+research catalog, although it is not a substitute for a distributed database under multi-node
+load.
+
+\subsection{Research question 4: reproducible empirical evidence}
+
+An offline baseline is reproducible when its fixtures, concurrency setting, report schema, source
+code, and validation commands are versioned together. The frozen 256-scene artifact records
+220.819653 items per second, zero failures and retries, complete catalog and asset coverage,
+0.106130 MB of metadata payload, and 9.117 ms spatial query latency in the measured environment.
+The report is intentionally additive: authenticated live runs produce dated artifacts without
+overwriting this comparison point. Thus the baseline supports regression analysis while clearly
+separating synthetic evidence from future provider observations.
+
+\section{Scientific and architectural contributions}
+
+The main contribution is a coherent set of small design mechanisms that can be inspected and
+tested independently:
+
+\begin{itemize}
+\item A dependency-free runtime demonstrates that asynchronous EO metadata ingestion, OAuth2
+boundary handling, SQLite spatial indexing, HTTP querying, provenance, reporting, and NDVI
+calculation do not require a heavyweight framework for a research baseline.
+\item Standard-library asynchronous scheduling makes the concurrency contract explicit and
+testable, preventing an apparently parallel pipeline from creating unbounded provider or local
+work.
+\item SHA-256 content addressing and append-only manifests separate immutable source evidence from
+mutable query indexes and make duplicate or missing provenance detectable.
+\item SQLite WAL persistence provides a compact indexed regional catalog with reader/writer
+isolation, transactional upserts, and durability checks suitable for a single-node research
+deployment.
+\item The frozen benchmark, deterministic reports, fault-injection tests, and health command turn
+implementation claims into a repeatable empirical protocol rather than an unversioned demo.
+\end{itemize}
+
+The contribution is consequently methodological as well as software-oriented: it defines a
+traceable path for moving from an external EO standard to an operationally meaningful, teachable
+research artifact.
+
+\section{Future work}
+
+\subsection{Authenticated continuous CDSE ingestion}
+
+The current CDSE adapter supports client-credentials authorization and bounded recovery, but CI
+uses offline fixtures. A next phase should run a scheduled continuous ingestion service with
+rotating credentials, provider-aware rate budgets, checkpointed pagination, and monitoring for
+schema drift. Each execution should retain the existing dated report and provenance contracts.
+Comparisons should quantify provider latency, response distributions, token refresh frequency, and
+retry cost against the frozen synthetic baseline.
+
+\subsection{Raster and GeoTIFF array operations}
+
+The raster slice currently validates HTTP range transport and computes NDVI over aligned numerical
+values. Future work should add a carefully bounded GeoTIFF reader or an optional raster
+dependency, windowed reads, nodata masks, scale/offset handling, and alignment checks across red
+and near-infrared bands. Evaluation should measure memory use and numerical agreement on
+representative Sentinel-2 windows without weakening the metadata-only offline path.
+
+\subsection{Distributed spatial catalogs}
+
+SQLite WAL is an effective single-node boundary, but multi-node ingestion would require a
+different ownership and consistency model. A distributed extension could partition scenes by time
+or region, use a service-backed spatial index, and preserve content-addressed provenance in shared
+object storage. The existing typed catalog protocol and deterministic regional predicates should
+remain the compatibility contract while benchmarks compare write contention, query tail latency,
+recovery, and operational cost.
+
+\subsection{Operational deployment at Kvarken Space Center}
+
+Deployment research should connect the pipeline to an operational scheduling environment at
+Kvarken Space Center. This includes secret management, durable raw/staged storage, observability,
+backup and restore drills, access control, data-retention policy, and an educational dashboard
+over the read-only query API. A staged rollout should retain offline replay tests and the frozen
+256-scene artifact as release gates so that operational convenience does not erase research
+traceability.
+
+\section{Closing statement}
+
+The released baseline establishes a practical starting point rather than a finished planetary
+data platform. Its value is the explicitness of its contracts: what is accepted, what is retried,
+what is stored, how a region is defined, and how a result is measured. Future provider,
+processing, and deployment work can therefore extend the system while preserving the evidence and
+comparability required for a credible Master's thesis.
