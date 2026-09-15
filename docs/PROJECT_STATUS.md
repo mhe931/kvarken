@@ -22,6 +22,7 @@ Status: green provider milestone.
 - Added dependency-free HTTP range asset fetching and aligned-band NDVI calculation.
 - Added a read-only standard-library catalog query API with health and JSON scene endpoints.
 - Generated the thesis baseline under `docs/experiments/` using 256 synthetic scenes and concurrency 8.
+- Added an environment-aware live experiment runner with CDSE credential resolution, offline fallback, network telemetry, response distributions, and immutable dated artifacts.
 
 ## 2026-09-14 - Bootstrap
 

@@ -40,6 +40,12 @@ Maintenance is explicit and locked: `prune_older_than` deletes records before a 
 
 The baseline thesis run is stored under `docs/experiments/`. JSON is sorted and newline-terminated; Markdown is generated from the same report object. The benchmark uses synthetic fixture-derived scenes and temporary SQLite/provenance storage, so artifact generation is offline and repeatable.
 
+`runner.py` resolves CDSE settings only when all required environment variables are non-empty.
+Otherwise it uses the checked-in STAC fixture through the same query, ingestion, quality, and
+report path. Live runs measure search round-trip time, capture collection/platform/cloud-cover
+distributions, and write date-stamped artifacts without overwriting an existing date or the frozen
+baseline.
+
 ## Failure taxonomy
 
 - `FetchTimeout`: transient source timeout; retry with capped exponential backoff.
