@@ -1,0 +1,22 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Earth Observation (EO) systems combine heterogeneous satellite metadata, raster assets, and
+spatial queries whose reliability depends on both provider behavior and local processing
+constraints. This thesis presents the design and implementation of a hybrid EO data
+infrastructure for research and education in the Kvarken Space Center context. The system
+combines public STAC and authenticated Copernicus Data Space Ecosystem (CDSE) access,
+typed boundary validation, bounded asynchronous ingestion, content-addressed provenance,
+SQLite-based spatial cataloguing, metadata quality profiling, and lightweight raster
+analysis.
+
+The implementation deliberately uses only the Python standard library at runtime. Injectable
+transports and checked-in fixtures make failure recovery, OAuth2 token refresh, rate limiting,
+concurrency, SQLite contention, and analytical behavior testable without network access. The
+frozen empirical baseline ingests 256 synthetic scenes at concurrency 8 and records throughput,
+payload footprint, catalog size, spatial query latency, quality distributions, and failure
+recovery. The repository release baseline passes 53 offline tests, Ruff quality checks, and an
+end-to-end health verification command.
+
+\textbf{Keywords:} Earth Observation, STAC, CDSE, data infrastructure, provenance, SQLite,
+bounded concurrency, reproducible research

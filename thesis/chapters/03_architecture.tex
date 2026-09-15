@@ -1,0 +1,58 @@
+\chapter{System Architecture}
+
+\section{Architectural principles}
+
+The architecture follows five principles: validate at the boundary; separate transport from
+transformation; bound concurrent work; preserve raw provenance; and keep spatial transforms
+deterministic. Runtime implementation uses the Python standard library, while pytest and Ruff
+are development dependencies.
+
+\section{Data flow}
+
+The principal data flow is shown as a structured diagram to avoid a dependency on optional
+graphics packages:
+
+\begin{verbatim}
+ STAC/CDSE endpoint
+        |
+        v
+ injectable transport -- RetryPolicy/OAuth2 refresh
+        |
+        v
+ validated STACItem --> transform_stac_to_scene --> EOScene
+                                      |                    |
+                                      v                    v
+                            SHA-256 provenance      ConcurrentEOIngestor
+                                                           |
+                                                           v
+                                                  SQLite SpatialCatalog
+                                                    |             |
+                                                    v             v
+                                             quality/ROI query   reports/API
+\end{verbatim}
+
+\section{Provider and ingestion boundary}
+
+\texttt{STACClient} posts a search request and follows pagination links. \texttt{CDSEClient}
+composes the same client with \texttt{CDSETokenProvider}; tokens are cached behind an async lock
+and refreshed before expiry. Timeout and rate-limit exceptions are transient and use bounded
+exponential backoff. Invalid response schemas raise validation errors and are not retried.
+
+\texttt{ConcurrentEOIngestor} uses an \texttt{asyncio.Semaphore} to limit scene transformation,
+provenance persistence, and optional catalog indexing. Its \texttt{IngestionMetrics} record
+contains ingested scenes, elapsed seconds, throughput, failures, retries, and canonical
+payload bytes.
+
+\section{Kvarken regional filtering}
+
+The regional preset is an EPSG:4326 bounding box. The catalog first filters bounding-box
+columns in SQLite and then applies exact polygon/ROI intersection. Boundary contact counts as
+intersection. Scenes in an unknown coordinate reference system are rejected rather than silently
+reprojected. Cloud cover and required assets are also query filters over stored metadata.
+
+\section{Persistence and education}
+
+\texttt{SpatialCatalog} uses a WAL-enabled SQLite database with indexed platform/time and
+bounding-box columns. The read-only educational HTTP service exposes health and JSON scene
+query endpoints. The raster slice fetches inclusive HTTP byte ranges and computes NDVI over
+aligned numerical red and near-infrared arrays without decoding full GeoTIFF files.

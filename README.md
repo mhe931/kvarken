@@ -36,6 +36,7 @@ python -m kvarken_eo --demo
 - `tests/` - unit tests, offline STAC fixtures, and provenance verification
 - `docs/` - goals, architecture, current status, and roadmap
 - `docs/THESIS_SUMMARY.md` - academic overview of methods, data flow, evidence, and limitations
+- `thesis/` - modular LaTeX manuscript scaffold for the Master's thesis
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
 ## Development conventions
@@ -182,8 +183,23 @@ pairs older than the retention window are selected; `experiment_report.json` is 
 
 ### Release readiness
 
-The current release candidate is package version `0.1.0`. Runtime code has no external
-dependencies, the offline suite contains 53 passing tests, Ruff lint and formatting checks are
-clean, and `python -m kvarken_eo verify-health` passes. The frozen baseline remains
-`docs/experiments/experiment_report.json`; live-provider evidence is additive and dated. Create
-an annotated `v0.1.0` tag only after an explicit thesis-owner release decision.
+The released baseline is package version `0.1.0`. Runtime code has no external dependencies, the
+offline suite contains 53 passing tests, Ruff lint and formatting checks are clean, and
+`python -m kvarken_eo verify-health` passes. The frozen baseline remains
+`docs/experiments/experiment_report.json`; live-provider evidence is additive and dated. The
+annotated `v0.1.0` tag and GitHub Release identify this certified baseline.
+
+### Thesis manuscript
+
+The formal manuscript source is under `thesis/`. Build it from that directory with a standard
+LaTeX/BibTeX toolchain:
+
+```powershell
+cd thesis
+pdflatex main.tex
+bibtex main
+pdflatex main.tex
+pdflatex main.tex
+```
+
+Generated PDF and auxiliary files are local build outputs and should not be committed.

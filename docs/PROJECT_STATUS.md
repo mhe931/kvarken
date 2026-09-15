@@ -28,17 +28,26 @@ Status: green provider milestone.
 - Added `docs/THESIS_SUMMARY.md` as the academic architecture, methods, evidence, and limitations index.
 - Added SQLite WAL mixed-reader/writer throughput profiling and post-contention durability regression coverage.
 
+## 2026-09-15 - Thesis manuscript scaffold
+
+Status: manuscript structure prepared for academic drafting.
+
+- Added `thesis/main.tex`, abstract, five modular chapters, and `references.bib`.
+- Populated introductory research questions, background standards, architecture/data-flow design,
+  implementation methods, and the exact 256-scene empirical baseline table.
+- Kept the manuscript independent of source code and frozen experiment artifacts; no runtime
+  behavior or baseline data was modified.
+
 ## 2026-09-15 - Release readiness audit
 
-Status: release candidate `0.1.0`; documentation and continuity audit complete.
+Status: released `0.1.0`; documentation and continuity audit complete.
 
 - Reconciled roadmap and agent checklists with all implemented provider, raster, API, telemetry,
   quality, concurrency, WAL, and thesis artifact capabilities.
 - Confirmed 53 offline tests, Ruff quality gates, and `verify-health` as the release validation
   baseline.
 - Confirmed the frozen experiment report is never targeted by live artifact pruning.
-- No version tag was created; an annotated `v0.1.0` tag remains an explicit post-audit release
-  decision.
+- Annotated tag `v0.1.0` and the official GitHub Release identify the certified baseline.
 
 ## 2026-09-14 - Bootstrap
 

@@ -1,0 +1,31 @@
+\chapter{Implementation}
+
+\section{Typed validation and transformation}
+
+\texttt{EOScene} is a frozen dataclass containing scene identity, platform, acquisition time,
+cloud cover, footprint, optional bounding box, EPSG code, and asset links. Payload validation
+rejects missing identity, invalid cloud ranges, malformed footprints, invalid bounding boxes,
+and malformed assets. STAC geometry and properties are normalized before they reach the catalog.
+
+\section{Reliability and provenance}
+
+The retry policy handles only timeouts and provider throttling. OAuth2 token responses are
+validated for a non-empty access token and positive lifetime. A file provenance sink writes
+canonical UTF-8 JSON, hashes it with SHA-256, and appends an audit record. Async writes are
+protected by an async lock and delegated to worker threads so filesystem operations do not block
+the event loop.
+
+\section{Quality and analytical slices}
+
+The quality profiler calculates usability, missing assets, geometry validity, cloud risk, and a
+weighted quality score. Catalog queries apply cloud thresholds in SQL and asset requirements
+against stored JSON. \texttt{RasterAssetFetcher} uses the standard-library HTTP Range header;
+\texttt{calculate\_ndvi} computes $(NIR-Red)/(NIR+Red)$ and maps zero denominators to zero.
+
+\section{Reports and operations}
+
+\texttt{benchmark-report} creates deterministic JSON/Markdown artifacts from synthetic fixture
+items. \texttt{live-experiment} selects CDSE only when all four environment variables are
+present; otherwise it uses the fixture fallback. Dated live artifacts include network latency
+and response distributions and never overwrite the frozen baseline. The maintenance command
+is dry-run by default and targets only dated live artifact pairs.

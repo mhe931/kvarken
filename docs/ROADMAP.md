@@ -42,6 +42,6 @@ Future work should add live-provider observations as new immutable experiment re
 
 ## Release follow-up
 
-- Publish an annotated `v0.1.0` tag after thesis-owner approval.
+- Published annotated `v0.1.0` tag and official GitHub Release for the certified thesis baseline.
 - Add authenticated CDSE observations and representative raster windows as dated artifacts.
 - Compare live-provider results with the frozen offline baseline without overwriting it.
