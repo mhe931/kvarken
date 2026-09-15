@@ -63,6 +63,18 @@ Status: green offline spatial-processing milestone.
 - Updated architecture and thesis implementation documentation with the mathematical contract and
   dependency-free limitations.
 
+## 2026-09-15 - Live spectral-window telemetry
+
+Status: green offline-fallback telemetry milestone.
+
+- Integrated calibrated B04/B08 window extraction, factor-two reduction, and NDVI evaluation into
+  `live-experiment`.
+- Generated immutable `experiment_report_live_20260915.json` and Markdown artifacts without
+  modifying the frozen 256-scene baseline.
+- Recorded 142.551675 windows/sec, 14,136 traced peak-memory bytes, and sample NDVI 0.423131 for
+  the 16x16-to-8x8 synthetic window.
+- The repository now passes 63 offline tests.
+
 ## 2026-09-15 - Release readiness audit
 
 Status: released `0.1.0`; documentation and continuity audit complete.

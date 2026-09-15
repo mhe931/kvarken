@@ -151,3 +151,27 @@ education. The result is deliberately narrower than a production-scale data plat
 lies in explicit contracts and an auditable starting point. Live CDSE measurements, representative
 raster analyses, and comparative deployments are the appropriate next experiments, with the
 256-scene artifact retained as a stable regression reference.
+
+\section{Live spectral-window telemetry}
+
+To exercise the analytical path without credentials or external raster storage, the live
+experiment harness runs an offline-fallback spectral-window slice after metadata ingestion. The
+dated artifact \texttt{experiment\_report\_live\_20260915.json} processes one synthetic B04/B08
+window of \(16\times16\) pixels, reduces it with factor \(2\) to an \(8\times8\) output, and
+calculates NDVI from the reduced bands. The run records a sample NDVI of \(0.423131\), window
+throughput of \(142.551675\) windows per second, and a traced Python peak allocation of 14,136
+bytes.
+
+These values complement, rather than replace, the frozen 256-scene baseline. The baseline's
+220.819653 items per second measures metadata ingestion, provenance, and catalog indexing,
+whereas the live telemetry measures a numerical window transformation. Their units and work
+sets differ, so comparing the numbers as a single performance ranking would be invalid. The
+useful result is that both paths produce dated, inspectable evidence under the same offline
+fallback contract, while authenticated CDSE execution can later substitute real response and
+raster-window observations.
+
+The telemetry also verifies two processing invariants. First, the factor-two reduction uses the
+actual arithmetic mean of every block, including edge blocks, so constant radiometric fields do
+not darken. Second, B04 and B08 use the same window and factor before NDVI evaluation, preserving
+pixel correspondence. The reported peak memory is Python allocation measured by
+\texttt{tracemalloc}; it excludes native decoder buffers and remote transfer caches.

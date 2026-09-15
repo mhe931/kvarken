@@ -43,6 +43,11 @@ The raster slice also provides dependency-free multiscale processing: `downsampl
 `downsample_scene_bands` preserve block means across spectral grids, while
 `AffineGridTransform` aligns local pixel coordinates to a Kvarken EPSG:4326 bounding box.
 
+The `live-experiment` command also processes an offline-safe calibrated B04/B08 spectral window
+and records window throughput, peak memory, and sample NDVI in dated
+`experiment_report_live_YYYYMMDD` artifacts. The 20260915 fallback run is checked in under
+`docs/experiments/`; the frozen `experiment_report.json` remains unchanged.
+
 ## Development conventions
 
 Keep source code under `src/`, add a focused test for every behavior change, and update the relevant document in `docs/` when a milestone or architectural decision changes. Do not commit credentials, raw datasets, generated artifacts, or local environment files.
