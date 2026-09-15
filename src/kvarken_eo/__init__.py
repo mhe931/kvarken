@@ -5,6 +5,7 @@ from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult, Ingesti
 from .ingestion import AsyncIngestor, IngestionResult, RetryPolicy
 from .models import EOScene, PayloadValidationError
 from .provenance import FileProvenanceSink, ProvenanceRecord
+from .quality import SceneQualityProfile, profile_scene_quality
 from .reports import generate_experiment_report
 from .spatial import KVARKEN_REGION_BBOX, bbox_intersects, scene_intersects_roi
 from .stac import STACClient, STACItem
@@ -22,6 +23,8 @@ __all__ = [
     "PayloadValidationError",
     "ProvenanceRecord",
     "generate_experiment_report",
+    "SceneQualityProfile",
+    "profile_scene_quality",
     "RetryPolicy",
     "SpatialCatalog",
     "STACClient",

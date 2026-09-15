@@ -104,6 +104,8 @@ class SpatialCatalog:
         platform: str | None = None,
         start_time: datetime | None = None,
         end_time: datetime | None = None,
+        max_cloud_cover: float | None = None,
+        required_assets: Sequence[str] | None = None,
     ) -> list[EOScene]:
         conditions: list[str] = []
         parameters: list[object] = []
@@ -120,6 +122,11 @@ class SpatialCatalog:
         if end_time is not None:
             conditions.append("acquired_at <= ?")
             parameters.append(end_time.isoformat())
+        if max_cloud_cover is not None:
+            if not 0 <= max_cloud_cover <= 100:
+                raise ValueError("max_cloud_cover must be between 0 and 100")
+            conditions.append("cloud_cover <= ?")
+            parameters.append(max_cloud_cover)
         sql = "SELECT * FROM scenes"
         if conditions:
             sql += " WHERE " + " AND ".join(conditions)
@@ -129,6 +136,9 @@ class SpatialCatalog:
         scenes = [self._row_to_scene(row) for row in rows]
         if roi is not None:
             scenes = [scene for scene in scenes if scene_intersects_roi(scene, roi)]
+        if required_assets:
+            required = tuple(required_assets)
+            scenes = [scene for scene in scenes if all(asset in scene.assets for asset in required)]
         return scenes
 
     def scene_ids(self) -> set[str]:

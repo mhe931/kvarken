@@ -7,6 +7,7 @@ from typing import Any
 
 from .catalog import SpatialCatalog
 from .concurrent import IngestionMetrics
+from .quality import profile_scene_quality
 
 
 def generate_experiment_report(
@@ -18,6 +19,15 @@ def generate_experiment_report(
 ) -> tuple[dict[str, Any], str]:
     """Write deterministic JSON and Markdown artifacts for one experiment."""
     catalog_size = len(catalog.scene_ids())
+    catalog_scenes = catalog.query_scenes()
+    profiles = [profile_scene_quality(scene) for scene in catalog_scenes]
+    usable_count = sum(profile.is_usable for profile in profiles)
+    mean_cloud_cover = (
+        sum(scene.cloud_cover for scene in catalog_scenes) / len(catalog_scenes)
+        if catalog_scenes
+        else 0.0
+    )
+    asset_complete_count = sum(not profile.missing_assets for profile in profiles)
     recovery_ratio = (
         (metrics.scenes_ingested - metrics.failure_count) / metrics.scenes_ingested
         if metrics.scenes_ingested
@@ -27,6 +37,14 @@ def generate_experiment_report(
         "schema_version": 1,
         "metrics": asdict(metrics),
         "catalog": {"scene_count": catalog_size},
+        "quality": {
+            "usable_scene_count": usable_count,
+            "usable_scene_ratio": round(usable_count / catalog_size, 6) if catalog_size else 0.0,
+            "mean_cloud_cover": round(mean_cloud_cover, 6),
+            "asset_completeness_ratio": round(asset_complete_count / catalog_size, 6)
+            if catalog_size
+            else 0.0,
+        },
         "spatial_query": {"latency_ms": round(spatial_query_latency_ms, 6)},
         "derived": {
             "failure_recovery_ratio": round(recovery_ratio, 6),
@@ -46,6 +64,7 @@ def generate_experiment_report(
 def _markdown_report(report: dict[str, Any]) -> str:
     metrics = report["metrics"]
     derived = report["derived"]
+    quality = report["quality"]
     return "\n".join(
         [
             "# EO Pipeline Experiment Report",
@@ -59,6 +78,10 @@ def _markdown_report(report: dict[str, Any]) -> str:
             f"| Retries | {metrics['retry_count']} |",
             f"| Payload bytes | {metrics['payload_bytes']} |",
             f"| Catalog scenes | {report['catalog']['scene_count']} |",
+            f"| Usable scenes | {quality['usable_scene_count']} |",
+            f"| Usable scene ratio | {quality['usable_scene_ratio']:.6f} |",
+            f"| Mean cloud cover | {quality['mean_cloud_cover']:.6f} |",
+            f"| Asset completeness ratio | {quality['asset_completeness_ratio']:.6f} |",
             f"| Spatial query latency (ms) | {report['spatial_query']['latency_ms']:.6f} |",
             f"| Failure recovery ratio | {derived['failure_recovery_ratio']:.6f} |",
             f"| Payload megabytes | {derived['payload_megabytes']:.6f} |",

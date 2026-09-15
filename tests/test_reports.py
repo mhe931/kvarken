@@ -19,6 +19,8 @@ def test_report_writes_deterministic_json_and_markdown(tmp_path):
     assert report["catalog"]["scene_count"] == 0
     assert report["derived"]["failure_recovery_ratio"] == 0.9
     assert report["derived"]["payload_megabytes"] == 2.0
+    assert report["quality"]["usable_scene_count"] == 0
+    assert report["quality"]["mean_cloud_cover"] == 0.0
     loaded = json.loads((tmp_path / "reports" / "experiment_report.json").read_text())
     assert loaded == report
     assert "| Throughput (items/sec) | 5.000000 |" in markdown
