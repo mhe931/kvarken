@@ -1,0 +1,66 @@
+{
+  "catalog": {
+    "scene_count": 1
+  },
+  "derived": {
+    "failure_recovery_ratio": 1.0,
+    "payload_megabytes": 0.000462,
+    "quality_profiled_scenes": 1
+  },
+  "metrics": {
+    "elapsed_seconds": 0.010966999994707294,
+    "failure_count": 0,
+    "payload_bytes": 462,
+    "retry_count": 0,
+    "scenes_ingested": 1,
+    "throughput_items_per_second": 91.18263886957261
+  },
+  "network": {
+    "search_elapsed_seconds": 0.004829,
+    "search_round_trip_ms": 4.8285
+  },
+  "quality": {
+    "asset_completeness_ratio": 1.0,
+    "mean_cloud_cover": 4.2,
+    "usable_scene_count": 1,
+    "usable_scene_ratio": 1.0
+  },
+  "run": {
+    "date": "20260915",
+    "items_requested": 1,
+    "items_returned": 1,
+    "mode": "offline-fallback",
+    "provider": "offline-fixture",
+    "response_distribution": {
+      "cloud_cover_buckets": {
+        "0-10": 1
+      },
+      "collections": {
+        "sentinel-2-l2a": 1
+      },
+      "platforms": {
+        "sentinel-2a": 1
+      }
+    }
+  },
+  "schema_version": 1,
+  "spatial_query": {
+    "latency_ms": 4.8285
+  },
+  "window_telemetry": {
+    "downsample_factor": 2,
+    "elapsed_seconds": 0.007015,
+    "output_shape": [
+      8,
+      8
+    ],
+    "peak_memory_bytes": 14136,
+    "sample_ndvi": 0.423131,
+    "throughput_windows_per_second": 142.551675,
+    "window_shape": [
+      16,
+      16
+    ],
+    "windows_processed": 1
+  }
+}
