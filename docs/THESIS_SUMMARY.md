@@ -57,7 +57,7 @@ python -m ruff format --check .
 python -m kvarken_eo verify-health
 ```
 
-At the thesis-summary checkpoint, all offline tests pass and the quality gates are clean. Live
+At the thesis-summary checkpoint, all 53 offline tests pass and the quality gates are clean. Live
 CDSE evidence remains environment-dependent and must be added as a dated artifact when valid
 credentials are available.
 
