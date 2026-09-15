@@ -1,5 +1,6 @@
 """Foundations for the Kvarken Earth Observation pipeline."""
 
+from .api import create_catalog_server
 from .catalog import SpatialCatalog
 from .cdse import CDSEClient, CDSETokenProvider, OAuthToken
 from .concurrent import ConcurrentEOIngestor, ConcurrentIngestionResult, IngestionMetrics
@@ -15,6 +16,7 @@ from .transform import transform_stac_to_scene
 
 __all__ = [
     "AsyncIngestor",
+    "create_catalog_server",
     "CDSEClient",
     "CDSETokenProvider",
     "ConcurrentEOIngestor",
