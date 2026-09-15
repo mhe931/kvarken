@@ -35,6 +35,7 @@ python -m kvarken_eo --demo
 - `src/kvarken_eo/` - ingestion contracts, STAC adapter, validation, provenance sink, and CLI demo
 - `tests/` - unit tests, offline STAC fixtures, and provenance verification
 - `docs/` - goals, architecture, current status, and roadmap
+- `docs/THESIS_SUMMARY.md` - academic overview of methods, data flow, evidence, and limitations
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
 ## Development conventions
