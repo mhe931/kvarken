@@ -12,7 +12,7 @@ from .concurrent import ConcurrentEOIngestor
 from .ingestion import AsyncIngestor
 from .provenance import FileProvenanceSink
 from .reports import generate_experiment_report
-from .runner import run_live_experiment
+from .runner import prune_live_experiment_artifacts, run_live_experiment
 from .source import MockEODataSource
 from .spatial import KVARKEN_REGION_BBOX
 from .transform import transform_stac_to_scene
@@ -104,12 +104,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "command",
         nargs="?",
-        choices=("verify-health", "benchmark-report", "live-experiment"),
+        choices=(
+            "verify-health",
+            "benchmark-report",
+            "live-experiment",
+            "prune-live-artifacts",
+        ),
         help="run an offline end-to-end repository health check",
     )
     parser.add_argument("--output-dir", type=Path, default=Path("reports"))
     parser.add_argument("--scenes-count", type=int, default=100)
     parser.add_argument("--concurrency", type=int, default=4)
+    parser.add_argument("--retention-days", type=int, default=30)
+    parser.add_argument("--apply", action="store_true", help="delete selected live artifacts")
     args = parser.parse_args(argv)
     if args.command == "verify-health":
         return _verify_health()
@@ -122,6 +129,15 @@ def main(argv: list[str] | None = None) -> int:
             concurrency=args.concurrency,
         )
         print(f"live experiment report written: {path}")
+        return 0
+    if args.command == "prune-live-artifacts":
+        removed = prune_live_experiment_artifacts(
+            args.output_dir,
+            retention_days=args.retention_days,
+            dry_run=not args.apply,
+        )
+        action = "would remove" if not args.apply else "removed"
+        print(f"{action} {len(removed)} live artifact files")
         return 0
     if args.demo:
         result = asyncio.run(

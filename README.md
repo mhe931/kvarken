@@ -168,3 +168,13 @@ The command reads `CDSE_TOKEN_URL`, `CDSE_CLIENT_ID`, `CDSE_CLIENT_SECRET`, and
 `CDSE_STAC_URL`. It writes a dated `experiment_report_live_YYYYMMDD.json` plus Markdown companion,
 records network round-trip latency and response distributions, and refuses to overwrite an artifact
 from the same date. It never modifies the frozen `experiment_report.json`.
+
+Inspect and prune dated live artifacts without touching the frozen baseline:
+
+```powershell
+python -m kvarken_eo prune-live-artifacts --output-dir docs/experiments --retention-days 30
+python -m kvarken_eo prune-live-artifacts --output-dir docs/experiments --retention-days 30 --apply
+```
+
+The first command is a dry run. Only matching `experiment_report_live_YYYYMMDD` JSON/Markdown
+pairs older than the retention window are selected; `experiment_report.json` is never a target.

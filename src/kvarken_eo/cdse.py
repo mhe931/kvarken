@@ -11,7 +11,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from .ingestion import FetchTimeout, RateLimitExceeded
+from .ingestion import FetchTimeout, RateLimitExceeded, RetryPolicy
 from .stac import STACClient, STACTransport
 
 
@@ -90,6 +90,7 @@ class CDSETokenProvider:
         timeout: float = 20.0,
         clock: callable = time.time,
         refresh_skew: float = 30.0,
+        retry_policy: RetryPolicy | None = None,
     ) -> None:
         if not token_url.strip() or not client_id or not client_secret:
             raise ValueError("token URL and client credentials are required")
@@ -102,6 +103,7 @@ class CDSETokenProvider:
         self._timeout = timeout
         self._clock = clock
         self._refresh_skew = refresh_skew
+        self._retry_policy = retry_policy or RetryPolicy()
         self._token: OAuthToken | None = None
         self._lock = asyncio.Lock()
 
@@ -109,11 +111,26 @@ class CDSETokenProvider:
         async with self._lock:
             now = self._clock()
             if self._token is None or self._token.expires_at - self._refresh_skew <= now:
-                response = await self._transport.request(
-                    self._url, self._client_id, self._client_secret, self._timeout
-                )
+                response = await self._request_token()
                 self._token = OAuthToken.from_response(response, now)
             return self._token.access_token
+
+    async def _request_token(self) -> Mapping[str, object]:
+        for attempt in range(1, self._retry_policy.max_attempts + 1):
+            try:
+                return await self._transport.request(
+                    self._url, self._client_id, self._client_secret, self._timeout
+                )
+            except (FetchTimeout, RateLimitExceeded) as error:
+                if attempt == self._retry_policy.max_attempts:
+                    raise
+                delay = error.retry_after if isinstance(error, RateLimitExceeded) else None
+                await asyncio.sleep(
+                    min(self._retry_policy.max_delay, delay)
+                    if delay is not None
+                    else self._retry_policy.delay_for(attempt)
+                )
+        raise AssertionError("token retry loop must return or raise")
 
 
 class AuthenticatedSTACTransport:
