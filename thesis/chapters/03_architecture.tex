@@ -1,58 +1,172 @@
 \chapter{System Architecture}
 
-\section{Architectural principles}
+\section{Architectural objectives and invariants}
 
-The architecture follows five principles: validate at the boundary; separate transport from
-transformation; bound concurrent work; preserve raw provenance; and keep spatial transforms
-deterministic. Runtime implementation uses the Python standard library, while pytest and Ruff
-are development dependencies.
+The system is designed for a regional research and education setting in which a small team must
+inspect EO metadata, reproduce experiments, and remain able to replace an external provider
+without rewriting the domain logic. Five invariants make that design operational rather than
+merely aspirational.
 
-\section{Data flow}
+\begin{description}
+\item[Boundary validation] Untrusted provider JSON is validated before transformation or
+persistence. Every stored scene therefore satisfies the same identity, temporal, geometry, asset,
+and quality-shape contracts, irrespective of its source.
+\item[Transport decoupling] HTTP, OAuth2, fixture, and test transports implement injectable
+boundaries. Search, transformation, catalog, and report code do not depend on a particular
+network client or provider SDK.
+\item[Bounded concurrency] The number of active ingestion workers is explicit and enforced by an
+\texttt{asyncio.Semaphore}. If the configured limit is \(k\), the invariant
+\(0\leq A(t)\leq k\) holds at every instant \(t\), protecting both provider rate limits and local
+resources.
+\item[Append-only provenance] Raw payloads are content-addressed and manifest records are appended
+rather than rewritten. An observation can therefore be audited without trusting mutable catalog
+metadata.
+\item[Deterministic spatial evaluation] Coordinate assumptions, bounding-box prefilters, exact
+polygon checks, and boundary semantics are explicit. Identical metadata produces identical
+regional inclusion results.
+\end{description}
 
-The principal data flow is shown as a structured diagram to avoid a dependency on optional
-graphics packages:
+These invariants form a chain: validation makes persistence safe, transport decoupling makes
+validation testable, bounded concurrency makes provider interaction predictable, provenance makes
+the result explainable, and deterministic spatial evaluation makes regional claims reproducible.
+Breaking one invariant weakens the interpretation of all downstream metrics.
+
+\section{Layered system decomposition}
+
+The architecture separates six responsibilities:
+
+\begin{enumerate}
+\item \textbf{Provider adapters} issue STAC searches, follow pagination, handle OAuth2, and
+translate transient transport failures into bounded retry decisions.
+\item \textbf{Boundary models} validate and normalize STAC Items into typed \texttt{EOScene}
+records with a stable shape independent of provider-specific JSON extensions.
+\item \textbf{Orchestration} schedules transformations and persistence under a worker limit while
+collecting elapsed time, payload, retry, and failure metrics.
+\item \textbf{Evidence storage} writes raw canonical payloads and JSON Lines provenance, then stores
+queryable scene metadata in the SQLite \texttt{SpatialCatalog}.
+\item \textbf{Analytical services} profile metadata quality, filter by cloud cover and required
+assets, evaluate regional geometry, fetch byte ranges, and calculate NDVI.
+\item \textbf{Interfaces and reporting} expose read-only educational HTTP queries and produce
+deterministic JSON/Markdown reports, including additive dated live-provider artifacts.
+\end{enumerate}
+
+The layers are connected by typed values and narrow protocols rather than shared global state.
+Consequently, an offline fixture can exercise the same transformation and persistence path as a
+live CDSE response.
+
+\section{End-to-end data transformation}
+
+The principal flow is shown below. The arrows denote ownership boundaries, not merely function
+calls.
 
 \begin{verbatim}
- STAC/CDSE endpoint
-        |
-        v
- injectable transport -- RetryPolicy/OAuth2 refresh
-        |
-        v
- validated STACItem --> transform_stac_to_scene --> EOScene
-                                      |                    |
-                                      v                    v
-                            SHA-256 provenance      ConcurrentEOIngestor
-                                                           |
-                                                           v
-                                                  SQLite SpatialCatalog
-                                                    |             |
-                                                    v             v
-                                             quality/ROI query   reports/API
+ STAC/CDSE endpoint or offline fixture
+              |
+              v
+ injectable transport -- OAuth2 / RetryPolicy / pagination
+              |
+              v
+ validated STACItem -- schema boundary
+              |
+              v
+ transform_stac_to_scene --> typed EOScene
+              |                         |
+              |                         +--> quality profile
+              v
+ SHA-256 raw payload + JSONL manifest
+              |
+              v
+ ConcurrentEOIngestor -- bounded tasks --> SQLite SpatialCatalog
+                                              |             |
+                                              v             v
+                                      ROI/quality queries  reports
+                                                            |
+                                                            v
+                                                    educational HTTP API
 \end{verbatim}
 
-\section{Provider and ingestion boundary}
+At the provider boundary, a search response is paginated and each Item is validated independently.
+The transformation preserves the identifier, acquisition time, platform, geometry, bounding box,
+EPSG code, cloud metadata, and asset links. Persistence then has two complementary products:
+the provenance store preserves what arrived, while the catalog stores the indexed metadata needed
+for low-latency query. Reports consume metrics from the orchestration path and counts from the
+catalog, making inconsistencies observable.
 
-\texttt{STACClient} posts a search request and follows pagination links. \texttt{CDSEClient}
-composes the same client with \texttt{CDSETokenProvider}; tokens are cached behind an async lock
-and refreshed before expiry. Timeout and rate-limit exceptions are transient and use bounded
-exponential backoff. Invalid response schemas raise validation errors and are not retried.
+\section{Provider and ingestion contracts}
 
-\texttt{ConcurrentEOIngestor} uses an \texttt{asyncio.Semaphore} to limit scene transformation,
-provenance persistence, and optional catalog indexing. Its \texttt{IngestionMetrics} record
-contains ingested scenes, elapsed seconds, throughput, failures, retries, and canonical
-payload bytes.
+\texttt{STACClient} owns request construction, pagination links, response-shape checks, timeout
+classification, and 429 handling. \texttt{CDSEClient} composes it with
+\texttt{CDSETokenProvider}; credentials are resolved from environment variables and token refresh
+is protected by an asynchronous lock. Invalid schemas are permanent errors and are not retried.
+Timeouts and rate limits use a bounded exponential policy, optionally honoring a provider
+\texttt{Retry-After} value.
 
-\section{Kvarken regional filtering}
+\texttt{ConcurrentEOIngestor} owns task scheduling, not provider policy. It acquires its semaphore
+before expensive work and releases it in a \texttt{finally} path. Blocking filesystem and SQLite
+operations are delegated to worker threads, while provenance appends are serialized by an
+asynchronous lock. This division prevents an individual slow write from blocking unrelated
+network tasks without allowing writes to race on the manifest.
 
-The regional preset is an EPSG:4326 bounding box. The catalog first filters bounding-box
-columns in SQLite and then applies exact polygon/ROI intersection. Boundary contact counts as
-intersection. Scenes in an unknown coordinate reference system are rejected rather than silently
-reprojected. Cloud cover and required assets are also query filters over stored metadata.
+\section{Kvarken regional filtering contract}
 
-\section{Persistence and education}
+The regional preset is an EPSG:4326 WGS 84 bounding box
+\[
+ B_K=[20.5,22.5]\times[62.8,63.8],
+\]
+where the first coordinate is longitude in degrees east and the second is latitude in degrees
+north. The order is part of the contract; coordinates in another CRS are rejected rather than
+silently reprojected.
 
-\texttt{SpatialCatalog} uses a WAL-enabled SQLite database with indexed platform/time and
-bounding-box columns. The read-only educational HTTP service exposes health and JSON scene
-query endpoints. The raster slice fetches inclusive HTTP byte ranges and computes NDVI over
-aligned numerical red and near-infrared arrays without decoding full GeoTIFF files.
+For scene rectangle
+\[
+B_S=[x^-_S,x^+_S]\times[y^-_S,y^+_S],
+\]
+the catalog prefilter accepts a candidate exactly when
+\[
+x^-_S\leq x^+_K\ \land\ x^+_S\geq x^-_K\ \land\
+y^-_S\leq y^+_K\ \land\ y^+_S\geq y^-_K.
+\]
+The inequalities are non-strict so contact at a boundary is retained. SQLite applies this
+predicate over indexed columns, reducing the candidate set before exact polygon processing.
+
+The exact contract is polygonal intersection:
+\[
+\operatorname{in}(S,K)=
+\begin{cases}
+1,&\operatorname{intersects}(\operatorname{footprint}(S),K),\\
+0,&\text{otherwise}.
+\end{cases}
+\]
+Point-in-polygon uses ray casting with an odd crossing count, and a point on an edge is treated as
+intersecting. This two-stage approach combines predictable SQL performance with a deterministic
+geometry result, while avoiding a false claim that rectangular overlap alone proves polygon
+overlap.
+
+\section{Persistence, API, and educational separation}
+
+\texttt{SpatialCatalog} is a WAL-enabled SQLite store with indexes over identity, platform,
+acquisition time, cloud cover, and bounding-box coordinates. It stores normalized metadata and
+serialized geometry/assets, not the raw provider document. The raw document remains in the
+content-addressed provenance area, so catalog maintenance, retention, or a teaching query cannot
+silently rewrite the evidence used to generate a report.
+
+The educational HTTP layer is intentionally read-only. Health checks verify that the local
+pipeline is operational, while scene endpoints expose bounded JSON query results over catalog
+metadata. It does not expose credentials, raw payload paths, or arbitrary SQL. This separation
+keeps a simple browser-facing interface useful for demonstrations without turning the provenance
+store into an application database.
+
+The raster slice follows the same boundary principle: it requests inclusive HTTP byte ranges and
+calculates NDVI over supplied aligned values, but does not pretend to be a full GeoTIFF server.
+The result is a compact architecture in which research reproducibility and educational
+accessibility reinforce rather than compromise operational safety.
+
+\section{Operational failure boundaries}
+
+Failures are classified at the narrowest layer that can interpret them. A timeout or HTTP 429 is a
+transient provider event; bounded retry may recover it. A malformed JSON response is a permanent
+input or protocol failure; it is surfaced with context. A SQLite transaction error rolls back the
+write, while an already committed provenance object remains inspectable. A missing CDSE
+configuration is not an error in offline mode: the runner records fixture mode explicitly and
+preserves the same report schema. These choices ensure that the system fails visibly without
+making CI or teaching depend on external credentials.

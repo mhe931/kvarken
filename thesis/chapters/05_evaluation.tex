@@ -2,16 +2,20 @@
 
 \section{Experimental configuration}
 
-The frozen report was generated offline with 256 synthetic scenes and concurrency 8. It uses the
-checked-in STAC fixture as a template, temporary SQLite and provenance storage, and the actual
-concurrent ingestion and reporting paths. No external provider, credential, charting package,
-or GIS dependency is required.
+The frozen evaluation uses the repository's offline benchmark path with 256 synthetic scenes,
+concurrency eight, the checked-in STAC fixture as a metadata template, temporary SQLite storage,
+and temporary provenance storage. It exercises the actual validation, transformation,
+bounded-ingestion, catalog, quality, and report code rather than a separate mock benchmark
+implementation. No external provider, credential, charting package, or GIS dependency is
+required. The resulting JSON and Markdown artifacts are checked in under
+\texttt{docs/experiments/} and form the comparison point for later live runs.
 
-\section{Empirical baseline}
+\section{Frozen empirical baseline}
 
 Table~\ref{tab:baseline} transcribes the publication-ready report in
-\texttt{docs/experiments/experiment\_report.md}. Time and throughput are measurements of the
-Windows development environment and should be compared only under equivalent conditions.
+\texttt{docs/experiments/experiment\_report.md}. Measurements are retained at their recorded
+precision; elapsed time and latency describe the Windows development environment and should be
+compared only with equivalent hardware, filesystem, Python version, and fixture.
 
 \begin{table}[htbp]
 \centering
@@ -39,19 +43,111 @@ Payload megabytes & 0.106130 \\
 \end{tabular}
 \end{table}
 
-\section{Validation results}
+\section{Ingestion throughput and completeness}
 
-The release baseline passes 53 offline tests. Tests cover schema validation, pagination,
-transient recovery, provenance, bounded worker limits, quality filters, raster/NDVI behavior,
-HTTP queries, OAuth2 failure modes, artifact retention, multi-threaded catalog contention, and
-WAL durability after reopening. Ruff lint and format checks pass, and
-\texttt{python -m kvarken\_eo verify-health} completes the fixture-to-provenance-to-catalog
-maintenance path.
+The run ingested all 256 generated scenes in 1.159317 seconds, yielding 220.819653 items per
+second. Throughput is calculated as
+\[
+\operatorname{throughput}=\frac{N_{\mathrm{ingested}}}{T_{\mathrm{elapsed}}}
+=\frac{256}{1.159317}=220.819653\ \mathrm{items\,s^{-1}}.
+\]
+This is an end-to-end metadata-path measurement: validation, transformation, provenance writes,
+SQLite indexing, and report accounting are included. It is therefore more informative for this
+research question than a provider-only HTTP rate, but it is not a claim about raster download
+throughput.
 
-\section{Interpretation and limitations}
+The catalog count equals the ingestion count (256), and failures and retries are both zero.
+That equality indicates that the benchmark completed without a lost valid scene or a retry-induced
+duplicate. The recovery ratio is also 1.000000, consistent with the fixture path having no
+unrecoverable failures. These values demonstrate baseline correctness, not resilience under a
+real provider outage; fault injection is evaluated separately by the test suite.
 
-The results demonstrate a coherent and reproducible baseline rather than a claim about all
-production EO workloads. The measured throughput and latency depend on the local filesystem and
-SQLite build. Full GeoTIFF decoding, large-scale distributed storage, and authenticated live
-CDSE observations remain future evaluation dimensions. The dated live-run mechanism is designed
-to add those observations without changing this frozen comparison point.
+\section{Quality, payload, and storage footprint}
+
+All 256 scenes are classified as usable, producing a usable-scene ratio of 1.000000. Mean cloud
+cover is 4.200000 in the fixture metadata, while asset completeness is 1.000000. The quality
+results show that the benchmark fixtures satisfy the intended schema and analytical prerequisites.
+They should not be interpreted as an estimate of the cloud distribution of Sentinel-2 acquisitions
+over Kvarken.
+
+The serialized payload footprint is 106130 bytes, or 0.106130 megabytes under the report's
+conversion. This is metadata-scale evidence: it measures the canonical scene payloads and not
+the potentially multi-gigabyte raster assets referenced by their URLs. The small footprint
+supports the educational design, in which a complete ingestion and query experiment can run
+without downloading imagery.
+
+\section{Spatial query latency}
+
+The recorded spatial query latency is 9.117000 ms. The query path first applies indexed
+bounding-box predicates and then performs exact regional checks, so the value reflects the
+metadata catalog and geometry path rather than a scan of raster pixels. It is low enough for
+interactive educational queries in the tested environment, while its single-run nature prevents
+claims about tail latency or production concurrency.
+
+The result also illustrates why the architecture reports query latency separately from ingestion
+throughput. Ingestion measures a pipeline over 256 records; spatial latency measures a query
+operation over the resulting catalog. Conflating the two would hide whether an observed slowdown
+comes from provider processing, persistence, or regional filtering.
+
+\section{Validation and recovery evidence}
+
+The release baseline passes 53 offline tests. The suite covers typed schema rejection, pagination,
+timeouts, HTTP 429 recovery, OAuth2 expiry and invalid token payloads, provenance integrity,
+bounded worker limits, quality filters, raster ranges and NDVI, HTTP queries, artifact retention,
+multi-threaded SQLite contention, WAL durability after reopening, and deterministic reports.
+The worker stress tests observe the maximum active task count rather than merely checking the
+final row count. The catalog tests accept only committed intermediate snapshots during contention
+and verify that committed state survives a reopen.
+
+Ruff lint and format checks pass, and \texttt{python -m kvarken\_eo verify-health} completes the
+fixture-to-provenance-to-catalog maintenance path. Together, these checks provide evidence for
+implementation integrity, while the benchmark provides an empirical reference. Neither replaces
+evaluation against authenticated CDSE data or representative raster windows.
+
+\section{Threats to validity}
+
+\subsection{Internal validity}
+
+The benchmark uses synthetic scenes derived from a checked-in fixture, so the measured zero
+failure rate is partly a consequence of controlled inputs. Timing can also be affected by Windows
+filesystem cache state, interpreter scheduling, temporary-directory placement, and background
+processes. The mitigation is reproducibility: the fixture, report, concurrency setting, and
+runtime path are versioned, and the 53-test suite injects timeouts, 429 responses, malformed token
+payloads, concurrent readers, and bounded-worker probes. Repeated runs should be interpreted as
+comparisons under controlled conditions, not as independent population samples.
+
+\subsection{External validity}
+
+The results do not establish behavior for all EO missions, CDSE collections, network conditions,
+or raster sizes. Sentinel-2-like metadata is representative for the architecture but does not
+capture provider-specific schema extensions, authentication policy changes, regional datacubes, or
+large binary transfers. The live runner and dated artifacts provide the intended extension point:
+future authenticated observations can be added without overwriting the frozen baseline. Full
+GeoTIFF decoding, distributed storage, and multi-process catalogs remain outside this evaluation.
+
+\subsection{Construct validity}
+
+Throughput, payload bytes, usable-scene ratio, and spatial latency are operational proxies, not
+complete measures of scientific usefulness, sustainability, or user learning. A successful
+metadata ingestion does not prove pixel-level radiometric correctness. Likewise, a 9.117 ms query
+does not measure end-user latency through a deployed network service. The study addresses these
+construct limits by stating exactly what each metric includes and by keeping raster transport,
+NDVI behavior, quality rules, and HTTP API checks as separate testable slices.
+
+\subsection{Harness reliability}
+
+The test harness is itself a controlled artifact. Injectable transports make failure modes
+deterministic; temporary directories isolate provenance and SQLite state; worker-bound tests
+measure concurrency directly; and WAL tests verify both valid snapshots during contention and
+durability after reopening. The health command exercises the principal offline path in one
+operation. These controls reduce accidental green results, but they cannot remove all timing
+variance or substitute for long-running production observation.
+
+\section{Interpretation}
+
+The evidence supports the thesis claim that a dependency-free, typed, bounded, provenance-aware
+metadata pipeline can provide a reproducible regional EO baseline suitable for research and
+education. The result is deliberately narrower than a production-scale data platform: its value
+lies in explicit contracts and an auditable starting point. Live CDSE measurements, representative
+raster analyses, and comparative deployments are the appropriate next experiments, with the
+256-scene artifact retained as a stable regression reference.
