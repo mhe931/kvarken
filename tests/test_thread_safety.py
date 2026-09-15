@@ -1,8 +1,10 @@
 import asyncio
 import json
+import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from time import perf_counter
 
 import pytest
 
@@ -47,6 +49,58 @@ def test_catalog_serializes_multithreaded_upserts_and_queries(tmp_path: Path):
 
         assert len(catalog.scene_ids()) == len(scenes)
         assert counts == [len([scene for scene in scenes if scene.cloud_cover <= 20])] * 32
+
+
+def test_wal_mixed_read_write_throughput_and_durability(tmp_path: Path):
+    path = tmp_path / "wal-contention.sqlite"
+    initial = [_scene(index) for index in range(40)]
+    with SpatialCatalog(path) as catalog:
+        catalog.index_scenes(initial)
+
+    errors: list[BaseException] = []
+    read_latencies: list[float] = []
+
+    def writer() -> int:
+        try:
+            with SpatialCatalog(path) as catalog:
+                for index in range(40, 100):
+                    catalog.index_scene(_scene(index))
+            return 60
+        except BaseException as error:
+            errors.append(error)
+            return 0
+
+    def reader(_: int) -> int:
+        try:
+            with SpatialCatalog(path) as catalog:
+                started = perf_counter()
+                count = 0
+                for _ in range(12):
+                    count = len(catalog.query_scenes(max_cloud_cover=20))
+                read_latencies.append((perf_counter() - started) * 1000)
+                return count
+        except BaseException as error:
+            errors.append(error)
+            return 0
+
+    started = perf_counter()
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(reader, index) for index in range(4)]
+        futures.append(executor.submit(writer))
+        results = [future.result() for future in futures]
+    elapsed = perf_counter() - started
+
+    assert not errors
+    initial_query_count = len([scene for scene in initial if scene.cloud_cover <= 20])
+    final_query_count = len([_scene(index) for index in range(100) if index % 25 <= 20])
+    assert all(initial_query_count <= count <= final_query_count for count in results[:4])
+    assert results[4] == 60
+    assert read_latencies
+    assert elapsed < 5.0
+    with SpatialCatalog(path) as catalog:
+        assert len(catalog.scene_ids()) == 100
+    with sqlite3.connect(path) as connection:
+        assert connection.execute("PRAGMA journal_mode").fetchone()[0].lower() == "wal"
 
 
 @pytest.mark.asyncio

@@ -26,6 +26,7 @@ Status: green provider milestone.
 - Added automated OAuth recovery coverage for token expiry, rate limits, invalid responses, and timeouts, plus a dry-run-by-default live artifact retention utility.
 - Added multi-threaded SQLite contention and high-volume ingestion worker-limit stress tests.
 - Added `docs/THESIS_SUMMARY.md` as the academic architecture, methods, evidence, and limitations index.
+- Added SQLite WAL mixed-reader/writer throughput profiling and post-contention durability regression coverage.
 
 ## 2026-09-14 - Bootstrap
 
