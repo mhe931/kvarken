@@ -206,4 +206,6 @@ Generated PDF and auxiliary files are local build outputs and should not be comm
 Every push or pull request that changes `thesis/**` is compiled by the
 [Thesis manuscript workflow](.github/workflows/thesis.yml). A successful run publishes
 `main.pdf` as the downloadable `kvarken-thesis` workflow artifact; the local workstation does
-not need a TeX distribution.
+not need a TeX distribution. The full frontmatter and six-chapter package was certified by
+[workflow run 34957031561](https://github.com/mhe931/kvarken/actions/runs/34957031561), including
+successful PDF artifact generation.

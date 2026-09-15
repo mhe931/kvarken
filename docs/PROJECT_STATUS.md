@@ -45,6 +45,10 @@ Status: manuscript structure prepared for academic drafting.
   and operational Kvarken deployment.
 - Added formal frontmatter acknowledgements and an operational abbreviation table, plus table of
   contents, figures, and tables lists to the manuscript.
+- Certified the complete manuscript through GitHub Actions run
+  [34957031561](https://github.com/mhe931/kvarken/actions/runs/34957031561): TeX Live installation,
+  four-pass LaTeX/BibTeX compilation, and `kvarken-thesis` PDF artifact upload all succeeded.
+  The downloaded `main.pdf` was verified locally as a non-empty 280,592-byte PDF.
 
 ## 2026-09-15 - Release readiness audit
 
