@@ -144,6 +144,61 @@ class DownsampleBenchmark:
     peak_memory_bytes: int
 
 
+@dataclass(frozen=True, slots=True)
+class SceneWindowResult:
+    red: RasterGrid
+    nir: RasterGrid
+    ndvi: RasterGrid
+    transform: AffineGridTransform
+
+
+def process_scene_window(
+    bands: dict[str, Sequence[Sequence[float]]],
+    bbox: Sequence[float],
+    window: tuple[int, int, int, int],
+    factor: int,
+) -> SceneWindowResult:
+    """Extract aligned B04/B08 pixels, reduce them, and calculate window NDVI."""
+
+    if "B04" not in bands or "B08" not in bands:
+        raise KeyError("bands must contain B04 and B08")
+    red = bands["B04"]
+    nir = bands["B08"]
+    if not red or not red[0] or len(red) != len(nir):
+        raise ValueError("B04 and B08 must have equal non-empty dimensions")
+    width = len(red[0])
+    if width == 0 or any(len(row) != width for row in red + nir):
+        raise ValueError("B04 and B08 must have rectangular matching grids")
+    if any(len(row) != width for row in nir):
+        raise ValueError("B04 and B08 must have matching widths")
+    row_start, column_start, height, window_width = window
+    if min(row_start, column_start, height, window_width) < 0:
+        raise ValueError("window values must be non-negative")
+    if height == 0 or window_width == 0:
+        raise ValueError("window dimensions must be positive")
+    if row_start + height > len(red) or column_start + window_width > width:
+        raise ValueError("window must fit within the source grids")
+    transform = AffineGridTransform.from_bbox(bbox, width, len(red))
+
+    def extract(grid: Sequence[Sequence[float]]) -> RasterGrid:
+        return tuple(
+            tuple(float(value) for value in row[column_start : column_start + window_width])
+            for row in grid[row_start : row_start + height]
+        )
+
+    reduced_red = downsample_band(extract(red), factor)
+    reduced_nir = downsample_band(extract(nir), factor)
+    ndvi_rows = []
+    for red_row, nir_row in zip(reduced_red, reduced_nir, strict=True):
+        ndvi_rows.append(calculate_ndvi(red_row, nir_row))
+    return SceneWindowResult(
+        reduced_red,
+        reduced_nir,
+        tuple(ndvi_rows),
+        transform,
+    )
+
+
 def benchmark_downsample(
     band: Sequence[Sequence[float]],
     factor: int,

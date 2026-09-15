@@ -12,10 +12,12 @@ from .raster import (
     AffineGridTransform,
     DownsampleBenchmark,
     RasterAssetFetcher,
+    SceneWindowResult,
     benchmark_downsample,
     calculate_ndvi,
     downsample_band,
     downsample_scene_bands,
+    process_scene_window,
 )
 from .reports import generate_experiment_report
 from .runner import (
@@ -47,6 +49,7 @@ __all__ = [
     "RasterAssetFetcher",
     "AffineGridTransform",
     "DownsampleBenchmark",
+    "SceneWindowResult",
     "benchmark_downsample",
     "generate_experiment_report",
     "SceneQualityProfile",
@@ -61,6 +64,7 @@ __all__ = [
     "calculate_ndvi",
     "downsample_band",
     "downsample_scene_bands",
+    "process_scene_window",
     "scene_intersects_roi",
     "run_live_experiment",
     "transform_stac_to_scene",
