@@ -1,0 +1,57 @@
+\chapter{Methodology}
+
+\section{Research design}
+
+This thesis uses a design-and-evaluation engineering approach. The approach is descriptive rather than a claim that the project followed a specific named design-science framework. The research questions identify architectural properties that must be achieved; these properties are translated into implementation invariants; the invariants are realized in software; and the resulting artifact is evaluated with deterministic tests, a controlled synthetic benchmark, and preserved experiment records.
+
+This framing is important because the central research object is an infrastructure artifact. The thesis cannot answer its questions only by describing code, and it cannot evaluate the system only by reporting a single throughput number. Evidence is therefore divided into four classes: structural evidence from architecture and source contracts, behavioral evidence from tests, performance evidence from the frozen benchmark, and reproducibility evidence from versioned fixtures and artifacts.
+
+\section{Research questions and evidence mapping}
+
+\begin{table}[htbp]
+\centering
+\caption{Research questions, primary evidence, and claim boundaries}
+\small
+\begin{tabular}{p{0.08\textwidth}p{0.24\textwidth}p{0.31\textwidth}p{0.28\textwidth}}
+\toprule
+\textbf{RQ} & \textbf{Primary evidence} & \textbf{What the evidence supports} & \textbf{What it does not support} \\
+\midrule
+RQ1 & Boundary validation, \texttt{EOScene} transformation, provenance records, schema tests & Provider-neutral normalization with traceable source evidence & Universal compatibility with all EO providers or schemas \\
+RQ2 & Bounded ingestor, timeout/429/token tests, explicit error classes & Controlled recovery behavior and bounded task creation & Production CDSE reliability or recovery rates \\
+RQ3 & SQLite/WAL catalog, query tests, contention coverage, frozen latency value & Functional regional, temporal, quality, and platform queries in the local baseline & Distributed scalability or general latency guarantees \\
+RQ4 & Frozen reports, dated artifacts, CI, checked-in fixtures, release baseline & Repeatable offline baseline and inspectable evidence lineage & Perfect reproducibility across all hardware and provider conditions \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Study context and system boundaries}
+
+The regional study context is represented by the bounding box longitude 20.5 to 22.5 and latitude 62.8 to 63.8 in EPSG:4326. This rectangle is a deterministic experimental region, not a claim that it exactly reproduces an ecological, administrative, or operational boundary of Kvarken. Boundary-touching scenes are counted as intersecting. Scenes with unsupported coordinate-reference information are rejected instead of silently reprojected.
+
+The evaluated release baseline is version 0.1.0. The core runtime declares no third-party Python dependencies and requires Python 3.11 or later. Continuous integration is configured for Python 3.11 and 3.12 and executes linting, formatting checks, the offline test suite, and an offline health verification.
+
+\section{Implementation method}
+
+Implementation establishes narrow interfaces between provider access, domain validation, persistence, and analysis. Provider responses are validated before persistence. The resulting \texttt{EOScene} is immutable at the domain boundary. Concurrent ingestion is limited by a configured maximum-worker semaphore. Filesystem and SQLite operations are separated from asynchronous provider operations where needed, and append-only manifest writes are serialized.
+
+Failure handling follows an explicit classification. Timeouts and HTTP 429 responses are treated as transient and may be retried under bounded policy. Malformed JSON, missing required fields, invalid token shapes, impossible quality values, and unsupported coordinate assumptions are treated as permanent input failures. This prevents repeated attempts from hiding deterministic data-quality problems.
+
+\section{Evaluation strategy}
+
+Evaluation has three layers. First, automated tests exercise malformed payload rejection, pagination, timeout and rate-limit recovery, OAuth2 expiry and token errors, provenance integrity, bounded worker limits, quality filters, raster range behavior, NDVI calculation, HTTP queries, artifact retention, SQLite contention, WAL durability, and deterministic reports. The released baseline records 53 passing offline tests.
+
+Second, the frozen synthetic benchmark uses 256 generated scenes with concurrency set to eight. The checked-in STAC fixture is used as a metadata template. Temporary SQLite and provenance storage are used for the run. The benchmark measures the complete metadata path from validation through provenance persistence and catalog indexing to regional querying and report generation. It does not measure production-provider latency or representative raster-download throughput.
+
+Third, the dated 20260915 experiment artifact exercises the live-experiment harness. Because live credentials were absent, the run explicitly selected \texttt{offline-fallback} mode and the \texttt{offline-fixture} provider. The artifact tests the instrumentation path and a small calibrated raster window, but it is not used as evidence of authenticated CDSE performance.
+
+\section{Metrics and interpretation rules}
+
+The principal recorded metrics are scene count, elapsed time, ingestion throughput, failures, retries, payload bytes, catalog count, quality summaries, and spatial-query latency. Metrics are interpreted only within the workload that produced them. The throughput value is a local metadata-path value, not a network or raster-download rate. The query-latency value is a recorded regression point, not a latency guarantee.
+
+The benchmark field \texttt{failure\_recovery\_ratio} is not treated as substantive recovery evidence because the frozen benchmark observed zero failures. Controlled failure tests provide stronger evidence for recovery behavior.
+
+\section{Research integrity, validity, and AI-assisted work}
+
+Quantitative claims are tied to versioned repository artifacts. Synthetic and fallback evidence are labeled explicitly. Missing authenticated-provider results are not replaced by estimates. Threats to internal, construct, external, and reproducibility validity are discussed separately.
+
+Generative AI tools were used for substantial drafting assistance, restructuring, language editing, quality review, and supporting presentation preparation. AI-generated text was not treated as empirical evidence. The author remains responsible for the research design, implementation, evidence, citations, limitations, and conclusions \citep{openai-chatgpt,uwasa-writing}.

@@ -1,22 +1,28 @@
 \chapter*{Abstract}
+
 \addcontentsline{toc}{chapter}{Abstract}
 
-Earth Observation (EO) systems combine heterogeneous satellite metadata, raster assets, and
-spatial queries whose reliability depends on both provider behavior and local processing
-constraints. This thesis presents the design and implementation of a hybrid EO data
-infrastructure for research and education in the Kvarken Space Center context. The system
-combines public STAC and authenticated Copernicus Data Space Ecosystem (CDSE) access,
-typed boundary validation, bounded asynchronous ingestion, content-addressed provenance,
-SQLite-based spatial cataloguing, metadata quality profiling, and lightweight raster
-analysis.
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{p{0.27\textwidth}p{0.66\textwidth}}
+\toprule
+\textbf{Author} & \textbf{Daniel Ebrahimzadeh Esfahani} \\
+\midrule
+Title & Design and Implementation of a Hybrid Earth Observation Data Infrastructure for Research and Education: A Case Study of Kvarken Space Center \\
+Degree programme & Master's Degree Programme in Computing Sciences \\
+Major & Artificial Intelligence and Data Engineering \\
+Supervisor & Professor Ali Nadir Arslan \\
+Year & 2026 \\
+Keywords & Earth Observation; STAC; CDSE; data infrastructure; provenance; SQLite; bounded concurrency; reproducible research \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-The implementation deliberately uses only the Python standard library at runtime. Injectable
-transports and checked-in fixtures make failure recovery, OAuth2 token refresh, rate limiting,
-concurrency, SQLite contention, and analytical behavior testable without network access. The
-frozen empirical baseline ingests 256 synthetic scenes at concurrency 8 and records throughput,
-payload footprint, catalog size, spatial query latency, quality distributions, and failure
-recovery. The repository release baseline passes 53 offline tests, Ruff quality checks, and an
-end-to-end health verification command.
+Earth Observation data infrastructures must connect external data providers, geospatial metadata, local storage, analytical processing, and reproducibility requirements. For a university research environment, this task is complicated by changing provider interfaces, authentication, rate limits, network failures, large raster products, and limited operational resources. This thesis designs and evaluates a hybrid Earth Observation data infrastructure in the Kvarken Space Center context. In this work, hybrid refers to the combination of external standards-based data access with local, reproducible storage and processing paths that can also operate with offline fixtures when live provider access is unavailable. The objective is to create an auditable research baseline that can ingest and validate Earth Observation metadata, preserve provenance, support regional queries, provide a lightweight analytical path, and remain understandable for research and educational demonstrations.
 
-\textbf{Keywords:} Earth Observation, STAC, CDSE, data infrastructure, provenance, SQLite,
-bounded concurrency, reproducible research
+The study uses a design-and-evaluation engineering approach. Provider-specific responses are validated at the system boundary and transformed into a provider-neutral \texttt{EOScene} model. The implemented architecture includes STAC and Copernicus Data Space Ecosystem access concepts, OAuth2 token handling, bounded asynchronous ingestion, SHA-256 content addressing, append-only provenance manifests, a SQLite spatial catalog using write-ahead logging, deterministic Kvarken regional filtering, metadata quality profiling, range-based raster retrieval, NDVI calculation, reproducible experiment reports, and a read-only educational HTTP interface. The evaluation combines deterministic automated tests with a frozen synthetic metadata benchmark and a dated \texttt{offline-fallback} experiment artifact.
+
+The results show that the implemented baseline can complete the controlled metadata ingestion path without losing valid scenes, can produce deterministic provenance and catalog records, and can support regional and quality queries in the tested local environment. Fault-oriented tests cover malformed payloads, timeouts, rate-limit recovery, token refresh, SQLite contention, raster calculations, and report stability. The evaluation does not demonstrate production Copernicus Data Space Ecosystem performance, full GeoTIFF processing, distributed scalability, or educational learning outcomes. These limitations are treated as part of the scientific boundary of the work rather than hidden behind broader performance claims.
+
+The main contribution is an explicit and reproducible architecture for small-scale Earth Observation data engineering in a research setting. The work demonstrates how provider decoupling, typed validation, bounded concurrency, provenance preservation, embedded spatial indexing, lightweight raster analysis, and educational access can be integrated into one auditable pipeline. The thesis therefore contributes primarily an architectural and reproducibility baseline rather than a new remote-sensing algorithm.
