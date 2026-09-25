@@ -1,0 +1,31 @@
+\chapter{Analysis}
+
+\section{Analysis of RQ1: provider-neutral validation and provenance}
+
+RQ1 asks how heterogeneous STAC and CDSE-shaped metadata can be validated and transformed into a transport-neutral scene model while preserving provenance. The implemented answer is a boundary-validation step followed by transformation into the provider-neutral \texttt{EOScene} model. Raw canonical payloads are stored separately under SHA-256 identities and accompanied by append-only manifest records.
+
+This design separates two needs that are often conflated: convenient normalized state for queries and immutable source evidence for audit. The catalog can evolve independently from the raw evidence without erasing what arrived from the provider. The evidence is strong within the implemented schema and fixtures, but it does not establish compatibility with every EO provider or every STAC extension.
+
+\section{Analysis of RQ2: bounded concurrency and failure recovery}
+
+RQ2 concerns bounded asynchronous work and selective recovery. The implementation uses an explicit semaphore, so task creation is constrained by a configured worker limit rather than growing with response size. Tests cover timeout, HTTP 429, token expiry, exhausted retries, malformed payloads, and invalid token responses.
+
+The central result is behavioral rather than statistical: the system distinguishes transient transport conditions from deterministic input failures and applies retry logic only to the former. The frozen benchmark itself observed zero failures and zero retries, so it cannot be used to estimate a production recovery rate. Recovery claims therefore rest on controlled tests, not on the benchmark field \texttt{failure\_recovery\_ratio}.
+
+\section{Analysis of RQ3: SQLite catalog effectiveness}
+
+RQ3 asks whether a dependency-free SQLite catalog is effective for the local regional-query workload. The implementation supports regional, temporal, quality, and platform filters. Bounding-box predicates reduce candidate sets before deterministic geometry checks, while WAL and transaction tests cover local reader/writer behavior.
+
+The frozen benchmark records a 9.117 ms spatial-query value. This value is useful as a local regression point because it was produced by a preserved workload, but it is not a general latency guarantee. The evidence supports SQLite as a practical single-node baseline with low operational overhead. It does not support claims about multi-node or distributed scalability.
+
+\section{Analysis of RQ4: reproducibility}
+
+RQ4 asks which measurements and artifacts are sufficient to make the offline pipeline baseline reproducible. The project combines checked-in fixtures, a frozen experiment report, explicit benchmark configuration, versioned source, CI, deterministic report schemas, and dated additive live/fallback artifacts.
+
+The main reproducibility result is therefore the evidence chain rather than any single metric. The system records which mode ran, what input class was used, which metrics were emitted, and which artifact supports a thesis claim. The approach cannot guarantee identical timing on different hardware, but it makes differences inspectable.
+
+\section{Cross-cutting interpretation}
+
+Across the four questions, the strongest result is the explicit connection between software contracts and claim boundaries. Provider behavior is isolated, concurrency is bounded, raw evidence is retained, spatial assumptions are stated, and experiment artifacts are preserved. This makes the baseline suitable for regression-oriented research and educational demonstrations.
+
+At the same time, the evidence remains deliberately narrower than a production evaluation. Real authenticated CDSE performance, large raster workloads, distributed execution, and learning outcomes remain future research tasks.
