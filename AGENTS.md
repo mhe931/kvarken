@@ -4,6 +4,20 @@
 
 `kvarken-eo-pipeline` is a thesis repository for hybrid Earth Observation data ingestion, validation, and spatial processing in the Kvarken Space Center context. The code should remain useful for reproducible research and operationally realistic experiments.
 
+## Thesis review and document continuity
+
+- Treat the manuscript as a working draft until Professor Arslan has reviewed it. A software
+  release or successful PDF build is not thesis acceptance.
+- Keep the current review plan in `docs/SUPERVISOR_REVIEW_PLAN.md` and record feedback only
+  after it has actually been received. Do not describe drafted emails as sent.
+- Maintain thesis documents in Google Drive as native Google Docs, not stored Word files.
+  Export Word attachments only when needed for the supervisor's email review. Preserve the
+  existing repository LaTeX sources.
+- Use email for thesis communication. Address the supervisor as `Dear Professor Arslan,`
+  and sign as `Däniel`; do not add a meeting request or a Drive link to his email.
+- Describe the 20260915 report as offline fallback and the frozen 256-scene report as synthetic.
+  Do not infer live CDSE success from an artifact filename.
+
 ## Canonical commands
 
 From the repository root:
@@ -78,7 +92,8 @@ python -m kvarken_eo --demo
 
 - Package version: `0.1.0` (released baseline)
 - Runtime dependencies: standard library only
-- Verification baseline: 53 offline tests, Ruff lint/format clean, and `verify-health` passing
+- Historical release verification baseline: 53 offline tests, Ruff lint/format clean, and `verify-health` passing
+- Current documentation checkpoint (2026-10-05): 63 offline tests, Ruff lint/format clean, and `verify-health` passing
 - Frozen artifact: `docs/experiments/experiment_report.json`
 - Live artifacts: dated and append-only; cleanup is dry-run by default
 - Release procedure: preserve the frozen baseline for regression comparison and add future

@@ -2,6 +2,20 @@
 
 Production-minded research scaffold for hybrid Earth Observation (EO) data ingestion and processing in the Kvarken Space Center context. The repository favors small, typed, async-aware components that can be extended during weekly research checkpoints without losing continuity.
 
+## Current thesis status
+
+As of 5 October 2026, the thesis is a working draft awaiting Professor Arslan's review.
+The checked-in evidence is offline and synthetic; the dated 20260915 experiment also ran in
+offline-fallback mode. The implementation baseline and a successful manuscript build do not
+establish academic acceptance or production deployment. The 5 October documentation checkpoint
+verified 63 offline tests, Ruff lint and formatting, and `verify-health`.
+
+The [supervisor review plan](docs/SUPERVISOR_REVIEW_PLAN.md) records the proposed work through
+December 2026 and the questions for written feedback. Thesis documents maintained in Google
+Drive use native Google Docs. Word files are exports for email attachments when requested;
+this repository retains the existing LaTeX manuscript sources.
+
+
 ## Prerequisites
 
 - Python 3.11 or newer
@@ -36,7 +50,8 @@ python -m kvarken_eo --demo
 - `tests/` - unit tests, offline STAC fixtures, and provenance verification
 - `docs/` - goals, architecture, current status, and roadmap
 - `docs/THESIS_SUMMARY.md` - academic overview of methods, data flow, evidence, and limitations
-- `thesis/` - complete modular LaTeX Master's thesis manuscript (frontmatter, Chapters 1-6, and bibliography)
+- `docs/SUPERVISOR_REVIEW_PLAN.md` - current draft status, review questions, and proposed completion plan
+- `thesis/` - modular LaTeX Master's thesis draft (frontmatter, Chapters 1-6, and bibliography)
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
 The raster slice also provides dependency-free multiscale processing: `downsample_band` and
@@ -192,15 +207,16 @@ pairs older than the retention window are selected; `experiment_report.json` is 
 
 ### Release readiness
 
-The released baseline is package version `0.1.0`. Runtime code has no external dependencies, the
-offline suite contains 53 passing tests, Ruff lint and formatting checks are clean, and
-`python -m kvarken_eo verify-health` passes. The frozen baseline remains
+The released baseline is package version `0.1.0`. Runtime code has no external dependencies.
+Its historical release checkpoint recorded 53 passing offline tests, clean Ruff lint and
+formatting, and a passing `python -m kvarken_eo verify-health`. The current documentation
+checkpoint is reported separately above. The frozen baseline remains
 `docs/experiments/experiment_report.json`; live-provider evidence is additive and dated. The
 annotated `v0.1.0` tag and GitHub Release identify this certified baseline.
 
 ### Thesis manuscript
 
-The formal manuscript source is under `thesis/`. Build it from that directory with a standard
+The repository manuscript source is under `thesis/`. It remains a draft for supervisor review. Build it from that directory with a standard
 LaTeX/BibTeX toolchain:
 
 ```powershell

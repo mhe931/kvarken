@@ -45,3 +45,20 @@ Future work should add live-provider observations as new immutable experiment re
 - Published annotated `v0.1.0` tag and official GitHub Release for the certified thesis baseline.
 - Add authenticated CDSE observations and representative raster windows as dated artifacts.
 - Compare live-provider results with the frozen offline baseline without overwriting it.
+
+## Proposed thesis completion sequence (October–December 2026)
+
+This sequence is for Professor Arslan's review. It does not confirm graduation or administrative
+deadlines. See [the review plan](SUPERVISOR_REVIEW_PLAN.md) for the outstanding questions.
+
+| Period | Proposed work | Evidence or review outcome |
+|---|---|---|
+| Early October | Send the status and draft work plan; request written feedback on scope and evaluation | Supervisor comments received by email |
+| October | Revise research questions and methods; agree the minimum additional evaluation | Revised scope and an explicit experiment plan |
+| November | Complete the agreed evaluation; revise results, discussion, and limitations | Dated evidence and a revised manuscript sent for review |
+| Early December | Address feedback; check references, formatting, and graduation requirements | Corrected draft reviewed before final submission |
+| Remaining December | Submit only after supervisor review and fulfil the confirmed University process | Submission and administrative steps, subject to deadlines |
+
+Authenticated CDSE observations and representative raster windows are proposed additional
+evidence. Whether they are essential to this thesis should be confirmed with the supervisor
+before expanding the scope. Preserve the frozen offline baseline and keep new runs dated.

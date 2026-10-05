@@ -1,5 +1,11 @@
 # Kvarken EO Pipeline Thesis Summary
 
+## Review status
+
+This is a working thesis draft. Professor Arslan must review the draft and plan before final
+submission. The [supervisor review plan](SUPERVISOR_REVIEW_PLAN.md) records the proposed
+completion sequence and the evaluation questions awaiting his feedback.
+
 ## Research focus
 
 This repository evaluates a reproducible, hybrid Earth Observation data pipeline for the
@@ -35,8 +41,13 @@ records.
 The frozen offline baseline contains a 256-scene synthetic run at concurrency 8 in
 [`docs/experiments/experiment_report.json`](experiments/experiment_report.json). It records
 throughput, elapsed time, payload footprint, catalog size, spatial query latency, cloud-cover
-quality, asset completeness, and failure recovery. Environment-aware live runs write dated
+quality, asset completeness, and a recovery-ratio field. Because failures and retries are zero
+in this run, that ratio does not demonstrate recovery from a provider outage. Environment-aware live runs write dated
 `experiment_report_live_YYYYMMDD` artifacts without overwriting that baseline.
+
+The dated `experiment_report_live_20260915.json` explicitly records `offline-fallback` mode.
+Its metadata comes from the offline fixture, and its spectral window is synthetic. It is not
+evidence of authenticated CDSE access or measurements on downloaded satellite imagery.
 
 ## Validation status
 
@@ -57,7 +68,9 @@ python -m ruff format --check .
 python -m kvarken_eo verify-health
 ```
 
-At the thesis-summary checkpoint, all 53 offline tests pass and the quality gates are clean. Live
+The earlier thesis-summary checkpoint recorded 53 offline tests and clean quality gates. That
+is a historical checkpoint, not a current test count. The 5 October 2026 documentation
+checkpoint verified 63 passing offline tests, Ruff lint and formatting, and `verify-health`. Live
 CDSE evidence remains environment-dependent and must be added as a dated artifact when valid
 credentials are available.
 

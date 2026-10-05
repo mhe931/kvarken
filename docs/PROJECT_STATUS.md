@@ -1,5 +1,28 @@
 # Project status
 
+## 2026-10-05 - Supervisor review and completion planning
+
+Status: working thesis draft; supervisor review pending.
+
+The manuscript and software baseline are available for review, but thesis acceptance and final
+submission readiness have not been established. Professor Arslan has asked to review the draft
+plan and thesis status before accepting a final manuscript. The next step is to send the status
+and draft work plan as an email attachment and revise the thesis after his written feedback.
+
+The frozen report covers 256 synthetic scenes. The dated 20260915 report uses
+`offline-fallback` mode and an `offline-fixture` provider; its filename does not indicate an
+authenticated CDSE experiment. These results support the tested implementation behavior, but
+do not establish live-provider performance, operational deployment, or full raster decoding.
+
+Verification on this checkpoint: 63 offline tests passed; Ruff lint and formatting checks,
+`verify-health`, and whitespace diff checks passed. No runtime code or frozen experiment
+artifacts changed. Earlier test counts below are historical checkpoints.
+
+See [the supervisor review plan](SUPERVISOR_REVIEW_PLAN.md) for the proposed October–December
+2026 sequence, outstanding scope questions, and document workflow. The schedule is a proposal
+for review, not a confirmed University deadline or an assurance of graduation.
+
+
 ## 2026-09-14 - STAC and provenance milestone
 
 Status: green provider milestone.
