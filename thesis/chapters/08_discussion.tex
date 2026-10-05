@@ -1,0 +1,53 @@
+\chapter{Discussion}
+
+\section{Scientific contribution}
+
+The scientific contribution is an explicit architecture and evaluation protocol for a small EO research infrastructure. The contribution lies in the way provider access, domain validation, provenance, bounded concurrency, spatial persistence, lightweight analysis, and preserved evidence are connected. STAC supplies a common description of assets, OGC standards motivate interoperable interfaces, and CDSE supplies the external Copernicus access environment; the thesis focuses on local research contracts that connect such external facilities to an auditable experimental pipeline \citep{ogc-api-features,stac-spec,cdse,kovacs2026cdse}.
+
+The work is not novel because it invents metadata catalogs, OAuth2, SQLite, NDVI, or concurrency primitives. Its defensible originality is the integration and explicit treatment of those elements as research contracts in the Kvarken Space Center context.
+
+\section{Engineering contribution}
+
+The engineering contribution is concrete: typed provider boundaries, recoverable authentication, bounded asynchronous ingestion, content-addressed raw evidence, append-only manifests, indexed local persistence, metadata-first quality filtering, a limited raster/NDVI path, a read-only educational API, CI, and deterministic experiment commands.
+
+The simplicity of the baseline creates trade-offs. A standard-library-only runtime reduces installation variability but does not provide the geospatial capabilities of mature libraries. An embedded catalog is easy to reproduce but is not a distributed service. These are scope choices rather than universal recommendations.
+
+\section{Educational contribution}
+
+Offline-safe fixtures and the read-only API make the pipeline suitable for educational demonstrations. Students or researchers can inspect how metadata enters the system, how it is validated, what is persisted, and how queries are executed without live credentials.
+
+No students, instructors, learning outcomes, or classroom interventions were evaluated. The thesis therefore does not claim that the system improves learning.
+
+\section{Reproducibility contribution}
+
+The frozen baseline, checked-in fixtures, deterministic report format, CI workflow, and append-only dated artifacts provide a reproducibility contribution independent of absolute performance. A future developer can rerun the offline procedure, compare the result with the frozen artifact, and identify behavioral changes.
+
+\section{Threats to validity}
+
+\subsection{Internal validity}
+
+The frozen benchmark is controlled, but the timing values are single recorded measurements rather than distributions from repeated trials. Hardware, filesystem behavior, operating-system scheduling, Python version, and background processes can affect elapsed time. The benchmark is therefore more reliable as a regression snapshot than as an estimate of typical performance.
+
+\subsection{Construct validity}
+
+The metrics have narrow meanings. Throughput measures the implemented metadata path, not provider bandwidth or raster processing. Spatial-query latency measures the local catalog and geometry path. Recovery is better represented by controlled tests than by a benchmark ratio when no failures occurred. Educational capability is represented by interface availability, not learning outcomes.
+
+\subsection{External validity}
+
+Most empirical evidence is synthetic and offline. The work does not establish behavior across changing CDSE load, real authentication incidents, diverse Sentinel-2 product volumes, arbitrary coordinate systems, or distributed deployments. The Kvarken bounding box is a deterministic study preset rather than a validated operational-region definition.
+
+\subsection{Reproducibility limits}
+
+Versioned fixtures and artifacts improve reproducibility, but exact timing cannot be guaranteed across machines. External provider interfaces may evolve. Future live experiments should preserve provider endpoint information, software version, configuration, and date alongside the results.
+
+\section{Implications for the Kvarken Space Center context}
+
+The main implication is that a research infrastructure does not need to begin as a large operational platform. A smaller baseline can first make access rules, provenance, spatial filtering, failure handling, and evidence preservation explicit. This creates a stable point from which raster processing, alternative storage backends, and cloud execution can be added.
+
+The case-study claim should remain modest. The thesis uses Kvarken as a regional and institutional context, but it does not document a formal organizational requirements study, deploy the system as a production service, or evaluate users.
+
+\section{Relationship to the supplied literature}
+
+Sentinel-2 provides a concrete multispectral mission context \citep{drusch2012sentinel}, while wider remote-sensing research motivates repeated observations for environmental research \citep{mahecha2010terrestrial}. STAC supplies the asset-oriented metadata model used at the provider boundary, and OGC standards provide a broader interoperability context \citep{stac-spec,ogc-api-features}. CDSE supplies the external Copernicus access environment against which authentication and provider decoupling are designed \citep{cdse,kovacs2026cdse}. SQLite WAL provides the local transactional mechanism used by the embedded catalog \citep{sqlite-wal}.
+
+The thesis therefore sits between standards, provider infrastructure, and local research engineering. A broader literature survey would be required for a systematic comparison with the full range of EO data cubes, cloud-native geospatial platforms, provenance frameworks, and spatial databases.

@@ -6,51 +6,71 @@
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{setspace}
+\usepackage{natbib}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
+
+\onehalfspacing
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{2pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
 
 \title{Design and Implementation of a Hybrid Earth Observation Data Infrastructure\\
 for Research and Education: A Case Study of Kvarken Space Center}
 \author{Daniel Ebrahimzadeh Esfahani}
-\date{September 2026}
+\date{2026}
 
 \begin{document}
 
 \begin{titlepage}
 \centering
-\vspace*{20mm}
-{\Large University of Vaasa\par}
-\vspace{25mm}
+\vspace*{15mm}
+{\Large\bfseries UNIVERSITY OF VAASA\par}
+\vspace{2mm}
+{\large School of Technology and Innovations\par}
+\vspace{22mm}
 {\LARGE\bfseries Design and Implementation of a Hybrid Earth Observation Data Infrastructure\par}
 \vspace{4mm}
 {\Large for Research and Education: A Case Study of Kvarken Space Center\par}
-\vspace{25mm}
-Master's thesis\par
+\vspace{22mm}
+{\large Master's Thesis\par}
+\vspace{8mm}
+Master's Degree Programme in Computing Sciences\par
+Major: Artificial Intelligence and Data Engineering\par
 \vspace{12mm}
 Daniel Ebrahimzadeh Esfahani\par
 \vfill
 Supervisor: Professor Ali Nadir Arslan\par
 \vspace{8mm}
-September 2026
+Vaasa 2026\par
 \end{titlepage}
 
 \pagenumbering{roman}
 \include{chapters/00_abstract}
+\tableofcontents
+\clearpage
 \include{chapters/00_acknowledgements}
 \include{chapters/00_abbreviations}
-\tableofcontents
-\listoffigures
-\listoftables
 \clearpage
 \pagenumbering{arabic}
+
 \include{chapters/01_introduction}
 \include{chapters/02_background}
+\include{chapters/03_methodology}
 \include{chapters/03_architecture}
 \include{chapters/04_implementation}
 \include{chapters/05_evaluation}
+\include{chapters/07_analysis}
+\include{chapters/08_discussion}
 \include{chapters/06_conclusion}
 
-\bibliographystyle{plain}
+\bibliographystyle{apalike}
 \bibliography{references}
+
+\appendix
+\include{chapters/appendix_ai}
+\include{chapters/appendix_repro}
 
 \end{document}

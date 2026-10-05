@@ -1,0 +1,16 @@
+\chapter{Reproducibility and Claim Boundaries}
+
+The following statements define the intended interpretation of the released thesis baseline:
+
+\begin{itemize}
+\item The evaluated release baseline is package version 0.1.0.
+\item The core runtime declares no third-party Python dependencies and requires Python 3.11 or later.
+\item The released baseline records 53 passing offline tests; this is a release record, not a newly rerun measurement in the thesis text.
+\item The frozen benchmark contains 256 synthetic scenes at concurrency eight and is a local metadata-path regression reference.
+\item The throughput value of 220.819653 items per second is not a measurement of CDSE or raster-download performance.
+\item The 9.117 ms spatial-query value is a recorded local benchmark value, not a general latency guarantee.
+\item The 20260915 artifact is explicitly \texttt{offline-fallback} with provider \texttt{offline-fixture} and must not be described as live CDSE performance.
+\item The raster implementation demonstrates byte-range access, simple downsampling, and NDVI on aligned arrays; it is not a full GeoTIFF processing system.
+\item The educational API demonstrates access for teaching scenarios, but educational outcomes were not evaluated.
+\item The project does not claim distributed or production-scale scalability.
+\end{itemize}
