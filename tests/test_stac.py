@@ -40,7 +40,7 @@ async def test_search_fetches_pages_and_preserves_query():
         retry_policy=RetryPolicy(base_delay=0, max_delay=0),
     )
 
-    items = await client.search(collections=("sentinel-2-l2a",), bbox=(21, 63, 21.1, 63.1), limit=1)
+    items = await client.search(bbox=(21, 63, 21.1, 63.1), limit=1)
 
     assert [item.item_id for item in items] == [
         "S2A_MSIL2A_20260914T100031_N0511_R122_T34WDL_20260914T123456",
@@ -49,6 +49,18 @@ async def test_search_fetches_pages_and_preserves_query():
     assert transport.requests[0][0] == "POST"
     assert transport.requests[0][2]["collections"] == ["sentinel-2-l2a"]
     assert transport.requests[1][0] == "GET"
+
+
+@pytest.mark.asyncio
+async def test_search_allows_collection_override():
+    page = fixture("stac_search_page_1.json")
+    page["links"] = []
+    transport = FakeTransport([page])
+    client = STACClient("https://stac.example.invalid", transport)
+
+    await client.search(collections=("custom-collection",))
+
+    assert transport.requests[0][2]["collections"] == ["custom-collection"]
 
 
 @pytest.mark.asyncio

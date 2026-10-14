@@ -11,7 +11,7 @@ from kvarken_eo.models import EOScene
 def test_catalog_http_query_returns_filtered_json(tmp_path):
     scene = EOScene(
         "scene-api",
-        "SENTINEL-2",
+        "sentinel-2-l2a",
         datetime(2026, 9, 14, tzinfo=UTC),
         8.0,
         ((21.0, 63.0), (21.1, 63.0), (21.1, 63.1)),
@@ -24,7 +24,10 @@ def test_catalog_http_query_returns_filtered_json(tmp_path):
         thread = threading.Thread(target=server.serve_forever)
         thread.start()
         try:
-            url = f"http://127.0.0.1:{server.server_port}/api/scenes?platform=SENTINEL-2&max_cloud_cover=10"
+            url = (
+                f"http://127.0.0.1:{server.server_port}/api/scenes?"
+                "platform=sentinel-2-l2a&max_cloud_cover=10"
+            )
             with urllib.request.urlopen(url) as response:
                 payload = json.loads(response.read())
             assert [item["scene_id"] for item in payload["scenes"]] == ["scene-api"]

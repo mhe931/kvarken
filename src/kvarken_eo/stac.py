@@ -100,7 +100,7 @@ class STACClient:
     async def search(
         self,
         *,
-        collections: tuple[str, ...] = (),
+        collections: tuple[str, ...] = ("sentinel-2-l2a",),
         bbox: tuple[float, float, float, float] | None = None,
         datetime_range: str | None = None,
         limit: int = 100,

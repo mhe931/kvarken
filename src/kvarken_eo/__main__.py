@@ -146,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
                     {
                         "kvarken-demo-001": {
                             "scene_id": "kvarken-demo-001",
-                            "platform": "SENTINEL-2",
+                            "platform": "sentinel-2-l2a",
                             "acquired_at": "2026-09-14T12:00:00+00:00",
                             "cloud_cover": 12.5,
                             "footprint": [(21.0, 63.0), (21.1, 63.0), (21.1, 63.1)],
