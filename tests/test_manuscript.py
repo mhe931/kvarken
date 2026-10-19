@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 docx = pytest.importorskip("docx")
@@ -26,6 +28,7 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     abbreviations.rows[0]._tr.get_or_add_trPr().append(docx.oxml.OxmlElement("w:tblHeader"))
     document.add_heading("Introduction", 1)
     document.add_heading("Motivation", 2)
+    document.add_picture(str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg"))
     document.add_paragraph(
         "Independent Sentinel-2A input, approximately 17.90 hours later. Details."
     )
@@ -42,6 +45,8 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
         "Design and Implementation of a Hybrid Earth Observation Data Infrastructure"
     )
     assert saved.core_properties.author == "Daniel Ebrahimzadeh Esfahani"
+    assert "17.90 hours" in saved.inline_shapes[0]._inline.docPr.get("descr", "")
+    assert "not field ground truth" in saved.inline_shapes[0]._inline.docPr.get("descr", "")
     text = [paragraph.text for paragraph in saved.paragraphs]
     assert "1  Introduction" in text
     assert "1.1  Motivation" in text
