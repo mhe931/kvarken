@@ -32,6 +32,7 @@ jobs:
             texlive-xetex \
             texlive-latex-extra \
             texlive-bibtex-extra \
+            texlive-fonts-recommended \
             biber \
             fonts-crosextra-carlito
 
