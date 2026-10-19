@@ -1,0 +1,13 @@
+metric,value,unit
+ordinary_agreement,0.8799551995655716,fraction
+balanced_agreement,0.8826140287291879,fraction
+ice_precision,0.23529411764705882,fraction
+ice_recall,0.8855047941342358,fraction
+ice_f1,0.3717956308093067,fraction
+candidate_ice,1219.28,km2
+candidate_ice_without_optical_label,795.91,km2
+candidate_water,4733.51,km2
+heldout_candidate_ice,133.45,km2
+heldout_reference_ice,35.46,km2
+optical_reference_ice,111.99000000000001,km2
+valid_sar_water,5952.79,km2

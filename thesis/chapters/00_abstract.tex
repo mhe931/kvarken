@@ -1,22 +1,59 @@
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
+\begingroup
+\singlespacing
+\fontsize{11}{12.5}\selectfont
+\noindent\textbf{UNIVERSITY OF VAASA}\\
+School of Technology and Innovations\\[4pt]
+\begin{tabular}{@{}p{0.21\textwidth}p{0.75\textwidth}@{}}
+Author & Daniel Ebrahimzadeh Esfahani\\
+Title & Design and Implementation of a Hybrid Earth Observation Data Infrastructure for Research and Education: A Case Study of Kvarken Space Center\\
+Degree & Master of Science in Technology\\
+Programme & Computing Sciences; Artificial Intelligence and Data Engineering\\
+Supervisor & Professor Ali Nadir Arslan\\
+Year & 2026\\
+\end{tabular}
+\par\medskip\noindent\textbf{Abstract}\par
 
-Earth Observation (EO) systems combine heterogeneous satellite metadata, raster assets, and
-spatial queries whose reliability depends on both provider behavior and local processing
-constraints. This thesis presents the design and implementation of a hybrid EO data
-infrastructure for research and education in the Kvarken Space Center context. The system
-combines public STAC and authenticated Copernicus Data Space Ecosystem (CDSE) access,
-typed boundary validation, bounded asynchronous ingestion, content-addressed provenance,
-SQLite-based spatial cataloguing, metadata quality profiling, and lightweight raster
-analysis.
+Earth Observation research depends on more than downloading satellite images. A usable
+infrastructure must validate metadata, preserve the origin of observations, control external
+requests, support spatial queries, and connect these operations to a scientific application.
+University research groups also need reproducible procedures when credentials or computing
+resources are unavailable. This thesis designs and
+evaluates a hybrid Earth Observation infrastructure in the Kvarken Space Center context.
+Here, hybrid means external standards-based data access combined with local persistence,
+processing and an offline-safe engineering baseline.
 
-The implementation deliberately uses only the Python standard library at runtime. Injectable
-transports and checked-in fixtures make failure recovery, OAuth2 token refresh, rate limiting,
-concurrency, SQLite contention, and analytical behavior testable without network access. The
-frozen empirical baseline ingests 256 synthetic scenes at concurrency 8 and records throughput,
-payload footprint, catalog size, spatial query latency, quality distributions, and failure
-recovery. The repository release baseline passes 53 offline tests, Ruff quality checks, and an
-end-to-end health verification command.
+The work follows an engineering design-and-evaluation approach. Provider responses are
+validated before transformation into a transport-neutral scene model. The implementation
+combines bounded asynchronous ingestion, content-addressed payload storage, append-only
+provenance, an embedded spatial catalog, metadata quality filters and a read-only educational
+interface. An optional scientific environment adds raster processing without changing the
+lightweight metadata runtime.
 
-\textbf{Keywords:} Earth Observation, STAC, CDSE, data infrastructure, provenance, SQLite,
-bounded concurrency, reproducible research
+The practical application examines sea-ice candidate mapping in eastern Kvarken using actual
+Sentinel-1 radar observations. An independently acquired Sentinel-2 observation supplies
+conservative optical proxy labels for snow-covered ice and dark water. A static land-cover
+product supports land exclusion, while native-resolution categorical coverage and a coastal
+buffer reduce mixed-cell contamination. A scene-specific linear discriminant uses both radar
+polarisations. Spatially separated training and evaluation blocks avoid direct sample overlap.
+Outputs include georeferenced maps, quantitative reports and checksummed acquisition records. Actual scene metadata is replayed through the
+implemented catalog and provenance path.
+
+The engineering evaluation combines automated failure-oriented tests with a preserved
+synthetic benchmark. The scientific application demonstrates a complete local processing path,
+but also exposes a substantial limitation: many radar ice candidates disagree with the
+selective optical water reference. Ordinary agreement is lower than an always-water baseline,
+although balanced agreement detects information about both reference classes. The difference
+between acquisition times, incomplete optical coverage, wind-sensitive radar backscatter and
+unverified upstream noise treatment prevent interpreting candidate area as validated sea-ice
+extent. The experiment therefore provides evidence of application integration and diagnostic
+evaluation, not an operational ice-monitoring algorithm.
+
+Execution occurred on the local CPU. CSC cPouta deployment was prepared but could not be
+verified because authenticated project access was unavailable. No local measurements are
+presented as cloud results. The contribution is an auditable connection between infrastructure
+and actual satellite analysis, with explicit scientific and deployment boundaries. Further independent observations, repeated acquisitions and an authenticated CSC run remain
+necessary.
+
+\par\medskip\noindent\textbf{Keywords:} Earth Observation; Sentinel-1; sea ice; STAC;
+provenance; spatial catalog; reproducibility; Kvarken
+\endgroup

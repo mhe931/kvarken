@@ -8,6 +8,7 @@ from kvarken_eo.ingestion import FetchTimeout, RateLimitExceeded, RetryPolicy
 from kvarken_eo.models import PayloadValidationError
 from kvarken_eo.provenance import FileProvenanceSink
 from kvarken_eo.stac import STACClient
+from kvarken_eo.transform import transform_stac_to_scene
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -27,6 +28,15 @@ class FakeTransport:
 
 def fixture(name):
     return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
+
+
+def test_projected_raster_crs_does_not_relabel_stac_geographic_footprint():
+    item = fixture("stac_search_page_1.json")["features"][0]
+    item["properties"]["proj:epsg"] = 32634
+    scene = transform_stac_to_scene(item)
+    assert scene.epsg == 4326
+    assert scene.footprint[0] == (21.0, 63.0)
+    assert item["properties"]["proj:epsg"] == 32634
 
 
 @pytest.mark.asyncio

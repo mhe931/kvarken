@@ -4,14 +4,18 @@ Production-minded research scaffold for hybrid Earth Observation (EO) data inges
 
 ## Current thesis status
 
-As of 5 October 2026, the thesis is a working draft awaiting Professor Arslan's review.
-The checked-in evidence is offline and synthetic; the dated 20260915 experiment also ran in
-offline-fallback mode. The implementation baseline and a successful manuscript build do not
-establish academic acceptance or production deployment. The 5 October documentation checkpoint
-verified 63 offline tests, Ruff lint and formatting, and `verify-health`.
+As of 19 October 2026, the working draft includes an executed Sentinel-1 application with
+independent Sentinel-2 optical proxy comparison. Positive precision is low: the candidate map
+is **not validated total sea-ice extent**. Actual CSC execution and synchronization of the
+existing shared Google Doc remain blocked by authenticated access. No submission approval
+has been received. See the [delivery report](docs/THESIS_DELIVERY_REPORT_20261019.md).
 
-The [supervisor review plan](docs/SUPERVISOR_REVIEW_PLAN.md) records the proposed work through
-December 2026 and the questions for written feedback. Thesis documents maintained in Google
+The frozen 256-scene baseline remains synthetic and the 20260915 artifact remains offline
+fallback. New real-data evidence is separate in [the research record](docs/research/20261019/README.md).
+The expanded local suite passed 90 tests with the optional science/document dependencies.
+
+The [supervisor review plan](docs/SUPERVISOR_REVIEW_PLAN.md) records received feedback,
+remaining acceptance gates and the user-supplied 23 October working deadline. Thesis documents maintained in Google
 Drive use native Google Docs. Word files are exports for email attachments when requested;
 this repository retains the existing LaTeX manuscript sources.
 
@@ -51,7 +55,7 @@ python -m kvarken_eo --demo
 - `docs/` - goals, architecture, current status, and roadmap
 - `docs/THESIS_SUMMARY.md` - academic overview of methods, data flow, evidence, and limitations
 - `docs/SUPERVISOR_REVIEW_PLAN.md` - current draft status, review questions, and proposed completion plan
-- `thesis/` - modular LaTeX Master's thesis draft (frontmatter, Chapters 1-6, and bibliography)
+- `thesis/` - canonical modular manuscript, nine chapters, appendices and document export tooling
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
 The raster slice also provides dependency-free multiscale processing: `downsample_band` and
@@ -64,6 +68,20 @@ and records window throughput, peak memory, and sample NDVI in dated
 `docs/experiments/`; the frozen `experiment_report.json` remains unchanged.
 
 ## Development conventions
+
+### Real-data application and document exports
+
+The standard-library metadata runtime is unchanged. Install optional dependencies only when needed:
+
+```powershell
+python -m pip install -e ".[dev,science,documents]"
+python -m kvarken_eo.case_study --help
+```
+
+Use the [recorded configuration and acquisition/reuse commands](docs/research/20261019/README.md).
+For official-template DOCX and local PDF builds, see [the manuscript build guide](thesis/README.md).
+Metadata replay on a remote host must be independently evidenced; the
+[CSC procedure](docs/CSC_DEMONSTRATION.md) is not a claim that deployment happened.
 
 Keep source code under `src/`, add a focused test for every behavior change, and update the relevant document in `docs/` when a milestone or architectural decision changes. Do not commit credentials, raw datasets, generated artifacts, or local environment files.
 

@@ -1,68 +1,50 @@
-# Thesis status and draft work plan
+# Supervisor review plan: 19 October 2026
 
-**Author:** Däniel Ebrahimzadeh Esfahani  
-**Supervisor:** Professor Ali Nadir Arslan  
-**Date:** 5 October 2026  
-**Status:** Draft for supervisor review
+## Received requirements and present status
 
-## Purpose and current position
+The user supplied Professor Ali Nadir Arslan's feedback: infrastructure description alone
+is insufficient; demonstrate one actual satellite application with workflow in Chapter 5,
+maps/results/evaluation in Chapter 6. The user also supplied his recommendation for an
+actual CSC run, preferably cPouta. Original email dates and mail delivery are not verified
+here. Cem Özcan is proposed as reviewer; acceptance is not confirmed.
 
-I have prepared this plan to explain where the thesis stands and what I think remains before
-submission. My aim is to complete the work by the end of December 2026, subject to your feedback
-and the University's confirmed deadlines. I understand that you need to review the draft in
-advance. The manuscript is therefore still a working draft.
+An authentic Sentinel-1 case with independent Sentinel-2 proxy comparison has run locally.
+Its classifier has low positive precision and must not be called validated total ice extent.
+CSC execution has not occurred. The shared Google Doc has not been synchronized.
+See [the evidence](research/20261019/README.md) and
+[the full delivery report and email draft](THESIS_DELIVERY_REPORT_20261019.md).
 
-The thesis concerns the design and implementation of a hybrid Earth Observation data
-infrastructure for research and education, using Kvarken Space Center as the case study.
-The repository contains a narrower implemented baseline: typed scene validation, bounded
-asynchronous ingestion, provenance records, a SQLite spatial catalog, metadata quality
-filters, a small raster-processing slice, and a read-only educational API. The wider hybrid
-architecture remains the design context; its full deployment has not been demonstrated.
+## Immediate sequence
 
-## Evidence available and its limits
+1. Complete personal author review of the revised manuscript, figures, references and disclosure.
+2. Securely authenticate to MyCSC/cPouta; verify project service access, member acceptance and quota.
+   Run the [recorded demonstration](CSC_DEMONSTRATION.md) on an authorized VM and preserve evidence.
+3. Securely reopen the existing native Google Doc and synchronize from the canonical source,
+   preserving its ID, sharing and history. Verify the remote content by reopening it.
+4. Email the revised DOCX/PDF to **Dear Professor Arslan,**, signed **Däniel**, explicitly
+   identifying the scientific limits and whether CSC execution has actually been completed.
+   The report contains a draft only; no email was sent and no meeting is requested.
+5. Obtain written scientific/structural feedback. Do not infer approval from software tests,
+   document exports or the existence of a shared link.
+6. Obtain supervisor authorization for Turnitin, then authorization for Osuva after the
+   report has been reviewed. Follow the programme/Education Services instructions.
 
-The frozen experiment report contains 256 synthetic scenes at concurrency eight. It measures
-the implemented metadata path, including validation, persistence, and spatial queries. The
-reported cloud cover and asset completeness come from the fixture and do not describe the
-actual distribution of Sentinel-2 acquisitions over Kvarken.
+## Deadline and administrative boundary
 
-The dated 15 September report also ran in offline-fallback mode. It used one fixture scene
-and a synthetic B04/B08 window. It provides a check of the numerical processing and reporting
-path, but it does not demonstrate an authenticated CDSE run, full GeoTIFF decoding, or
-production performance. I will keep these limits clear in the evaluation and discussion.
+The user's urgent working deadline is **23 October 2026** for the intended December graduation.
+The individual submission/assessment deadline could not be publicly verified; the relevant
+Jolla timetable requires authenticated access. Confirm it immediately with the supervisor
+and Education Services. The public 18 December graduation event is not proof of an individual
+degree-completion deadline. No graduation, reviewer approval or submission is guaranteed.
 
-The checked-in tests cover validation, retry handling, provenance, bounded workers, catalog
-queries, OAuth behavior with injected transports, and raster calculations. Software checks
-support implementation integrity; they do not replace the additional research evidence that
-may be needed for the final thesis.
+The October--December proposal recorded at the 5 October checkpoint is superseded.
+Actual feedback received after this revision must be recorded with its date and source;
+do not record drafted correspondence as sent.
 
-## Questions for written feedback
+## Canonical document
 
-I would appreciate your feedback on whether the current research scope is suitable and which
-additional evidence you consider necessary. In particular, should I complete an authenticated
-CDSE experiment and an analysis of representative raster windows before submission? I would
-also appreciate guidance on how much educational and industrial validation is needed within
-the remaining time.
+Repository source: [the modular manuscript](../thesis/main.tex).
+Existing shared native Google Doc (not yet updated by this session):
+https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
 
-I would prefer to continue the thesis communication by email so I can keep track of your
-comments and refer to them while revising. I will send the status and plan as an attachment.
-The draft email has not been treated as sent, and no approval has been assumed.
-
-## Proposed remaining work
-
-In October, I plan to revise the scope, research questions, and methods after your feedback
-and agree the minimum additional evaluation. In November, I plan to carry out that evaluation,
-record new results as dated artifacts, and send a revised manuscript for review.
-
-In early December, I plan to address the remaining comments and check the references,
-University template, and submission requirements. Final submission will follow your review
-and the confirmed University process. This is a proposed schedule; the review time and
-administrative deadlines still need to be confirmed.
-
-## Document workflow
-
-The working thesis and status documents in Google Drive are maintained as native Google Docs.
-A Word file may be exported for an email attachment because the supervisor requested that
-format. The repository's existing LaTeX sources remain available for reproducibility.
-Empirical values must remain traceable to the frozen or dated experiment artifacts, and new
-experiments must not overwrite the frozen baseline.
+Do not create a replacement Doc or change supervisor permissions.

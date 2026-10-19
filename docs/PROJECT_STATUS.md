@@ -1,5 +1,25 @@
 # Project status
 
+## 2026-10-19 - Actual-data application; external acceptance gates open
+
+- Recovered the nine-chapter manuscript from existing PR #22 without discarding its work.
+- Executed real Sentinel-1 RTC / Sentinel-2 L2A / WorldCover processing on the local CPU.
+- Corrected optical tile ownership, native class purity, land screening, single-class
+  block reporting and item-specific provenance after an independent computational review.
+- Held-out proxy agreement is 88.00%, balanced agreement 88.26%, ice precision 23.53%.
+  This is diagnostic evaluation, not validated total sea-ice extent.
+- Published small checksummed evidence under [research/20261019](research/20261019/README.md);
+  raw windows remain ignored. Frozen synthetic artifacts are unchanged.
+- Expanded local suite: 90 passing tests with optional science/document dependencies.
+- CSC authentication/project access and native Google Docs synchronization remain blocked.
+  No cloud resources, emails, submissions or approvals were created or claimed.
+- Revised the manuscript and produced official-styled review exports. Local rendering does
+  not establish author acceptance, supervisor acceptance or university submission readiness.
+
+The [delivery report](THESIS_DELIVERY_REPORT_20261019.md) and
+[current review plan](SUPERVISOR_REVIEW_PLAN.md) supersede the schedule below.
+23 October is the user's urgent working deadline, not a publicly verified universal deadline.
+
 ## 2026-10-05 - Supervisor review and completion planning
 
 Status: working thesis draft; supervisor review pending.

@@ -1,5 +1,22 @@
 \chapter{Background}
 
+\section{Radar sea ice and independent optical evidence}
+
+SAR observations support sea-ice monitoring, but a radar return is a measurement of
+scattering properties rather than a direct semantic ice label. Ice-type classification,
+motion retrieval and melt detection are distinct tasks; combining active and passive
+sensors can provide complementary evidence \citep{dierking2013}. This thesis uses
+dual-polarisation Sentinel-1 for one exploratory classification task, not all of these
+capabilities.
+
+Radiometric terrain correction normalises geometric influences on observed brightness
+\citep{small2011}. It does not by itself identify sea ice. The practical experiment therefore
+uses independent Sentinel-2 reflectance and scene categories to construct a selective
+reference. The optical label rules are explicit experimental assumptions, not field
+observations. Different sensor times, incomplete coverage and uncertain classes must
+remain visible in interpretation. An operational ice chart can be informative but is
+not necessarily independent when its production already uses Sentinel-1.
+
 \section{Earth observation information models}
 
 Earth observation (EO) systems produce observations whose scientific value depends on both the

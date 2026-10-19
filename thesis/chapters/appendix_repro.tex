@@ -1,0 +1,59 @@
+\chapter{Reproducibility and Claim Boundaries}
+
+\section{Historical evidence}
+
+\begin{itemize}
+\item Package 0.1.0 is the released baseline; its runtime has no third-party dependencies.
+\item The historical release recorded 53 passing tests; later additions are separate checkpoints.
+\item The frozen benchmark has 256 synthetic scenes at concurrency eight.
+\item Its 220.819653 items/s throughput is local metadata-path performance, not CDSE or raster bandwidth.
+\item Its 9.117~ms query measurement is not a general latency guarantee.
+\item The 20260915 artifact is \texttt{offline-fallback} / \texttt{offline-fixture}, not a live CDSE run.
+\item The earlier range/NDVI slice uses aligned fixture arrays. The optional science environment
+separately processes actual GeoTIFF windows; it is not a general-purpose SAR processor.
+\item The educational API was tested, but learning outcomes and distributed scale were not evaluated.
+\end{itemize}
+
+\section{Actual-data reproduction}
+
+The canonical configuration and small evidence files are in
+\texttt{docs/research/20261019/}; large raster windows remain in ignored local storage.
+The following commands run from the repository root. Enter each on one line in PowerShell.
+Use a new output directory for each completed analysis.
+
+\begin{verbatim}
+python -m pip install -e ".[dev,science]"
+python -m kvarken_eo.case_study --help
+python -m pytest
+python -m ruff check .
+python -m ruff format --check .
+python -m kvarken_eo verify-health
+\end{verbatim}
+
+For fresh acquisition, invoke \texttt{python -m kvarken\_eo.case\_study} with
+\texttt{--config} \nolinkurl{docs/research/20261019/case_config.json},
+\texttt{--inputs-dir} \nolinkurl{data/seaice_reproduction}, and
+\texttt{--output-dir} \nolinkurl{outputs/seaice_reproduction}; use the platform's path separators.
+For another analysis of those verified inputs, omit the configuration and add
+\texttt{--reuse-inputs}, choosing a different output directory.
+
+Acquisition requires live source access and temporary read-only signing tokens.
+Reuse checks cached hashes and contacts only the local API. The interrupted initial
+acquisition is retained. Native categorical coverage corrections have a supplemental,
+immutable quality-mask manifest linked to the original input manifest.
+The native-mask preparation option is required only when extending an older cache lacking
+those masks, not for ordinary fresh acquisition.
+
+Numerical results are deterministic for the retained inputs and parameters. Timing,
+timestamps and catalog/provenance bytes may change between runs. Executed-source hashes
+and package/GDAL versions identify the actual implementation when Git was dirty;
+the old base commit alone does not contain that extension. The published report lists
+all held-out blocks and uses null for undefined metrics.
+
+\section{Environment and acceptance gates}
+
+Actual processing ran on the local Windows CPU, not the GPU or CSC. No authenticated
+CDSE pixel download is claimed. The prepared CSC metadata replay must be executed on
+an authorized project before it can supply deployment evidence. The repository delivery
+report records the secure-access prerequisites and submission sequence. Google Docs
+synchronization, personal author review and all university approvals remain separate gates.
