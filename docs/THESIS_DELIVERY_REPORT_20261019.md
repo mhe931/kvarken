@@ -263,6 +263,13 @@ Docs/Drive API connector was found. A precise human-assisted rich-content transf
 the CSC-integrated Word draft into the **same** native Doc was requested; the user was
 unavailable. Remote re-export and verification are still required. Do not upload a replacement Word file
 or create a new Doc as a workaround.
+One further supported keyboard-focus route reached the document content iframe, but a
+formatted Word clipboard paste did not change its saved export. The original Google
+manuscript was backed up locally as `google_doc_before_sync.docx`. No successful mutation
+is claimed. The next human action is to open the CSC-integrated DOCX in Word, copy its
+entire body, select the entire existing Google Doc body, paste **with formatting**, and
+wait for **Saved to Drive**. The agent must then re-export and verify actual content,
+figures/tables, citations, AI disclosure and pagination; a successful paste alone is insufficient.
 The old “Final Candidate” DOCX and Google Slides are historical, not revised deliverables.
 
 ## J. Verification and independent review
@@ -301,6 +308,10 @@ The completed CSC run has separate remote evidence; document synchronization and
 approval are not implied by green software CI. Follow-up branch
 `csc-thesis-completion-20261019` contains that actual evidence and manuscript integration;
 its final Git/CI disposition is recorded in the generated delivery audit and final handoff.
+The actual evidence/manuscript commit is `bc36bee1200d829eaed7a71295d420cdd3d6c7c1`.
+It was pushed and opened as [PR #23](https://github.com/mhe931/kvarken/pull/23).
+The initial five quality-matrix/manuscript checks passed (plus a duplicate push-triggered
+compile). Review/merge and any subsequent main checks must still be verified, not inferred.
 
 - [x] Authentic satellite input and actual processing.
 - [x] Maps, source manifests, quantitative proxy comparison and honest limitations.
