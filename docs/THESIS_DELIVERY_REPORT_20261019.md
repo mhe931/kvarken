@@ -454,3 +454,12 @@ Official sources checked on 19 October:
 [writing/plagiarism guidance](https://www.uwasa.fi/en/students/writing-guidelines-and-plagiarism-detection),
 [Osuva](https://uva.libguides.com/responsible-thesis/osuva),
 [graduation event](https://www.uwasa.fi/en/students/publiikki-graduation-event).
+
+
+## H. Subsequent verified Google Docs update (19 October 2026, later review)
+
+The unresolved Google Doc status in Sections A and the earlier dated handoff is a **historical record of the failed transfer**; it is preserved intentionally. After that report was written, the author requested a renewed academic audit and a direct update to the existing shared document.
+
+On 19 October, the live exact Google Doc (`1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE`, tab `t.0`) was opened through the authenticated Google Docs connector. Its earlier stale body was replaced in place by a **supervisor-review rendition** of the current 71-page scientific manuscript, preserving the original file ID and supervisor editing permissions. The saved content was read back from Google Docs and verified to contain all five Sentinel research figures, the revised author name, case-study source identifiers, the 23.53% positive precision, the 95.99% baseline, actual CSC project 2021696 and its timings, and an explicit AI-use appendix covering both ChatGPT and Copilot. The Google export was reopened and visually checked for maps, headings and non-empty pages. Earlier inherited bullet formatting was corrected, scientific formulas and comparison summaries were made readable, and five figure image links were verified.
+
+**Status change:** Google Docs synchronization of the research narrative is VERIFIED for the existing live document, unlike the earlier failed manual-transfer attempts. It is **not a certified layout-identical or archival submission file**. PDF-to-editable reconstruction can alter tables, equations, code blocks, hyphenation, contents pagination, alternative text and spacing. Its subsequent Google PDF export spans about 74 pages and is not claimed to meet PDF/A or full accessibility. The previously validated 71-page Word-generated PDF/A-3A is still the preferred supervisor review attachment and provisional archival candidate, subject to matching final author spelling, human scientific review, accessibility and supervisor approval. No Turnitin check, plagiarism score, AI-detector score, email, Osuva submission or academic approval has been performed by this update.
