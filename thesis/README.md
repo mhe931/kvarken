@@ -62,3 +62,18 @@ Both export paths set PDF/document title and author metadata. For Osuva, the met
 title excludes the cover subtitle. Verify these fields in the actually rendered PDF;
 metadata, tags and an archival export option alone do not establish accessibility or
 independently validated PDF/A conformance.
+
+The exporter assigns alternative descriptions to the five scientific maps, preserving
+the distinction between radar candidates, optical proxy agreement and field truth.
+When rendering in Word, set each hyperlink's screen tip to its visible text. Word can
+still omit descriptions for figure/table page-reference links and omit structure-based
+page tab order. Check the actual PDF with an independent validator; a subsequent local
+annotation-only remediation must retain full link labels, preserve all page pixels/text
+and title/author metadata, and be revalidated for PDF/A. Retain both the original and
+remediated bytes and their checksums.
+
+The final-verification candidate passed local veraPDF 1.30.3 PDF/A-3A validation. It is
+not certified PDF/UA-1: the identification requirement remains unsatisfied, and automated
+checks cannot replace human reading-order, screen-reader and alternative-text review.
+See the [delivery report](../docs/THESIS_DELIVERY_REPORT_20261019.md) for the exact candidate,
+validation reports and remaining approvals.

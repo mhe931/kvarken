@@ -19,6 +19,26 @@ FIGURES = (
     "Scene-specific SAR candidate classes,",
     "Held-out optical-reference agreement",
 )
+FIGURE_DESCRIPTIONS = (
+    "Sentinel-1A VV gamma-zero radar backscatter in eastern Kvarken on 30 March 2021. "
+    "Grey tones show measured backscatter, not an ice classification; patterns can also "
+    "reflect wind, incidence angle and residual preprocessing effects.",
+    "Independent Sentinel-2A false-colour optical observation of eastern Kvarken, "
+    "approximately 17.90 hours after the radar acquisition. Bright snow-covered ice "
+    "and dark water support selective proxy labels, not field ground truth. "
+    "Grey areas lack usable coverage; dark pixels are not a missing-data mask.",
+    "Selective optical proxy reference on the analysed water domain: pale-cyan snow-ice "
+    "labels, blue dark-water labels, grey water without a label and white excluded "
+    "land/coastal areas. "
+    "The proxy does not label all ice types or establish total sea-ice extent.",
+    "Scene-specific SAR candidate map, with pale-cyan ice candidates and blue water "
+    "candidates within the screened domain; white areas are excluded. "
+    "Candidate ice covers 1,219.28 square "
+    "kilometres; 65.28 percent has no optical label. This is not validated total ice extent.",
+    "Held-out spatial-block agreement map comparing SAR candidates with selective "
+    "optical labels. Green cells agree and red cells disagree; other cells are "
+    "unlabelled or excluded. Ice precision is 23.53 percent against this proxy.",
+)
 TABLES = (
     "Research questions, primary evidence,",
     "Frozen 256-scene synthetic experiment baseline.",
@@ -63,6 +83,16 @@ def format_document(path: Path) -> dict:
     )
     if abstract_start is None or abstract_end is None or abstract_start >= abstract_end:
         raise ValueError("canonical abstract and keywords are required")
+    for i, paragraph in enumerate(paragraphs):
+        drawings = paragraph._p.xpath(".//wp:docPr")
+        if not drawings:
+            continue
+        caption = next((p.text for p in paragraphs[i + 1 :] if p.text.strip()), "")
+        for prefix, description in zip(FIGURES, FIGURE_DESCRIPTIONS, strict=True):
+            if caption.startswith(prefix):
+                for drawing in drawings:
+                    drawing.set("descr", description)
+                break
     styles = document.styles
     for name in ("Normal", "Body Text", "Bibliography"):
         if name not in styles:

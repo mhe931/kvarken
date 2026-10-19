@@ -13,8 +13,10 @@ infrastructure to that actual application. However:
 - Actual CSC metadata/provenance/catalog/API execution is now verified; raster analysis
   remains local and the remote replay does not improve classifier accuracy.
 - The existing shared native Google Doc has not been synchronized or remotely verified.
-- Personal author review, supervisor acceptance, reviewer confirmation, final accessibility/
-  PDF-A validation, Turnitin authorization and Osuva authorization remain open.
+- Independent PDF/A-3A validation now passes for the locally remediated candidate.
+  Personal author/accessibility review, supervisor acceptance, reviewer confirmation,
+  Turnitin authorization and Osuva authorization remain open. Full PDF/UA-1 conformance
+  is not claimed; its identification requirement remains unsatisfied.
 
 The user's **23 October 2026** working deadline is urgent but was not publicly verified as
 an individual university assessment deadline. Confirm it immediately with Education Services.
@@ -220,6 +222,50 @@ The AI appendix explicitly discloses substantial assistance and pending personal
 
 ## I. Documents and remote synchronization
 
+### Latest final-verification package
+
+- [Current DOCX with scientific figure descriptions](../outputs/thesis_verified_review_20261019/Thesis_Review_20261019.docx).
+- [Current locally remediated PDF/A submission candidate, 71 pages](../outputs/thesis_verified_review_20261019/Thesis_Submission_Candidate_20261019.pdf).
+- [Final content/layout/metadata audit](../outputs/thesis_verified_review_20261019/final_verification.json).
+- [Independent PDF/A-3A report](../outputs/thesis_verified_review_20261019/pdfa3a_validation.xml).
+- [Independent PDF/UA-1 report](../outputs/thesis_verified_review_20261019/pdfua1_validation.xml).
+
+**veraPDF 1.30.3 ran locally**, not an online upload: PDF/A-3A passed **155 rules /
+753,556 checks, zero failures**. This is independent validation, not inference from XMP.
+The separate PDF/UA-1 check passed **105 rules / 272,819 checks** but failed **one
+identification requirement**; full PDF/UA conformance must not be asserted. Human review
+of reading order, equations/tables, figure-description adequacy, keyboard navigation and
+screen-reader use remains necessary. A conformance identifier was not added merely to
+make the checker green.
+
+The source exporter now gives all five scientific maps meaningful alternative text
+without changing their measured results or visible captions. Word hyperlink screen tips
+removed most annotation failures; nine figure/table page-reference links were then given
+their complete actual field labels, and annotated pages were assigned structure-based
+tab order. The local remediation audit records each changed annotation. Original exports
+are preserved. Every candidate page was rendered and is **pixel- and text-identical** to
+the previously inspected 71-page review PDF. All six original image byte sequences,
+all paragraphs and all table text match the canonical DOCX export. Author/title metadata
+and the university template are unchanged.
+The PR review identified incorrect colour names in the first alternative descriptions.
+They were corrected against the actual plotting source: pale-cyan snow ice, blue water,
+grey missing/unlabelled areas, white exclusions and red disagreement. Expanded regression
+checks failed against the previous exporter and passed after correction; the latest
+linked files and validator reports include the corrected descriptions.
+
+| Latest final-verification artifact | SHA-256 |
+|---|---|
+| DOCX | `71274e55c2fedf331639bfb6853d39f8fa0148b66a4c4df9a568236bafee0685` |
+| Remediated PDF/A candidate | `97554ba83eb62922326ae6a11afe03d5583b813877c20679943decb7de8721aa` |
+
+An independent AI scientific/source audit recalculated the unchanged precision, baseline,
+confusion counts, areas and temporal offset, and reverified 20 source files, 22 scientific
+outputs, 33 acquisition windows and 12 native-mask inputs. No acquisition, classification
+or CSC deployment was repeated. The annual-retrospective-mask caveat is already explicit
+in Chapter 8; it is not an omitted limitation. This audit is not human scientific approval.
+
+### Preserved earlier CSC-integrated exports
+
 - [CSC-integrated official-template DOCX](../outputs/thesis_csc_review_20261019_final/Thesis_Review_20261019.docx).
 - [CSC-integrated Word-rendered review PDF](../outputs/thesis_csc_review_20261019_final/Thesis_Review_20261019.pdf).
 - [LaTeX source build](../thesis/main.pdf), generated locally, not committed.
@@ -261,6 +307,17 @@ and must not be used directly as an approved accessible Osuva submission.
 
 The existing native Google Doc ID, link and permissions were not changed:
 https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
+
+**Final transfer verification:** the author reported a completed transfer. Nevertheless,
+fresh authenticated TXT, DOCX and PDF exports from that exact ID still show **66,734
+characters, 42 PDF pages and one image**, versus 71 pages and six images in the current
+local manuscript. All requested numerical markers (23.53, 95.99, 2021696, 0.971050 and
+17:29:42) are absent. Reload and a `cache: no-store` request with a unique query parameter
+returned the same old content. Only one document tab was visible. The exports are retained
+in `outputs/thesis_google_verification_20261019/`; no successful saved transfer is inferred.
+The author was asked to check the exact document/tab or repeat the transfer from the
+current DOCX, but the interaction reported the user unavailable. This is a confirmed
+saved-content mismatch, not a renewed login/MFA request.
 
 It was successfully reopened in authenticated editing mode on 19 October. A read-only,
 same-origin plain-text export returned HTTP 200 and 66,734 characters, but contained neither
@@ -318,9 +375,12 @@ approval are not implied by green software CI. Follow-up branch
 `csc-thesis-completion-20261019` contains that actual evidence and manuscript integration;
 its final Git/CI disposition is recorded in the generated delivery audit and final handoff.
 The actual evidence/manuscript commit is `bc36bee1200d829eaed7a71295d420cdd3d6c7c1`.
-It was pushed and opened as [PR #23](https://github.com/mhe931/kvarken/pull/23).
-The initial five quality-matrix/manuscript checks passed (plus a duplicate push-triggered
-compile). Review/merge and any subsequent main checks must still be verified, not inferred.
+[PR #23](https://github.com/mhe931/kvarken/pull/23) merged on 19 October at **18:00:07 UTC**,
+after six latest-head checks passed and the newline-provenance review thread was resolved.
+All five post-merge checks passed. Local and remote main were reverified at
+`10f91d41a6b6e63b5c3f8435e375f1cdd76d2fa4`.
+The source executed on CSC remains the earlier `0a009885...` revision, not this later
+documentation merge. Only newly found accessibility corrections justify further Git work.
 
 - [x] Authentic satellite input and actual processing.
 - [x] Maps, source manifests, quantitative proxy comparison and honest limitations.
@@ -331,36 +391,31 @@ compile). Review/merge and any subsequent main checks must still be verified, no
 - [ ] Existing Google Doc synchronization/reopen verification.
 - [ ] Personal author review and acceptance of every revised claim/reference/disclosure.
 - [ ] Professor Arslan's scientific approval and reviewer confirmation.
-- [ ] Final accessibility/PDF-A validation and authorized university submission.
+- [x] Independent local PDF/A-3A validation of the remediated candidate.
+- [ ] Human accessibility/reading-order review; full PDF/UA-1 conformance is not established.
+- [ ] Authorized university submission.
 
 ## L. Unsent supervisor email and exact submission sequence
 
 **Draft only; no email has been sent.** Attach the reviewed DOCX/PDF, not an old candidate.
 
-**Subject:** Revised Kvarken thesis: satellite application and verified CSC demonstration
+**Subject:** Revised thesis for final review and Turnitin permission
 
 Dear Professor Arslan,
 
-I have revised the thesis to include an actual Sentinel-1 application in eastern Kvarken.
-Chapter 5 documents the observations, processing and infrastructure integration. Chapter 6
-includes the input, candidate and independent Sentinel-2 comparison maps, quantitative
-results and limitations.
+Please find the revised thesis attached for your final review. Chapters 5 and 6 now
+document actual Sentinel-1 processing, Sentinel-2 proxy comparison, maps and quantitative
+evaluation, together with a verified CSC cPouta metadata-pipeline demonstration.
 
-The comparison reveals low precision among positive ice candidates, so I do not present
-the map as validated total sea-ice extent. I would appreciate your priority feedback on
-whether this diagnostic case meets the practical-application requirement or needs further
-independent validation.
+Ice precision against the selective optical proxy is 23.53%; the always-water baseline
+has 95.99% ordinary agreement. I therefore do not present the candidate map as validated
+total sea-ice extent. The CSC run demonstrates infrastructure portability, not improved
+scientific accuracy. Substantial AI assistance is disclosed.
 
-I also executed the five-scene metadata, provenance, catalog and API workload on CSC cPouta.
-The retrieved remote evidence passed checksum verification and matched the local scene
-and query results. This is infrastructure deployment evidence, not an improvement in
-sea-ice accuracy or a remote repeat of raster classification. Both temporary instances
-were released after preserving their evidence. The repository evidence is available at
-https://github.com/mhe931/kvarken/tree/csc-thesis-completion-20261019/docs/research/20261019.
-
-The revised working draft is attached for review, not submitted as an approved final thesis.
-Please also confirm the individual deadline and the proposed reviewer, Cem Özcan, given
-the 23 October working target for December graduation.
+Please confirm whether this revision meets the practical-application requirement and
+whether I may proceed with the programme's Turnitin submission. Please also confirm the
+applicable deadline and the proposed reviewer, Cem Özcan, given the 23 October working
+target. I will await your authorization before the controlled submission stages.
 
 Däniel
 
@@ -372,7 +427,8 @@ Däniel
 4. Submit the agreed draft there; the supervisor reviews the actual similarity report.
    No score is currently available.
 5. Obtain explicit permission for Osuva. Prepare the authorized accessible PDF/A and ensure
-   it is substantively identical to the approved file.
+   it is substantively identical to the approved file. The current locally validated
+   candidate is linked in Section I; no review-stage file is automatically authorized.
 6. Upload that file to Osuva and email the supervisor and the relevant Education Services.
    The public instructions identify `grades@uwasa.fi` for the School of Technology and Innovations;
    confirm current programme instructions before sending.
@@ -383,6 +439,15 @@ Däniel
    deadline was not verified here.
 9. Separately, the public graduation event is 18 December 2026 at 14:15, with event registration
    by 4 December. Ceremony dates do not guarantee individual thesis approval or graduation.
+
+For the School of Technology and Innovations, the public Moodle course name is
+**School of Technology & Innovations Master's Thesis** (also listed in Finnish).
+Follow the supervisor's exact return-box/file instructions; do not guess an assignment
+or upload format. Attach the current DOCX and PDF candidate for email review. Use only
+the authorized final version for Turnitin/Osuva, not the old Google export, untagged LaTeX
+PDF, historical delivery files or an unapproved subsequent edit. Confirm the final
+graduation timetable through Education Services; 23 October is not independently verified
+as this author's individual university deadline.
 
 Official sources checked on 19 October:
 [Master's thesis](https://www.uwasa.fi/en/students/masters-thesis),

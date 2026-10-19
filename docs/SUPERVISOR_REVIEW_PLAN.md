@@ -12,6 +12,15 @@ An authentic Sentinel-1 case with independent Sentinel-2 proxy comparison has ru
 Its classifier has low positive precision and must not be called validated total ice extent.
 CSC metadata/provenance/catalog/API execution is now verified, with unchanged scientific
 classifier results. The shared Google Doc has not been synchronized.
+
+Final verification after the author's reported transfer still exported the old shared
+42-page manuscript, without current scientific/CSC markers. A reload and cache-bypassed
+request confirmed the mismatch; author clarification/transfer is necessary.
+The [current candidate](../outputs/thesis_verified_review_20261019/Thesis_Submission_Candidate_20261019.pdf)
+passes independent local veraPDF PDF/A-3A validation. Figure alternative text, link
+descriptions and tab order were improved without changing visible pages. Full PDF/UA-1
+conformance is not claimed: its identification requirement fails, and human
+reading-order/screen-reader checks and scientific author review remain open.
 See [the evidence](research/20261019/README.md) and
 [the full delivery report and email draft](THESIS_DELIVERY_REPORT_20261019.md).
 
