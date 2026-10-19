@@ -72,7 +72,7 @@ def format_document(path: Path) -> dict:
     document.core_properties.title = (
         "Design and Implementation of a Hybrid Earth Observation Data Infrastructure"
     )
-    document.core_properties.author = "Daniel Ebrahimzadeh Esfahani"
+    document.core_properties.author = "Däniel Ebrahimzadeh Esfahani"
     document.core_properties.last_modified_by = "AI-assisted manuscript export"
     paragraphs = document.paragraphs
     abstract_start = next(
@@ -141,7 +141,7 @@ def format_document(path: Path) -> dict:
             if paragraph.text.startswith(("Master", "School", "Major", "Supervisor")):
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
             size = 12
-            if paragraph.text == "Daniel Ebrahimzadeh Esfahani":
+            if paragraph.text == "Däniel Ebrahimzadeh Esfahani":
                 size = 16
                 paragraph.paragraph_format.space_before = Pt(81)
             elif paragraph.text.startswith("Design and Implementation"):
