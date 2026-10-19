@@ -41,7 +41,7 @@ def transform_stac_to_scene(stac_item: Mapping[str, object]) -> EOScene:
     footprint = _footprint(geometry, bbox)
     raw_epsg = properties.get("proj:epsg", 4326)
     try:
-        epsg = int(raw_epsg)
+        int(raw_epsg)
     except (TypeError, ValueError) as error:
         raise PayloadValidationError("STAC EPSG must be an integer") from error
 
@@ -63,7 +63,8 @@ def transform_stac_to_scene(stac_item: Mapping[str, object]) -> EOScene:
             "cloud_cover": cloud_cover,
             "footprint": footprint,
             "bbox": bbox,
-            "epsg": epsg,
+            # STAC geometry/bbox are geographic; proj:epsg describes raster assets.
+            "epsg": 4326,
             "assets": assets,
         }
     )

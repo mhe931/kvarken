@@ -1,0 +1,153 @@
+{
+  "base_manifest_sha256": "195903608446ef0b700584833243f9e94be6e634a9e256fa9ad2c19edc36f1b0",
+  "created_at": "2026-10-19T15:28:27.731369+00:00",
+  "method": "Native categorical class fractions averaged in bounded windows; no overviews",
+  "records": [
+    {
+      "class_value": 80,
+      "file": "landcover_0_water_fraction.tif",
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N63E021_Map.tif"
+    },
+    {
+      "class_value": 80,
+      "file": "landcover_1_water_fraction.tif",
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N63E018_Map.tif"
+    },
+    {
+      "class_value": 80,
+      "file": "landcover_2_water_fraction.tif",
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N60E021_Map.tif"
+    },
+    {
+      "class_value": 80,
+      "file": "landcover_3_water_fraction.tif",
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N60E018_Map.tif"
+    },
+    {
+      "class_value": 6,
+      "file": "optical_0_water_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/ER/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VER_20210401T101953.SAFE/GRANULE/L2A_T34VER_A030149_20210331T100024/IMG_DATA/R20m/T34VER_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 11,
+      "file": "optical_0_ice_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/ER/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VER_20210401T101953.SAFE/GRANULE/L2A_T34VER_A030149_20210331T100024/IMG_DATA/R20m/T34VER_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 6,
+      "file": "optical_1_water_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/EQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VEQ_20210401T100115.SAFE/GRANULE/L2A_T34VEQ_A030149_20210331T100024/IMG_DATA/R20m/T34VEQ_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 11,
+      "file": "optical_1_ice_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/EQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VEQ_20210401T100115.SAFE/GRANULE/L2A_T34VEQ_A030149_20210331T100024/IMG_DATA/R20m/T34VEQ_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 6,
+      "file": "optical_2_water_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DR/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDR_20210401T095953.SAFE/GRANULE/L2A_T34VDR_A030149_20210331T100024/IMG_DATA/R20m/T34VDR_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 11,
+      "file": "optical_2_ice_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DR/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDR_20210401T095953.SAFE/GRANULE/L2A_T34VDR_A030149_20210331T100024/IMG_DATA/R20m/T34VDR_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 6,
+      "file": "optical_3_water_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDQ_20210401T102156.SAFE/GRANULE/L2A_T34VDQ_A030149_20210331T100024/IMG_DATA/R20m/T34VDQ_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "class_value": 11,
+      "file": "optical_3_ice_fraction.tif",
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDQ_20210401T102156.SAFE/GRANULE/L2A_T34VDQ_A030149_20210331T100024/IMG_DATA/R20m/T34VDQ_20210331T100021_SCL_20m.tif"
+    }
+  ],
+  "recovered_sar_source_metadata": {
+    "vh": {
+      "crs": "EPSG:32634",
+      "nodata": -32768.0,
+      "shape": [
+        22184,
+        29808
+      ],
+      "tags": {
+        "AREA_OR_POINT": "Area",
+        "Acquisition_DateTime": "2021-03-30T16:06:12.41628837898Z",
+        "ColumnCount": "26795",
+        "DefaultBlue": "1",
+        "DefaultGreen": "2",
+        "DefaultRed": "1",
+        "IncidenceFarAngle": "45.857952",
+        "IncidenceNearAngle": "29.664413",
+        "LookDirection": "Right",
+        "Matrix_Type": "c2r",
+        "NO_DATA_VALUE": "-32768.000000",
+        "NominalLocation_Height": "14.262129",
+        "OrbitDirection": "Ascending",
+        "ProductType": "ORTHO",
+        "PulseRepetitionFrequency": "1717.128974",
+        "RadarCenterWavelength": "0.055466",
+        "RangeDistFirstpixel": "0.000000",
+        "RangeDistLastpixel": "267940.000000",
+        "RowCount": "16679",
+        "SatPositions": "2021-03-30T16:04:55.00000000000Z;3652155.427000;1048372.322000;5959293.273000;-5247.657994;-3863.580552;3886.734007;2021-03-30T16:05:05.00000000000Z;3599447.102000;1009716.907000;5997823.566000;-5293.902943;-3867.418677;3819.280055;2021-03-30T16:05:15.00000000000Z;3546279.262000;971025.612000;6035677.166000;-5339.559069;-3870.756328;3751.397169;2021-03-30T16:05:25.00000000000Z;3492657.827000;932303.440000;6072849.823000;-5384.620573;-3873.594021;3683.093019;2021-03-30T16:05:35.00000000000Z;3438588.770000;893555.388000;6109337.362000;-5429.081723;-3875.932338;3614.375318;2021-03-30T16:05:45.00000000000Z;3384078.125000;854786.447000;6145135.686000;-5472.936859;-3877.771924;3545.251825;2021-03-30T16:05:55.00000000000Z;3329131.978000;816001.599000;6180240.778000;-5516.180387;-3879.113488;3475.730339;2021-03-30T16:06:05.00000000000Z;3273756.474000;777205.822000;6214648.696000;-5558.806786;-3879.957803;3405.818708;2021-03-30T16:06:15.00000000000Z;3217957.812000;738404.085000;6248355.579000;-5600.810603;-3880.305706;3335.524815;2021-03-30T16:06:25.00000000000Z;3161742.245000;699601.345000;6281357.643000;-5642.186460;-3880.158096;3264.856589;2021-03-30T16:06:35.00000000000Z;3105116.078000;660802.555000;6313651.186000;-5682.929048;-3879.515937;3193.821994;2021-03-30T16:06:45.00000000000Z;3048085.671000;622012.654000;6345232.584000;-5723.033131;-3878.380252;3122.429039;2021-03-30T16:06:55.00000000000Z;2990657.435000;583236.573000;6376098.293000;-5762.493548;-3876.752131;3050.685765;2021-03-30T16:07:05.00000000000Z;2932837.833000;544479.230000;6406244.852000;-5801.305211;-3874.632723;2978.600255;2021-03-30T16:07:15.00000000000Z;2874633.376000;505745.532000;6435668.878000;-5839.463106;-3872.023240;2906.180624;2021-03-30T16:07:25.00000000000Z;2816050.627000;467040.373000;6464367.071000;-5876.962295;-3868.924956;2833.435028;",
+        "SlantRangeFarEdge": "267940.000000",
+        "SlantRangeNearEdge": "0.000000",
+        "TimeOfFirstLine": "2021-03-30T16:06:24.91639175796Z",
+        "TimeOfLastLine": "2021-03-30T16:05:59.91618500000Z",
+        "totalProcessedRangeBandwidth": "56500000.000000"
+      }
+    },
+    "vv": {
+      "crs": "EPSG:32634",
+      "nodata": -32768.0,
+      "shape": [
+        22184,
+        29808
+      ],
+      "tags": {
+        "AREA_OR_POINT": "Area",
+        "Acquisition_DateTime": "2021-03-30T16:06:12.41628837898Z",
+        "ColumnCount": "26795",
+        "DefaultBlue": "1",
+        "DefaultGreen": "2",
+        "DefaultRed": "1",
+        "IncidenceFarAngle": "45.857952",
+        "IncidenceNearAngle": "29.664413",
+        "LookDirection": "Right",
+        "Matrix_Type": "c2r",
+        "NO_DATA_VALUE": "-32768.000000",
+        "NominalLocation_Height": "14.262129",
+        "OrbitDirection": "Ascending",
+        "ProductType": "ORTHO",
+        "PulseRepetitionFrequency": "1717.128974",
+        "RadarCenterWavelength": "0.055466",
+        "RangeDistFirstpixel": "0.000000",
+        "RangeDistLastpixel": "267940.000000",
+        "RowCount": "16679",
+        "SatPositions": "2021-03-30T16:04:55.00000000000Z;3652155.427000;1048372.322000;5959293.273000;-5247.657994;-3863.580552;3886.734007;2021-03-30T16:05:05.00000000000Z;3599447.102000;1009716.907000;5997823.566000;-5293.902943;-3867.418677;3819.280055;2021-03-30T16:05:15.00000000000Z;3546279.262000;971025.612000;6035677.166000;-5339.559069;-3870.756328;3751.397169;2021-03-30T16:05:25.00000000000Z;3492657.827000;932303.440000;6072849.823000;-5384.620573;-3873.594021;3683.093019;2021-03-30T16:05:35.00000000000Z;3438588.770000;893555.388000;6109337.362000;-5429.081723;-3875.932338;3614.375318;2021-03-30T16:05:45.00000000000Z;3384078.125000;854786.447000;6145135.686000;-5472.936859;-3877.771924;3545.251825;2021-03-30T16:05:55.00000000000Z;3329131.978000;816001.599000;6180240.778000;-5516.180387;-3879.113488;3475.730339;2021-03-30T16:06:05.00000000000Z;3273756.474000;777205.822000;6214648.696000;-5558.806786;-3879.957803;3405.818708;2021-03-30T16:06:15.00000000000Z;3217957.812000;738404.085000;6248355.579000;-5600.810603;-3880.305706;3335.524815;2021-03-30T16:06:25.00000000000Z;3161742.245000;699601.345000;6281357.643000;-5642.186460;-3880.158096;3264.856589;2021-03-30T16:06:35.00000000000Z;3105116.078000;660802.555000;6313651.186000;-5682.929048;-3879.515937;3193.821994;2021-03-30T16:06:45.00000000000Z;3048085.671000;622012.654000;6345232.584000;-5723.033131;-3878.380252;3122.429039;2021-03-30T16:06:55.00000000000Z;2990657.435000;583236.573000;6376098.293000;-5762.493548;-3876.752131;3050.685765;2021-03-30T16:07:05.00000000000Z;2932837.833000;544479.230000;6406244.852000;-5801.305211;-3874.632723;2978.600255;2021-03-30T16:07:15.00000000000Z;2874633.376000;505745.532000;6435668.878000;-5839.463106;-3872.023240;2906.180624;2021-03-30T16:07:25.00000000000Z;2816050.627000;467040.373000;6464367.071000;-5876.962295;-3868.924956;2833.435028;",
+        "SlantRangeFarEdge": "267940.000000",
+        "SlantRangeNearEdge": "0.000000",
+        "TimeOfFirstLine": "2021-03-30T16:06:24.91639175796Z",
+        "TimeOfLastLine": "2021-03-30T16:05:59.91618500000Z",
+        "totalProcessedRangeBandwidth": "56500000.000000"
+      }
+    }
+  },
+  "sha256": {
+    "landcover_0_water_fraction.tif": "a0e640772270b48754dfe3a383f84aad81902904a6ef7232efab8b1ebc07d609",
+    "landcover_1_water_fraction.tif": "308042653533fe3a04e25f732f22e1b726a29475b18c6ac9e46b5120053445f1",
+    "landcover_2_water_fraction.tif": "095608202c70cbbda86abae63b3e7ed4ec6b3a79599901b8515a8cdc5a3c64f4",
+    "landcover_3_water_fraction.tif": "d6b25f97ef2039920f217632dd659c2e9499813d32a4d5610efb28d0cc089619",
+    "optical_0_ice_fraction.tif": "a22a097019fc05da81a8ad28adda4abad40c98e0f468bd02952a6356593ad7d4",
+    "optical_0_water_fraction.tif": "21cf4a8f2e369f1987f9ca8d4449a80c8d29d134471bc11f68cf02c3c57d30c4",
+    "optical_1_ice_fraction.tif": "6f637725f1124c96ff6b58f720e6e8c44c92b5cbef5a7924b94b29d994c9754e",
+    "optical_1_water_fraction.tif": "c94f2d82a09c36aa7f6715036b30c3830e141e4c97d23b2ccdbd9d377db9f4ed",
+    "optical_2_ice_fraction.tif": "4b14580673b4cd1c710dd828e70fecab699be6fa3e1f473b120bc5160ab442bb",
+    "optical_2_water_fraction.tif": "fdb15650d7780e427b8c289a34a47aadfb5851b5755205a3444b2aeaaca62959",
+    "optical_3_ice_fraction.tif": "88da931e994f7e882cc3c021e89c21b906ff132328ac70070fdac7c06439ba75",
+    "optical_3_water_fraction.tif": "748a9cc187dc55d1e57422006788f1bec803e057d45857d36b835b5f9f43c22f"
+  }
+}

@@ -1,5 +1,31 @@
 # Architecture
 
+## 2026-10-19 decisions: actual pixels without changing the lightweight core
+
+- `sea_ice.py` contains numerical kernels; `case_study.py` owns optional sequential COG
+  range access, alignment, native class fractions, analysis and plotting.
+  NumPy, Rasterio, SciPy and Matplotlib belong only to the `science` extra.
+- Geographic STAC geometry/bbox is always EPSG:4326; `proj:epsg` describes raster assets.
+  It is validated as metadata but must not relabel geographic coordinates as UTM.
+- Optical reflectance, SCL and purity fractions share one source-tile ownership mask.
+  Native categorical pixels, not nearest-neighbour overview samples, determine purity.
+- A conservative native-water mask, largest connected component and coastal erosion define
+  analysis support. This is not an official marine-region polygon.
+- The learned SAR map is a candidate classification. Selective, temporally mismatched optical
+  labels provide proxy agreement, not field accuracy or validation of unsupported ice area.
+- `demonstration.py` replays actual captured scene metadata through the existing provenance,
+  catalog and loopback API. `capture://` identifies the composite; item self links retain
+  actual original public endpoints. Captured metadata is not a fresh provider-speed test.
+- Runtime records include executed-source hashes and software versions. Provider identity
+  remains `not-verified`; a local hostname must never be used to infer CSC execution.
+- Source acquisition and supplemental quality-mask manifests are immutable. Raw rasters
+  remain ignored; small licensed research outputs live outside the frozen offline folder.
+- The current batch gather bounds active work with a semaphore, not total scheduling memory.
+  The actual-data replay uses five items; unbounded streaming is not claimed.
+
+See [the research record](research/20261019/README.md) and
+[the CSC execution boundary](CSC_DEMONSTRATION.md).
+
 ## Current vertical slice
 
 ```text
@@ -16,7 +42,7 @@ validated STACItem                FileProvenanceSink
 
 `FileProvenanceSink` writes canonical raw JSON under a content-addressed SHA-256 filename and appends an audit record containing source identity, collection, URI, timestamp, retry attempts, and relative raw-payload path.
 
-`transform_stac_to_scene` maps STAC geometry or bbox, `proj:epsg`, assets, platform, acquisition datetime, and optional `eo:cloud_cover` into `EOScene`. `ConcurrentEOIngestor` uses `asyncio.Semaphore` to cap transformation and persistence workers. `store_async` serializes each sink's manifest append with an `asyncio.Lock` and delegates blocking filesystem operations to a thread.
+`transform_stac_to_scene` maps geographic STAC geometry/bbox, assets, platform, acquisition datetime, and optional `eo:cloud_cover` into `EOScene`. `ConcurrentEOIngestor` uses `asyncio.Semaphore` to cap transformation and persistence workers. `store_async` serializes each sink's manifest append with an `asyncio.Lock` and delegates blocking filesystem operations to a thread.
 
 `spatial.py` provides deterministic EPSG:4326 bbox and polygon intersection utilities. `KVARKEN_REGION_BBOX` is `(20.5, 62.8, 22.5, 63.8)`; closed-boundary intersection is intentional for study-area filtering. The benchmark harness injects latency and burst 429 responses into the STAC transport to verify retry recovery and zero record loss offline.
 

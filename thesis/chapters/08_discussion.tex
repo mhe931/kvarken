@@ -1,0 +1,96 @@
+\chapter{Discussion}
+
+\section{Scientific and engineering contribution}
+
+The contribution is the connection between provider access, validated metadata, provenance,
+bounded active work, spatial persistence and a concrete application. STAC describes assets,
+OGC standards provide an interoperability context, and CDSE provides a relevant Copernicus
+access environment \citep{stac-spec,ogc-api-features,cdse,kovacs2026cdse}. The thesis does
+not invent metadata catalogs, OAuth2, SQLite or a new remote-sensing classifier.
+
+Actual Sentinel-1 and Sentinel-2 observations make the practical contribution observable.
+Scene identities lead to retained pixels, aligned processing, maps, spatial holdouts and
+a persistent metadata/API replay. Native categorical masks and common optical tile ownership
+became necessary when processing real spatial footprints. Infrastructure tests alone would
+not have exposed the low positive precision of the radar classifier.
+
+The standard-library baseline reduces installation variability; the optional science
+environment supplies capabilities that would be inappropriate to reimplement inside it.
+An embedded catalog is easy to reproduce but is not a distributed service. These are
+explicit scope choices, not universal recommendations.
+
+\section{What the scientific comparison establishes}
+
+The discriminant recognises many selectively labelled snow-ice cells, but its ice precision
+is low. The always-water baseline achieves higher ordinary agreement because the reference
+is strongly imbalanced. Balanced agreement, confusion counts, supported-area comparison and
+spatial maps are therefore needed together. A plausible-looking candidate map is insufficient.
+
+Sentinel-2 supplies an independent sensor, not field truth \citep{drusch2012sentinel}.
+The proxy rules preferentially retain bright snow ice and dark water. Thin, wet, dark or
+cloud-obscured ice may be omitted or mislabelled. The 17.90-hour mismatch also permits
+physical changes and displacement. These effects prevent interpreting every disagreement
+as a Sentinel-1 classification error.
+
+Radar calibration and terrain correction have an established methodological basis
+\citep{small2011,pc-s1-rtc}. They do not remove the need to investigate wind, ice state and
+incidence-angle effects in a downstream sea-ice classifier. No such universal correction
+or threshold is established here. Official Baltic ice charts would provide useful context,
+but their documented SAR inputs prevent treating them as fully independent Sentinel-1
+ground truth \citep{cmems-ice-pum}.
+
+\section{Reproducibility and threats to validity}
+
+\subsection{Internal validity}
+
+The historical benchmark is controlled and synthetic. Its timings are single observations
+rather than repeated distributions. Filesystem cache state, scheduling, temporary storage
+and background processes can affect them. Automated failure injection establishes particular
+behaviours, not production failure probabilities.
+
+The real-data evaluation uses separated blocks, but only one radar/optical pair. Spatial
+autocorrelation can persist across blocks. Test pixels are not independent field samples.
+All single-class blocks are retained instead of suppressing their errors; undefined metrics
+are explicitly null. The model and proxy rules were not tuned against held-out performance.
+
+\subsection{Construct and external validity}
+
+Metadata throughput is not raster bandwidth; local query latency is not deployed end-user
+latency. Candidate ice area is not validated total ice extent. Most positive candidate area
+has no optical label, and reference selection limits extrapolation. The largest connected
+water component is an approximation, not an official marine boundary. Coastal erosion
+removes potentially important coastal ice as well as contamination.
+
+WorldCover is an annual 2021 retrospective mask, partly informed by Sentinel-1 and Sentinel-2.
+It can include information acquired after March and is not independent ice validation.
+One selected eastern-Kvarken case does not establish performance across seasons, sensors,
+or the whole Kvarken strait. No students or educational learning outcomes were evaluated.
+
+\subsection{Reproducibility limits}
+
+The frozen fixtures, reports and actual-data manifests make claims inspectable. The
+real-data run additionally records unsigned endpoints, parameters, dependency/GDAL versions
+and executed-source hashes. Checksums identify retained reprojected windows, not complete
+original SAFE packages. A changed provider product or access policy may prevent exact
+retrieval later. Timing and provenance timestamps are not expected to reproduce bitwise.
+
+\section{Implications for Kvarken Space Center and CSC}
+
+A modest infrastructure can make provenance and evaluation explicit before becoming a
+production platform. The application shows why this matters: it preserves a weak result
+and exposes its limits rather than promoting a map without examining support.
+The study does not document a formal organisational requirements survey or production service.
+
+The authenticated CSC execution remains missing. An existing account does not establish
+enabled project access, and a local health check does not prove cPouta deployment.
+Project authentication, quota verification and a recorded run remain necessary.
+Allas and Roihu are not required merely to make the architecture appear larger.
+
+\section{Scientific and submission boundaries}
+
+Further acquisitions, temporally matched independent observations, wind information and
+incidence-angle stratification are needed before broader ice-mapping claims. The current
+application provides diagnostic scientific evaluation, not operational validation.
+A successful local PDF build also does not establish Google Docs synchronization, author
+approval, supervisor acceptance, Turnitin clearance or institutional submission readiness.
+Those gates remain open in the delivery record.

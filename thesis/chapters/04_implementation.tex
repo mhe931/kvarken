@@ -107,7 +107,7 @@ The denominator is tested before division:
 The zero result is a deliberate finite sentinel for undefined zero-signal pixels; it avoids a
 floating-point exception and keeps array-free standard-library processing deterministic. The
 \texttt{RasterAssetFetcher} requests byte ranges with an HTTP \texttt{Range} header and leaves
-full raster decoding to a future dependency-backed layer.
+full raster decoding to the optional dependency-backed application described later in this chapter.
 
 \section{Multiscale downsampling and grid alignment}
 
@@ -128,7 +128,7 @@ input field \(x_{y,z}=v\) remains \(D_{r,c}=v\) for every complete and partial b
 implementation never divides an accumulated sum by \(k^2\) after already averaging or normalizing
 the samples, avoiding artificial darkening and preserving the input dynamic range.
 
-\texttt{downsample_scene_bands} applies the same factor to named spectral grids such as B04 and
+\texttt{downsample\_scene\_bands} applies the same factor to named spectral grids such as B04 and
 B08, preserving their spatial correspondence and relative calibration. The benchmark helper
 records input/output pixel counts, monotonic elapsed time, pixels per second, and Python peak
 allocation measured with \texttt{tracemalloc}. It is a reproducible memory/throughput indicator,
@@ -144,8 +144,8 @@ EPSG:4326 bounding box \((\lambda_{\min},\phi_{\min},\lambda_{\max},\phi_{\max})
 \]
 with the algebraic inverse mapping coordinates back to fractional pixel positions. This utility
 supports deterministic local-grid alignment for synthetic scenes; it does not claim datum-aware
-UTM reprojection and deliberately leaves ellipsoidal projection and GeoTIFF decoding to future
-optional processing layers.
+UTM reprojection. Datum-aware raster reprojection and GeoTIFF decoding are instead supplied
+by the optional processing layer in Section~\ref{sec:seaice-method}.
 
 \section{OAuth2 recovery workflow}
 
@@ -201,3 +201,135 @@ This separation gives the implementation two operational modes: a reproducible, 
 mode for CI and teaching, and an authenticated mode for empirical provider measurements. Both
 produce the same report schema, allowing live latency and response distributions to be compared
 with the frozen baseline without mutating it.
+
+\section{Real-data sea-ice application}
+\label{sec:seaice-method}
+
+\subsection{Study area and observations}
+
+The application retains the repository's EPSG:4326 rectangle, longitude 20.5--22.5 and
+latitude 62.8--63.8. It covers eastern Kvarken and the Finnish archipelago around Vaasa,
+not the entire transboundary Kvarken strait. A common EPSG:32634 (UTM zone 34N) grid uses
+100~m cells. The rectangle is transformed with densified edges, and cell centres outside
+the study polygon are excluded.
+
+The radar input is Sentinel-1A IW GRDH dual-polarisation VV/VH, absolute orbit 37230,
+relative orbit 58, ascending, acquired on 30 March 2021 at approximately 16:06 UTC.
+The original product stem is
+\nolinkurl{S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288}.
+The application reads its Catalyst radiometrically terrain-corrected derivative from the
+Microsoft Planetary Computer \texttt{sentinel-1-rtc} collection \citep{pc-s1-rtc}.
+This is genuine observed raster data, not the earlier fixture or a rendered preview.
+
+The independent optical sensor is Sentinel-2A Level-2A, acquired on 31 March 2021 at
+10:00:21 UTC, orbit R122, tiles T34VER, T34VEQ, T34VDR and T34VDQ.
+The complete immutable item identifiers are listed in the versioned configuration.
+The 17.90-hour difference is retained explicitly rather than describing the observations
+as simultaneous. Bands B03, B08 and B11 provide green, near-infrared and shortwave-infrared
+reflectance. The Scene Classification Layer (SCL) supplies water and snow/ice categories
+\citep{s2-processing}. The selected N0212 products use the configured quantification
+factor 10,000; this rule must not be applied unchanged to later processing baselines
+with radiometric offsets.
+
+ESA WorldCover 2021 v200 class 80 supplies a static water mask from four three-degree
+tiles around the rectangle \citep{worldcover2021}. It is a land-exclusion aid, not an ice
+reference. Native categorical pixels are converted to binary class indicators before
+area averaging; a target water cell requires a water fraction of at least 0.999999.
+The largest eight-connected pure-water component approximates the main marine domain and
+excludes disconnected lakes. It is not an official marine boundary. A three-cell square
+erosion then excludes a 300~m neighbourhood of mapped non-water cells and image boundaries.
+The mask conservatively removes coastal water and narrow channels as well as land.
+
+\subsection{Acquisition, preprocessing and provenance}
+
+Public STAC item endpoints identify each input and its unsigned asset URL. The observed
+Planetary Computer signing service issued temporary read-only SAS URLs without account
+credentials during this run. Tokens remain in memory, are reused per container until near
+expiry, and are not written to reports. Availability is an observation on 19 October 2026,
+not a guarantee of future access. Requests are sequential, have explicit timeouts, and
+retry throttling or timeouts at most three times.
+
+The provider's RTC methodology describes radiometric calibration, gamma correction,
+terrain correction using PlanetDEM, and orthorectification \citep{pc-s1-rtc,small2011}.
+These steps are supplied upstream; the thesis does not claim to have run SNAP or to
+have independently verified the processor version and thermal/border-noise treatment.
+The analysis averages positive linear gamma-zero power onto the common grid before
+conversion to decibels:
+\[
+  \gamma^0_{\mathrm{dB}}=10\log_{10}(\gamma^0_{\mathrm{linear}}).
+\]
+Zero, negative and non-finite samples are invalid. Optical reflectance uses average
+resampling. Nearest-neighbour SCL and WorldCover windows are retained for audit, but
+reference purity and land exclusion use additional fractions computed from native pixels
+in memory-bounded windows, without categorical overviews. All optical bands, SCL and purity
+fractions select one common source tile per target cell. All bands share the same transform,
+resolution and grid dimensions.
+
+Each retrieved window is retained as a GeoTIFF together with the original unsigned STAC
+metadata, configuration and SHA-256 manifest. The retained windows have already undergone
+reprojection/resampling: their checksums do not identify full original SAFE products.
+The source URLs and item identifiers permit fresh retrieval. Interrupted valid downloads
+are preserved and reused only with the same configuration and grid.
+
+Five actual SAR/optical metadata records also pass through the existing
+\nolinkurl{ConcurrentEOIngestor}, \nolinkurl{FileProvenanceSink} and
+\nolinkurl{SpatialCatalog}.
+The catalog is closed and reopened, source identities and canonical-payload checksums
+are checked, and the loopback-only educational API is probed for health and exact scene
+identity. This links the geospatial application to the implemented infrastructure.
+STAC geometry remains EPSG:4326 even when \texttt{proj:epsg} identifies a projected raster.
+Cloud cover defaulted by the baseline scene model is not interpreted as a SAR observation.
+
+\subsection{Conservative reference and classifier}
+
+The optical reference deliberately abstains on ambiguous observations. Snow-covered ice
+requires SCL 11, green reflectance above 0.15, near-infrared reflectance above 0.10, and
+\[
+  \mathrm{NDSI}=\frac{\rho_{\mathrm{green}}-\rho_{\mathrm{SWIR}}}
+                    {\rho_{\mathrm{green}}+\rho_{\mathrm{SWIR}}}>0.4.
+\]
+Dark-water reference cells require SCL 6, near-infrared reflectance below 0.04, and
+green reflectance below 0.10. All contributing bands must be positive and finite.
+Each label additionally requires at least 99\% of the native SCL footprint to contain
+its corresponding class. Unknown native classes count against this purity requirement.
+These are conservative experiment rules, not a validated universal optical ice detector.
+Thin, dark, wet or cloud-obscured ice can remain unlabelled. Selection bias is therefore
+part of the interpretation, rather than hidden in an overall accuracy number.
+
+A two-feature linear discriminant uses VV and VH in decibels. Equal class priors avoid
+letting the numerically dominant water class determine the decision solely by prevalence.
+Training class means and a pooled covariance define
+\[
+  s(\mathbf{x})=(\boldsymbol{\mu}_1-\boldsymbol{\mu}_0)^T
+  \boldsymbol{\Sigma}^{-1}\mathbf{x}
+  -\tfrac12(\boldsymbol{\mu}_1+\boldsymbol{\mu}_0)^T
+  \boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_0).
+\]
+The covariance is shrunk by 0.05 towards a scaled identity for numerical stability.
+Positive scores predict candidate ice. The model is learned from this scene's optical
+reference; no universal SAR backscatter threshold is assumed.
+
+Ten-kilometre checkerboard blocks separate training and testing. One kilometre is excluded
+on each side of every block edge, leaving a two-kilometre separation between adjacent
+retained training and test interiors. Confusion counts, reference support, precision,
+recall and F1 are reported on held-out labelled cells only. Pixel counts are not treated
+as independent field samples. Candidate areas use the projected 0.01~km$^2$ cell area.
+Changing the discriminant offset by plus or minus one gives a sensitivity analysis,
+not a statistical confidence interval or an estimate of total ice-extent uncertainty.
+
+\section{Execution environment and CSC boundary}
+
+The recorded application ran on the local Windows CPU with Python 3.12.15, NumPy,
+Rasterio/GDAL and Matplotlib, isolated in the optional \texttt{science} environment.
+The NVIDIA T550 Laptop GPU has 4~GiB VRAM; driver 596.52 advertises CUDA API compatibility
+13.2. No CUDA runtime or GPU-accelerated processing was required or benchmarked.
+The workload consists of range I/O, raster alignment and a small linear model, not neural
+network training.
+
+CSC cPouta is the intended second demonstration environment. Official documentation
+requires both an enabled project service and member acceptance; an existing CSC account
+alone does not prove this access \citep{csc-access,csc-pouta}. In this session, authenticated
+browser connections to MyCSC and cPouta timed out. No project, quota, VM or remote run was
+verified. The local execution must not be relabelled as CSC execution. The deployment
+procedure and evidence checklist are retained in the repository for execution after secure
+authentication. Allas and Roihu were not used.

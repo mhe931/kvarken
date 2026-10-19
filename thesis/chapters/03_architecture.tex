@@ -96,7 +96,7 @@ catalog, making inconsistencies observable.
 
 \texttt{STACClient} owns request construction, pagination links, response-shape checks, timeout
 classification, and 429 handling. \texttt{CDSEClient} composes it with
-\texttt{CDSETokenProvider}; credentials are resolved from environment variables and token refresh
+\nolinkurl{CDSETokenProvider}; credentials are resolved from environment variables and token refresh
 is protected by an asynchronous lock. Invalid schemas are permanent errors and are not retried.
 Timeouts and rate limits use a bounded exponential policy, optionally honoring a provider
 \texttt{Retry-After} value.

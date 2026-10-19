@@ -34,3 +34,20 @@ jobs:
         run: python -m pytest
       - name: Run offline health check
         run: python -m kvarken_eo verify-health
+
+  optional-science-and-documents:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install declared optional dependencies
+        run: python -m pip install -e ".[dev,science,documents]"
+      - name: Test scientific kernels and document structure without live credentials
+        run: python -m pytest

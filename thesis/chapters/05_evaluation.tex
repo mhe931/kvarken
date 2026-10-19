@@ -13,7 +13,7 @@ required. The resulting JSON and Markdown artifacts are checked in under
 \section{Frozen empirical baseline}
 
 Table~\ref{tab:baseline} transcribes the publication-ready report in
-\texttt{docs/experiments/experiment\_report.md}. Measurements are retained at their recorded
+\nolinkurl{docs/experiments/experiment_report.md}. Measurements are retained at their recorded
 precision; elapsed time and latency describe the Windows development environment and should be
 compared only with equivalent hardware, filesystem, Python version, and fixture.
 
@@ -91,7 +91,7 @@ comes from provider processing, persistence, or regional filtering.
 
 \section{Validation and recovery evidence}
 
-The release baseline passes 53 offline tests. The suite covers typed schema rejection, pagination,
+The historical release baseline recorded 53 passing offline tests. The suite covers typed schema rejection, pagination,
 timeouts, HTTP 429 recovery, OAuth2 expiry and invalid token payloads, provenance integrity,
 bounded worker limits, quality filters, raster ranges and NDVI, HTTP queries, artifact retention,
 multi-threaded SQLite contention, WAL durability after reopening, and deterministic reports.
@@ -122,8 +122,9 @@ The results do not establish behavior for all EO missions, CDSE collections, net
 or raster sizes. Sentinel-2-like metadata is representative for the architecture but does not
 capture provider-specific schema extensions, authentication policy changes, regional datacubes, or
 large binary transfers. The live runner and dated artifacts provide the intended extension point:
-future authenticated observations can be added without overwriting the frozen baseline. Full
-GeoTIFF decoding, distributed storage, and multi-process catalogs remain outside this evaluation.
+future authenticated observations can be added without overwriting the frozen baseline.
+The frozen benchmark does not cover GeoTIFF decoding, distributed storage, or multi-process
+catalogs. The real-data extension below evaluates bounded GeoTIFF processing separately.
 
 \subsection{Construct validity}
 
@@ -142,6 +143,166 @@ measure concurrency directly; and WAL tests verify both valid snapshots during c
 durability after reopening. The health command exercises the principal offline path in one
 operation. These controls reduce accidental green results, but they cannot remove all timing
 variance or substitute for long-running production observation.
+
+\section{Real satellite application: inputs and outputs}
+\label{sec:seaice-results}
+
+The reviewed application uses observed radar pixels from 30 March 2021 and optical pixels
+from 31 March 2021, with the method in Section~\ref{sec:seaice-method}. The input rectangle
+contains 1,117,183 cell centres. Native class-purity screening, the connected water domain
+and the coastal buffer leave 595,279 cells with both radar polarisations, equivalent to
+5,952.79~km$^2$ of projected-grid support. This is the analysed support, not the complete
+area of Kvarken.
+
+Figures~\ref{fig:sar-input}--\ref{fig:agreement} are computed from actual retained raster
+windows. The optical map visibly lacks coverage on the western side; those cells are
+grey, not interpreted as dark water. Bright radar features near the archipelago do not
+by themselves establish ice. The reference abstains on most ambiguous coastal or
+optically unsupported cells, and the candidate map extrapolates beyond those labels.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.95\textwidth]{../docs/research/20261019/sar_vv.png}
+\caption[Sentinel-1 radar input]{Actual Sentinel-1A VV terrain-corrected gamma-zero input, 30 March 2021.
+The analysis also uses VH. Sources: ESA, Catalyst and Microsoft Planetary Computer.
+Plotting code was AI-assisted; representative prompt: produce genuine satellite input
+maps with units, coordinates and source information.}
+\label{fig:sar-input}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.95\textwidth]{../docs/research/20261019/optical_input.png}
+\caption[Independent Sentinel-2 optical input]{Independent Sentinel-2A false-colour input, 31 March 2021, approximately
+17.90 hours after the radar observation. Grey denotes missing optical coverage.
+Source: ESA/Microsoft Planetary Computer. AI-assisted plotting code used the map
+requirements disclosed in Appendix~A; no pixels were synthesised by an image model.}
+\label{fig:optical-input}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.95\textwidth]{../docs/research/20261019/reference.png}
+\caption[Selective optical proxy reference]{Selective optical proxy reference: dark water and bright snow-covered ice.
+Grey water remains unlabelled; white is outside the analysed domain or excluded by
+land/coastal screening. Sources: Sentinel-2 and WorldCover 2021. AI-assisted plotting
+code follows the prompt and verification described in Appendix~A.}
+\label{fig:reference}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.95\textwidth]{../docs/research/20261019/candidate.png}
+\caption[SAR candidate classes]{Scene-specific SAR candidate classes, not validated total sea-ice extent.
+The conspicuous southern and near-coastal candidate regions require caution.
+Sources: Sentinel-1 RTC, optical-trained discriminant and WorldCover mask.
+AI-assisted processing and plotting code is disclosed in Appendix~A.}
+\label{fig:candidate}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.95\textwidth]{../docs/research/20261019/agreement.png}
+\caption[Held-out optical-reference agreement]{Held-out optical-reference agreement in separated checkerboard interiors.
+Red is disagreement with a selective proxy, not necessarily a field-confirmed error.
+Grey has no held-out comparison. Sources: actual Sentinel-1 and Sentinel-2 inputs.
+AI-assisted evaluation and plotting code is disclosed in Appendix~A.}
+\label{fig:agreement}
+\end{figure}
+
+\section{Held-out comparison and majority baseline}
+
+Native SCL purity screening leaves 281,457 water and 11,199 snow-ice reference cells.
+Training uses 97,220 water and 3,469 ice cells. Held-out interiors contain 84,846 water
+and 3,546 ice cells. The remaining labelled cells fall in spatially excluded edges or
+other partition interiors. Table~\ref{tab:confusion} reports exact held-out counts.
+
+\begin{table}[htbp]
+\centering
+\caption{Held-out confusion matrix. Rows are optical proxy labels; columns are SAR
+candidate classes. Counts describe 100~m cells, not independent field observations.}
+\label{tab:confusion}
+\begin{tabular}{lrr}
+\toprule
+Optical reference & Candidate water & Candidate ice\\
+\midrule
+Water & 74,641 & 10,205\\
+Snow-covered ice & 406 & 3,140\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Held-out proxy agreement. The always-water baseline is evaluated on exactly
+the same cells. Undefined precision is not replaced with an invented value.}
+\label{tab:agreement-metrics}
+\begin{tabular}{lrr}
+\toprule
+Metric & SAR discriminant & Always water\\
+\midrule
+Ordinary agreement (\%) & 88.00 & 95.99\\
+Balanced agreement (\%) & 88.26 & 50.00\\
+Ice precision (\%) & 23.53 & Undefined\\
+Ice recall (\%) & 88.55 & 0.00\\
+Ice F1 (\%) & 37.18 & 0.00\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The majority baseline has higher ordinary agreement because optical water dominates
+the held-out support. The discriminant detects most selected snow-ice cells, but produces
+many ice predictions on proxy-water cells. Only about one in four held-out ice predictions
+matches a positive optical label. It would therefore be misleading to promote the ordinary
+agreement figure alone as evidence of a reliable sea-ice mapping product.
+
+All 31 held-out blocks are retained in the machine-readable report, including blocks with
+only one reference class. Their confusion counts and ordinary agreement remain defined;
+balanced agreement or class recall is null where its denominator is absent. A block with
+three water samples can have zero agreement, illustrating why unweighted extrema alone
+are unstable. Spatially concentrated disagreements remain visible in Figure~\ref{fig:agreement}.
+
+\section{Area, sensitivity and unsupported extrapolation}
+
+The model predicts 1,219.28~km$^2$ of candidate ice across the analysed radar-water support.
+Of this, 795.91~km$^2$ (65.28\%) has no optical proxy label at all. This area cannot be
+validated by the reported held-out metrics. The selected optical ice support totals
+111.99~km$^2$, but its different coverage prevents treating its difference from the full
+candidate area as an ice-area error.
+
+On the identical held-out footprint, optical positive area is 35.46~km$^2$ and candidate
+positive area is 133.45~km$^2$. This supported comparison exposes substantial excess
+candidate area relative to the proxy. Offsetting the discriminant by minus one, zero and
+plus one produces candidate areas of 2,313.58, 1,219.28 and 695.59~km$^2$, respectively.
+The large range indicates decision-boundary sensitivity. It is not a confidence interval,
+and none of these offsets was selected by tuning against held-out performance.
+
+The radar response may vary with wind, surface roughness, incidence angle and ice state.
+Provider metadata reports full-scene near/far incidence angles of about 29.66--45.86 degrees;
+no per-pixel incidence correction or wind record was available for this classifier.
+The optical observation is later, selectively labels bright snow ice, and is not field
+truth. These limitations prevent operational or universal-threshold claims. The useful
+scientific result is the diagnosed failure mode and the limited, reproducible evaluation.
+
+\section{Local infrastructure execution and CSC status}
+
+The provenance-correct final analysis began at 16:06:54 UTC on 19 October 2026. Its measured
+8.54-second analysis interval includes raster calculations, publication figures and
+metadata replay, but excludes source acquisition and native-mask retrieval. Timing is a
+single local observation, not a CPU/GPU or local/cloud benchmark. Additional publication
+layout exports can change the full command's duration without changing the numerical result.
+
+Five actual scene records pass through bounded ingestion, provenance checks, SQLite
+reopening and loopback API scene/health checks. The saved run identifies Windows,
+Python 3.12.15 and exact library/GDAL versions; executed Python sources and all retained
+inputs/outputs have SHA-256 identities. The Git record correctly reports a dirty working
+tree during execution rather than attributing uncommitted science code to the old baseline
+alone.
+
+No CSC connection or execution succeeded. Project allocation, quota, VM identity, remote
+timestamps and output checksums could not be collected. Consequently this chapter reports
+no CSC runtime or result. The supervisor's additional execution objective remains open;
+a prepared deployment procedure does not satisfy it.
 
 \section{Interpretation}
 

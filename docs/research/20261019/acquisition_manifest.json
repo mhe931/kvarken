@@ -1,0 +1,541 @@
+{
+  "downloaded_at": "2026-10-19T15:17:38.282475+00:00",
+  "note": "Checksums identify reprojected windows, not complete original SAFE files.",
+  "records": [
+    {
+      "acquisition": "2021-03-30T16:06:12.415539Z",
+      "asset": "vv",
+      "collection": "sentinel-1-rtc",
+      "full_original_file_checksum": null,
+      "local_window": "sar_0_vv.tif",
+      "product_id": "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "resampling": "average",
+      "role": "sar",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2021/3/30/IW/DV/S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_3430/measurement/iw-vv.rtc.tiff"
+    },
+    {
+      "acquisition": "2021-03-30T16:06:12.415539Z",
+      "asset": "vh",
+      "collection": "sentinel-1-rtc",
+      "full_original_file_checksum": null,
+      "local_window": "sar_0_vh.tif",
+      "product_id": "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "resampling": "average",
+      "role": "sar",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2021/3/30/IW/DV/S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_3430/measurement/iw-vh.rtc.tiff"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B03",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_0_B03.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/ER/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VER_20210401T101953.SAFE/GRANULE/L2A_T34VER_A030149_20210331T100024/IMG_DATA/R10m/T34VER_20210331T100021_B03_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B08",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_0_B08.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/ER/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VER_20210401T101953.SAFE/GRANULE/L2A_T34VER_A030149_20210331T100024/IMG_DATA/R10m/T34VER_20210331T100021_B08_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B11",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_0_B11.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/ER/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VER_20210401T101953.SAFE/GRANULE/L2A_T34VER_A030149_20210331T100024/IMG_DATA/R20m/T34VER_20210331T100021_B11_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "SCL",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_0_SCL.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953",
+      "resampling": "nearest",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/ER/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VER_20210401T101953.SAFE/GRANULE/L2A_T34VER_A030149_20210331T100024/IMG_DATA/R20m/T34VER_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B03",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_1_B03.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/EQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VEQ_20210401T100115.SAFE/GRANULE/L2A_T34VEQ_A030149_20210331T100024/IMG_DATA/R10m/T34VEQ_20210331T100021_B03_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B08",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_1_B08.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/EQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VEQ_20210401T100115.SAFE/GRANULE/L2A_T34VEQ_A030149_20210331T100024/IMG_DATA/R10m/T34VEQ_20210331T100021_B08_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B11",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_1_B11.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/EQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VEQ_20210401T100115.SAFE/GRANULE/L2A_T34VEQ_A030149_20210331T100024/IMG_DATA/R20m/T34VEQ_20210331T100021_B11_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "SCL",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_1_SCL.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "resampling": "nearest",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/EQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VEQ_20210401T100115.SAFE/GRANULE/L2A_T34VEQ_A030149_20210331T100024/IMG_DATA/R20m/T34VEQ_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B03",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_2_B03.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DR/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDR_20210401T095953.SAFE/GRANULE/L2A_T34VDR_A030149_20210331T100024/IMG_DATA/R10m/T34VDR_20210331T100021_B03_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B08",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_2_B08.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DR/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDR_20210401T095953.SAFE/GRANULE/L2A_T34VDR_A030149_20210331T100024/IMG_DATA/R10m/T34VDR_20210331T100021_B08_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B11",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_2_B11.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DR/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDR_20210401T095953.SAFE/GRANULE/L2A_T34VDR_A030149_20210331T100024/IMG_DATA/R20m/T34VDR_20210331T100021_B11_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "SCL",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_2_SCL.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "resampling": "nearest",
+      "role": "optical",
+      "source_metadata": {
+        "reused_interrupted_window": true,
+        "source_grid": "see STAC"
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DR/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDR_20210401T095953.SAFE/GRANULE/L2A_T34VDR_A030149_20210331T100024/IMG_DATA/R20m/T34VDR_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B03",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_3_B03.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "crs": "EPSG:32634",
+        "nodata": null,
+        "overviews": [
+          2,
+          4,
+          8,
+          16,
+          32
+        ],
+        "shape": [
+          10980,
+          10980
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDQ_20210401T102156.SAFE/GRANULE/L2A_T34VDQ_A030149_20210331T100024/IMG_DATA/R10m/T34VDQ_20210331T100021_B03_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B08",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_3_B08.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "crs": "EPSG:32634",
+        "nodata": null,
+        "overviews": [
+          2,
+          4,
+          8,
+          16,
+          32
+        ],
+        "shape": [
+          10980,
+          10980
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDQ_20210401T102156.SAFE/GRANULE/L2A_T34VDQ_A030149_20210331T100024/IMG_DATA/R10m/T34VDQ_20210331T100021_B08_10m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "B11",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_3_B11.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "resampling": "average",
+      "role": "optical",
+      "source_metadata": {
+        "crs": "EPSG:32634",
+        "nodata": null,
+        "overviews": [
+          2,
+          4,
+          8,
+          16
+        ],
+        "shape": [
+          5490,
+          5490
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDQ_20210401T102156.SAFE/GRANULE/L2A_T34VDQ_A030149_20210331T100024/IMG_DATA/R20m/T34VDQ_20210331T100021_B11_20m.tif"
+    },
+    {
+      "acquisition": "2021-03-31T10:00:21.024000Z",
+      "asset": "SCL",
+      "collection": "sentinel-2-l2a",
+      "full_original_file_checksum": null,
+      "local_window": "optical_3_SCL.tif",
+      "product_id": "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "resampling": "nearest",
+      "role": "optical",
+      "source_metadata": {
+        "crs": "EPSG:32634",
+        "nodata": null,
+        "overviews": [
+          2,
+          4,
+          8,
+          16
+        ],
+        "shape": [
+          5490,
+          5490
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "source_uri": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/34/V/DQ/2021/03/31/S2A_MSIL2A_20210331T100021_N0212_R122_T34VDQ_20210401T102156.SAFE/GRANULE/L2A_T34VDQ_A030149_20210331T100024/IMG_DATA/R20m/T34VDQ_20210331T100021_SCL_20m.tif"
+    },
+    {
+      "acquisition": null,
+      "asset": "map",
+      "collection": "esa-worldcover",
+      "full_original_file_checksum": null,
+      "local_window": "landcover_0_map.tif",
+      "product_id": "ESA_WorldCover_10m_2021_v200_N63E021",
+      "resampling": "nearest",
+      "role": "landcover",
+      "source_metadata": {
+        "crs": "EPSG:4326",
+        "nodata": 0.0,
+        "overviews": [
+          2,
+          4,
+          8,
+          16,
+          32,
+          64
+        ],
+        "shape": [
+          36000,
+          36000
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area",
+          "algorithm_version": "V2.0.0",
+          "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+          "creation_time": "2022-10-21 07:35:40.236136",
+          "legend": "10  Tree cover\n20  Shrubland\n30  Grassland\n40  Cropland\n50  Built-up\n60  Bare/sparse vegetation\n70  Snow and ice\n80  Permanent water bodies\n90  Herbaceous wetland\n95  Mangroves\n100 Moss and lichen\n",
+          "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+          "product_crs": "EPSG:4326",
+          "product_grid": "3x3 degree tiling grid",
+          "product_tile": "N63E021",
+          "product_type": "LandCover Map",
+          "product_version": "V2.0.0",
+          "reference": "https://esa-worldcover.org",
+          "time_end": "2021-12-31T23:59:59Z",
+          "time_start": "2021-01-01T00:00:00Z",
+          "title": "ESA WorldCover product at 10m resolution for year 2021"
+        }
+      },
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N63E021_Map.tif"
+    },
+    {
+      "acquisition": null,
+      "asset": "map",
+      "collection": "esa-worldcover",
+      "full_original_file_checksum": null,
+      "local_window": "landcover_1_map.tif",
+      "product_id": "ESA_WorldCover_10m_2021_v200_N63E018",
+      "resampling": "nearest",
+      "role": "landcover",
+      "source_metadata": {
+        "crs": "EPSG:4326",
+        "nodata": 0.0,
+        "overviews": [
+          2,
+          4,
+          8,
+          16,
+          32,
+          64
+        ],
+        "shape": [
+          36000,
+          36000
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area",
+          "algorithm_version": "V2.0.0",
+          "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+          "creation_time": "2022-10-21 07:35:40.236136",
+          "legend": "10  Tree cover\n20  Shrubland\n30  Grassland\n40  Cropland\n50  Built-up\n60  Bare/sparse vegetation\n70  Snow and ice\n80  Permanent water bodies\n90  Herbaceous wetland\n95  Mangroves\n100 Moss and lichen\n",
+          "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+          "product_crs": "EPSG:4326",
+          "product_grid": "3x3 degree tiling grid",
+          "product_tile": "N63E018",
+          "product_type": "LandCover Map",
+          "product_version": "V2.0.0",
+          "reference": "https://esa-worldcover.org",
+          "time_end": "2021-12-31T23:59:59Z",
+          "time_start": "2021-01-01T00:00:00Z",
+          "title": "ESA WorldCover product at 10m resolution for year 2021"
+        }
+      },
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N63E018_Map.tif"
+    },
+    {
+      "acquisition": null,
+      "asset": "map",
+      "collection": "esa-worldcover",
+      "full_original_file_checksum": null,
+      "local_window": "landcover_2_map.tif",
+      "product_id": "ESA_WorldCover_10m_2021_v200_N60E021",
+      "resampling": "nearest",
+      "role": "landcover",
+      "source_metadata": {
+        "crs": "EPSG:4326",
+        "nodata": 0.0,
+        "overviews": [
+          2,
+          4,
+          8,
+          16,
+          32,
+          64
+        ],
+        "shape": [
+          36000,
+          36000
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area",
+          "algorithm_version": "V2.0.0",
+          "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+          "creation_time": "2022-10-21 07:35:40.236136",
+          "legend": "10  Tree cover\n20  Shrubland\n30  Grassland\n40  Cropland\n50  Built-up\n60  Bare/sparse vegetation\n70  Snow and ice\n80  Permanent water bodies\n90  Herbaceous wetland\n95  Mangroves\n100 Moss and lichen\n",
+          "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+          "product_crs": "EPSG:4326",
+          "product_grid": "3x3 degree tiling grid",
+          "product_tile": "N60E021",
+          "product_type": "LandCover Map",
+          "product_version": "V2.0.0",
+          "reference": "https://esa-worldcover.org",
+          "time_end": "2021-12-31T23:59:59Z",
+          "time_start": "2021-01-01T00:00:00Z",
+          "title": "ESA WorldCover product at 10m resolution for year 2021"
+        }
+      },
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N60E021_Map.tif"
+    },
+    {
+      "acquisition": null,
+      "asset": "map",
+      "collection": "esa-worldcover",
+      "full_original_file_checksum": null,
+      "local_window": "landcover_3_map.tif",
+      "product_id": "ESA_WorldCover_10m_2021_v200_N60E018",
+      "resampling": "nearest",
+      "role": "landcover",
+      "source_metadata": {
+        "crs": "EPSG:4326",
+        "nodata": 0.0,
+        "overviews": [
+          2,
+          4,
+          8,
+          16,
+          32,
+          64
+        ],
+        "shape": [
+          36000,
+          36000
+        ],
+        "tags": {
+          "AREA_OR_POINT": "Area",
+          "algorithm_version": "V2.0.0",
+          "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+          "creation_time": "2022-10-21 07:35:40.236136",
+          "legend": "10  Tree cover\n20  Shrubland\n30  Grassland\n40  Cropland\n50  Built-up\n60  Bare/sparse vegetation\n70  Snow and ice\n80  Permanent water bodies\n90  Herbaceous wetland\n95  Mangroves\n100 Moss and lichen\n",
+          "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+          "product_crs": "EPSG:4326",
+          "product_grid": "3x3 degree tiling grid",
+          "product_tile": "N60E018",
+          "product_type": "LandCover Map",
+          "product_version": "V2.0.0",
+          "reference": "https://esa-worldcover.org",
+          "time_end": "2021-12-31T23:59:59Z",
+          "time_start": "2021-01-01T00:00:00Z",
+          "title": "ESA WorldCover product at 10m resolution for year 2021"
+        }
+      },
+      "source_uri": "https://ai4edataeuwest.blob.core.windows.net/esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_N60E018_Map.tif"
+    }
+  ],
+  "sha256": {
+    "config.json": "a88cccaf474678639121c9e5b7b0f28ad9f1ad99e59ae1c18ae7cc6c9f9f30db",
+    "landcover_0_map.tif": "55657e4982d149831269ee975d3fdd5692f1f2250f4e96bfca2dc3ae68c6a80e",
+    "landcover_0_stac.json": "3ca44ea4604c37799d648ecce1abb79f5b0376349f3827ee6360f9f1b82a37d7",
+    "landcover_1_map.tif": "3d8f2e009fcdd04d970c7423ff3349da7b1100b2c5968fecf03385e8a8590cd2",
+    "landcover_1_stac.json": "34078d041b4efa14bfa769476fb062a571bf175b14486f2e5156825cafb6ddeb",
+    "landcover_2_map.tif": "dc440e94d5418ba9a108c93aa199103cfb5bb9e5174ef485d1bc1cb826a0ffb4",
+    "landcover_2_stac.json": "b5f54d72e64f7b6ab56c9638282424b7313406184310db1db35b2786ce33db68",
+    "landcover_3_map.tif": "615b886dbda74e6d3604474b511aa4806a6123a36bcff6c74f32e48a66aaeeed",
+    "landcover_3_stac.json": "b27283bcf3edf38fc2c92554cfc1001c75890b8e37436bb7fa89fba4fa6a3d58",
+    "optical_0_B03.tif": "da27a6059fbcda5f4e06945ff2e90aa15bcb523c4f6aaddc24e7069eb35ec1a1",
+    "optical_0_B08.tif": "7a7a83f7ef84e16852c30b210233c1804741581197a8c8cf1b4360c54cdaab48",
+    "optical_0_B11.tif": "1d2fc5113c0f3ad2f9b747df81e4a7b8f4023dad3830d10add83003b93861f74",
+    "optical_0_SCL.tif": "85c9de3983ae96b3cdab90cc30e9ebd0507b414273f4c1f42d1a7ba01eca5fc6",
+    "optical_0_stac.json": "55185f4c5add5f6317b59f69423fbc2d93315cf2a25b80e4d10719f9de8a1cfd",
+    "optical_1_B03.tif": "8d134354ae2f401dd366dd8f6c483707e562ad3e231f9d42d6aacb2cade60fec",
+    "optical_1_B08.tif": "ad4f32013725877f897fe3f8f1e86b5cf2d773c3e262a2b6aeefc53127280041",
+    "optical_1_B11.tif": "b1917697b0abacff49b0a5c076de5fdc5f79d57f37de41c14b68d679c067f3d5",
+    "optical_1_SCL.tif": "5aeb005d628a2ea3619ef2321a984b08e4c31545d2eca0ed5d32374a5d096b4a",
+    "optical_1_stac.json": "574448ce178fcf865416ff72d690a5f0dee0be170e7aa0db2c124ca9912e60ca",
+    "optical_2_B03.tif": "fdbf379322cdd6118dee62311544ff5ce6df146d34f84d5272ac38093c1e228f",
+    "optical_2_B08.tif": "31eb4a78302d143af692ef420f593f45bfd2e0516c96cd55acc6ee9751a404fd",
+    "optical_2_B11.tif": "8a166e538c6ea9f1bedc99a19f873fca8243ba505be89e915b3794607ea89be8",
+    "optical_2_SCL.tif": "fdb826fe885dfeb9a284262fed57f923fa3551f185f7c973a39cdda150e6efcd",
+    "optical_2_stac.json": "6fae047e1f4e7294bb43a11af980b7c72ea5971b64abb5b6eefb438684ae8ae9",
+    "optical_3_B03.tif": "b5e8d1ced56ae2a210898da3d7263f10127309db4cf0382aa241fbcaa45e264f",
+    "optical_3_B08.tif": "924562623fcc3d42f33560d75f0c51d08337e44b6856a0a6772e755ebde47a7b",
+    "optical_3_B11.tif": "6e25db2097f21eceb223bf01fd3caea9db20338aefe6e9179f620c05e3e831f5",
+    "optical_3_SCL.tif": "4313c59a3628da20bb335e5db1b037dcb0201e21dc0e0b2d037010c631262bc8",
+    "optical_3_stac.json": "398d79778e9cc91a42957767674cb3c3ad5aa8b8f32c91808a23cba0b5a42291",
+    "sar_0_stac.json": "be90a0a5c3aa17a8d422fe4491bcba75ee0139595c96d05da8a24046c33df66f",
+    "sar_0_vh.tif": "52d4213ca263521e7567400a9bf4b9c6c41fcc0b4415b9e088ebde816560a4e9",
+    "sar_0_vv.tif": "8502259db02cf9c52bc36fbdb797bb9d0d4d93d99643c5f0a7a31115e0d5342d",
+    "scenes.json": "9cc6480e62f4588c3554dbe1bdc21ae112587bcb9f7c5fb0240343d6c781514f"
+  }
+}

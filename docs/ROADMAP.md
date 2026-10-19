@@ -1,5 +1,23 @@
 # Roadmap
 
+## Deadline checkpoint: 19--23 October 2026
+
+This supersedes the older proposed October--December sequence below. The user identifies
+23 October as the submission working deadline; confirm the individual timetable with
+Professor Arslan/Education Services rather than treating it as a public universal deadline.
+
+- [x] Obtain and process authentic radar, optical and static-mask data.
+- [x] Produce georeferenced maps, exact counts, selective independent-sensor comparison and manifests.
+- [x] Diagnose low positive precision and unsupported extrapolation without inflating claims.
+- [x] Revise the full manuscript and prepare local review exports.
+- [ ] Obtain authorized CSC project access and retain an actual remote execution.
+- [ ] Reopen and verify synchronization of the existing native Google Doc.
+- [ ] Author examines the actual maps, code, references, AI disclosure and final pagination.
+- [ ] Professor Arslan reviews the revised scientific scope and missing CSC evidence.
+- [ ] Complete the authorized Turnitin/Osuva/assessment/graduation sequence.
+
+The [delivery report](THESIS_DELIVERY_REPORT_20261019.md) is the operational handoff.
+
 ## Foundation (complete)
 
 - Typed source and scene contracts
@@ -46,7 +64,7 @@ Future work should add live-provider observations as new immutable experiment re
 - Add authenticated CDSE observations and representative raster windows as dated artifacts.
 - Compare live-provider results with the frozen offline baseline without overwriting it.
 
-## Proposed thesis completion sequence (October–December 2026)
+## Historical 5 October proposal (superseded; not the current plan)
 
 This sequence is for Professor Arslan's review. It does not confirm graduation or administrative
 deadlines. See [the review plan](SUPERVISOR_REVIEW_PLAN.md) for the outstanding questions.

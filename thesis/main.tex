@@ -1,56 +1,100 @@
 \documentclass[12pt,a4paper,oneside]{report}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{fontspec}
+\IfFontExistsTF{Calibri}{\setmainfont{Calibri}}{\setmainfont{Carlito}}
+\usepackage[a4paper,margin=30mm,headheight=14pt,headsep=15mm]{geometry}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{setspace}
+\usepackage[backend=biber,style=apa,natbib=true]{biblatex}
+\addbibresource{references.bib}
+\usepackage{graphicx}
+\usepackage{xurl}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\small,breaklines=true}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{fancyhdr}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
+
+\onehalfspacing
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{2pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+\setcounter{biburlucpenalty}{100}
+\titleformat{\chapter}[hang]{\fontsize{16}{20}\selectfont\bfseries}{\thechapter}{1em}{}
+\titleformat{\section}{\fontsize{14}{18}\selectfont\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\fontsize{12}{16}\selectfont\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\renewcommand{\cftdotsep}{\cftnodots}
+\setlength{\cftsecindent}{0.5cm}
+\setlength{\cftsubsecindent}{1cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\fontsize{11}{13}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[C]{\fontsize{11}{13}\selectfont\thepage}}
 
 \title{Design and Implementation of a Hybrid Earth Observation Data Infrastructure\\
 for Research and Education: A Case Study of Kvarken Space Center}
 \author{Daniel Ebrahimzadeh Esfahani}
-\date{September 2026}
+\date{2026}
 
 \begin{document}
 
 \begin{titlepage}
+\thispagestyle{empty}
 \centering
-\vspace*{20mm}
-{\Large University of Vaasa\par}
+\includegraphics[width=55mm]{assets/uwasa-logo.jpg}\par
 \vspace{25mm}
-{\LARGE\bfseries Design and Implementation of a Hybrid Earth Observation Data Infrastructure\par}
-\vspace{4mm}
-{\Large for Research and Education: A Case Study of Kvarken Space Center\par}
-\vspace{25mm}
-Master's thesis\par
-\vspace{12mm}
-Daniel Ebrahimzadeh Esfahani\par
-\vfill
+{\fontsize{16}{20}\selectfont Daniel Ebrahimzadeh Esfahani\par}
+\vspace{10mm}
+{\fontsize{20}{25}\selectfont\bfseries Design and Implementation of a Hybrid Earth Observation Data Infrastructure\par}
+\vspace{5mm}
+{\fontsize{14}{18}\selectfont for Research and Education: A Case Study of Kvarken Space Center\par}
+\vspace{22mm}
+\begin{flushright}
+Master's Thesis\par
+School of Technology and Innovations\par
+Master's Degree Programme in Computing Sciences\par
+Major: Artificial Intelligence and Data Engineering\par
 Supervisor: Professor Ali Nadir Arslan\par
-\vspace{8mm}
-September 2026
+\end{flushright}
+\vfill
+Vaasa 2026\par
 \end{titlepage}
 
-\pagenumbering{roman}
+\setcounter{page}{2}
 \include{chapters/00_abstract}
-\include{chapters/00_acknowledgements}
-\include{chapters/00_abbreviations}
 \tableofcontents
+\clearpage
 \listoffigures
+\clearpage
 \listoftables
 \clearpage
-\pagenumbering{arabic}
+\include{chapters/00_acknowledgements}
+\include{chapters/00_abbreviations}
+\clearpage
+
 \include{chapters/01_introduction}
 \include{chapters/02_background}
+\include{chapters/03_methodology}
 \include{chapters/03_architecture}
 \include{chapters/04_implementation}
 \include{chapters/05_evaluation}
+\include{chapters/07_analysis}
+\include{chapters/08_discussion}
 \include{chapters/06_conclusion}
 
-\bibliographystyle{plain}
-\bibliography{references}
+\printbibliography[heading=bibintoc,title={References}]
+
+\appendix
+\include{chapters/appendix_ai}
+\include{chapters/appendix_repro}
 
 \end{document}

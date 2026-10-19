@@ -2,124 +2,92 @@
 
 \section{Conclusion}
 
-This thesis designed and implemented a hybrid Earth Observation metadata infrastructure for
-research and education in the Kvarken Space Center context. The central design decision was to
-treat reliability and reproducibility as properties of the complete path from provider response to
-regional query, rather than as features added after ingestion. The resulting system combines
-typed boundary validation, injectable provider transports, bounded asynchronous scheduling,
-content-addressed provenance, a WAL-enabled SQLite spatial catalog, metadata quality profiling,
-an educational HTTP interface, and a small raster/NDVI analytical slice.
+This thesis connects an auditable EO metadata infrastructure to an actual satellite-data
+application in eastern Kvarken. The core combines typed boundaries, injectable transport,
+bounded active ingestion, content-addressed provenance, a WAL-enabled SQLite spatial catalog,
+quality filters and a read-only educational interface. An optional scientific environment
+adds observed Sentinel-1 and Sentinel-2 raster windows, WorldCover screening, candidate maps
+and quantitative proxy evaluation without changing the lightweight runtime requirement.
+
+The application addresses the earlier absence of practical pixel processing. It also
+shows why scientific validation cannot be replaced by infrastructure success. Positive
+radar candidates have low precision against the selected optical proxy, and most candidate
+ice area has no reference label. The output must not be described as reliable total
+sea-ice extent. No actual CSC execution has been verified.
 
 \section{Answers to the research questions}
 
-\subsection{Research question 1: metadata normalization and provenance}
+\subsection{RQ1: provider-neutral metadata and provenance}
 
-Heterogeneous STAC and CDSE metadata can be normalized by validating provider JSON at the
-transport boundary and transforming only accepted Items into a provider-neutral frozen
-\texttt{EOScene} dataclass. The model retains identity, platform, acquisition time, geometry,
-coordinate reference, quality metadata, and asset links without exposing provider-specific
-extensions to downstream code. Provenance is preserved independently: canonical raw payload bytes
-receive a SHA-256 content address, while an append-only JSON Lines manifest records source,
-timestamp, digest, and retry context. This pairing makes the normalized catalog convenient to
-query without discarding the evidence needed to reconstruct an ingestion decision.
+Validate provider JSON at the boundary, transform accepted items into a frozen scene model,
+and retain canonical raw payloads independently under SHA-256 identities. Append-only
+records preserve source and acquisition context while SQLite supports convenient queries.
+The application exposed the importance of distinguishing geographic STAC geometry from
+the projected raster CRS and of preserving each optical item's own source endpoint.
 
-\subsection{Research question 2: bounded recovery}
+\subsection{RQ2: bounded active work and recovery}
 
-Asynchronous ingestion remains bounded by placing an \texttt{asyncio.Semaphore} around the
-expensive transformation and persistence path. If the configured worker limit is \(k\), no more
-than \(k\) tasks are active at once. Recovery is explicit and selective: timeouts, HTTP 429
-responses, and token expiry use bounded exponential backoff and refresh; malformed payloads and
-invalid token structures are surfaced as permanent errors. The 53-test offline suite demonstrates
-these behaviors with injectable transports rather than relying on nondeterministic provider
-incidents.
+A semaphore limits active processing and persistence. Bounded retries distinguish transient
+timeouts and throttling from malformed inputs. The current batch gather still schedules
+one coroutine per supplied item; it is not a proof of bounded scheduling memory for an
+arbitrarily large response list. The application replay uses five captured scene records.
+Failure-oriented tests establish particular behaviours rather than a production recovery rate.
 
-\subsection{Research question 3: regional catalog behavior}
+\subsection{RQ3: regional catalog behaviour}
 
-A dependency-free SQLite catalog can support the required regional, temporal, quality, and
-platform queries when rectangular predicates are indexed before deterministic polygon checks.
-The Kvarken EPSG:4326 bounding box provides a clear contract, while boundary-touching footprints
-are retained by inclusive intersection semantics. WAL mode permits readers to observe committed
-snapshots while writers append transactions, and contention tests verify valid intermediate
-states and durability after reopening. This is appropriate for an embedded educational and
-research catalog, although it is not a substitute for a distributed database under multi-node
-load.
+Bounding-box predicates followed by deterministic geometry checks support regional,
+temporal, platform and quality queries in a compact local catalog. WAL and reopening tests
+cover committed-state durability and mixed reader/writer behaviour. The historical 9.117~ms
+query observation is a local regression point, not a latency guarantee or distributed benchmark.
 
-\subsection{Research question 4: reproducible empirical evidence}
+\subsection{RQ4: reproducible evidence}
 
-An offline baseline is reproducible when its fixtures, concurrency setting, report schema, source
-code, and validation commands are versioned together. The frozen 256-scene artifact records
-220.819653 items per second, zero failures and retries, complete catalog and asset coverage,
-0.106130 MB of metadata payload, and 9.117 ms spatial query latency in the measured environment.
-The report is intentionally additive: authenticated live runs produce dated artifacts without
-overwriting this comparison point. Thus the baseline supports regression analysis while clearly
-separating synthetic evidence from future provider observations.
+Version fixtures, parameters, source, reports and validation commands together. Keep the
+frozen 256-scene benchmark explicitly synthetic and the 20260915 artifact explicitly
+offline fallback. Add actual-data manifests, retained-window checksums and source/environment
+identities rather than overwriting historical comparisons. Reproducibility here means
+inspectable computation and provenance, not identical wall-clock timings.
 
-\section{Scientific and architectural contributions}
+\subsection{RQ5: a traceable practical application}
 
-The main contribution is a coherent set of small design mechanisms that can be inspected and
-tested independently:
+Actual observations can be connected to cached pixels, preprocessing, candidate classification,
+independent-sensor proxy comparison and the existing catalog/API. Shared optical tile
+ownership and native categorical class purity are necessary to avoid misleading reference
+construction. The held-out comparison diagnoses a weak classifier; it does not establish
+accurate total ice extent or universal SAR thresholds. The independent CSC execution
+objective is still open because secure project access was not available.
 
-\begin{itemize}
-\item A dependency-free runtime demonstrates that asynchronous EO metadata ingestion, OAuth2
-boundary handling, SQLite spatial indexing, HTTP querying, provenance, reporting, and NDVI
-calculation do not require a heavyweight framework for a research baseline.
-\item Standard-library asynchronous scheduling makes the concurrency contract explicit and
-testable, preventing an apparently parallel pipeline from creating unbounded provider or local
-work.
-\item SHA-256 content addressing and append-only manifests separate immutable source evidence from
-mutable query indexes and make duplicate or missing provenance detectable.
-\item SQLite WAL persistence provides a compact indexed regional catalog with reader/writer
-isolation, transactional upserts, and durability checks suitable for a single-node research
-deployment.
-\item The frozen benchmark, deterministic reports, fault-injection tests, and health command turn
-implementation claims into a repeatable empirical protocol rather than an unversioned demo.
-\end{itemize}
+\section{Contributions and limitations}
 
-The contribution is consequently methodological as well as software-oriented: it defines a
-traceable path for moving from an external EO standard to an operationally meaningful, teachable
-research artifact.
+The contribution is methodological and software-oriented: small, inspectable contracts link
+provider standards to reproducible local research. The real application adds a practical
+test of those contracts and retains its negative findings. It is not a new SAR algorithm,
+a field-validated sea-ice product, a production cloud service or an educational outcome study.
+The annual mask, selective proxy labels, acquisition mismatch and single-scene design
+constrain the scientific conclusions.
 
-\section{Future work}
+\section{Immediate and future work}
 
-\subsection{Authenticated continuous CDSE ingestion}
+The immediate deployment task is an authorized CSC cPouta run with verified project access,
+deployed source revision, remote identity, timestamps, sanitized commands, output checksums
+and health results. Keep the API on loopback and use SSH tunnelling rather than an
+unprotected public service. Release temporary resources after preserving evidence; stopping
+a VM alone need not stop cloud allocation consumption.
 
-The current CDSE adapter supports client-credentials authorization and bounded recovery, but CI
-uses offline fixtures. A next phase should run a scheduled continuous ingestion service with
-rotating credentials, provider-aware rate budgets, checkpointed pagination, and monitoring for
-schema drift. Each execution should retain the existing dated report and provenance contracts.
-Comparisons should quantify provider latency, response distributions, token refresh frequency, and
-retry cost against the frozen synthetic baseline.
+Scientific follow-up should use several radar acquisitions, independent temporally matched
+observations, wind records and incidence-angle analysis. The optical proxy needs validation
+of its own, especially for thin or dark ice. Candidate-area uncertainty requires stronger
+evidence than the reported decision-offset sensitivity.
 
-\subsection{Raster and GeoTIFF array operations}
-
-The raster slice currently validates HTTP range transport and computes NDVI over aligned numerical
-values. Future work should add a carefully bounded GeoTIFF reader or an optional raster
-dependency, windowed reads, nodata masks, scale/offset handling, and alignment checks across red
-and near-infrared bands. Evaluation should measure memory use and numerical agreement on
-representative Sentinel-2 windows without weakening the metadata-only offline path.
-
-\subsection{Distributed spatial catalogs}
-
-SQLite WAL is an effective single-node boundary, but multi-node ingestion would require a
-different ownership and consistency model. A distributed extension could partition scenes by time
-or region, use a service-backed spatial index, and preserve content-addressed provenance in shared
-object storage. The existing typed catalog protocol and deterministic regional predicates should
-remain the compatibility contract while benchmarks compare write contention, query tail latency,
-recovery, and operational cost.
-
-\subsection{Operational deployment at Kvarken Space Center}
-
-Deployment research should connect the pipeline to an operational scheduling environment at
-Kvarken Space Center. This includes secret management, durable raw/staged storage, observability,
-backup and restore drills, access control, data-retention policy, and an educational dashboard
-over the read-only query API. A staged rollout should retain offline replay tests and the frozen
-256-scene artifact as release gates so that operational convenience does not erase research
-traceability.
+Longer-term engineering work includes bounded scheduling for large streaming batches,
+repeated resource measurements, continuous authenticated CDSE ingestion, backup/restore drills
+and appropriately governed distributed storage. These extensions should preserve the
+offline regression path and immutable evidence.
 
 \section{Closing statement}
 
-The released baseline establishes a practical starting point rather than a finished planetary
-data platform. Its value is the explicitness of its contracts: what is accepted, what is retried,
-what is stored, how a region is defined, and how a result is measured. Future provider,
-processing, and deployment work can therefore extend the system while preserving the evidence and
-comparability required for a credible Master's thesis.
+The work now demonstrates a real local application and an explicit evaluation failure mode.
+That is more informative than infrastructure descriptions alone, but it does not close
+the missing CSC execution, author review or supervisor approval gates. The value of the
+infrastructure is that these boundaries, like the observations and computations, remain
+visible and auditable.

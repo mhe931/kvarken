@@ -2,6 +2,14 @@
 
 ## Review status
 
+**19 October update:** actual Sentinel-1/independent Sentinel-2 pixels have now been processed.
+The [research record](research/20261019/README.md) reports the method, selective proxy
+evaluation and low positive precision. The candidate map is not validated total ice extent.
+The [delivery report](THESIS_DELIVERY_REPORT_20261019.md) records revised Chapters 5--6,
+90 passing optional-environment tests, local review exports and remaining gates.
+CSC execution and shared Google Docs synchronization have not succeeded.
+The historical baseline description below remains applicable to the core only.
+
 This is a working thesis draft. Professor Arslan must review the draft and plan before final
 submission. The [supervisor review plan](SUPERVISOR_REVIEW_PLAN.md) records the proposed
 completion sequence and the evaluation questions awaiting his feedback.
@@ -30,7 +38,7 @@ processing without requiring heavyweight geospatial dependencies.
 
 ## Methods
 
-The implementation is standard-library-only at runtime. Network behavior is injectable and
+The core implementation is standard-library-only at runtime. Network behavior is injectable and
 offline fixtures are checked in, allowing deterministic tests for pagination, OAuth2 refresh,
 rate limits, timeouts, malformed payloads, bounded concurrency, SQLite contention, and report
 generation. Raw payloads are hashed with SHA-256 and accompanied by append-only provenance
