@@ -110,17 +110,39 @@ Final analysis started **16:06:54 UTC, 19 October 2026**; its **8.54 s** elapsed
 calculations, publication maps and the local metadata/API replay, excluding acquisition
 and native-mask retrieval. This is one local observation, not a stable performance benchmark.
 
-## F. CSC: genuine external access blocker
+## F. CSC: browser recovered; personal project declarations pending
 
-Official MyCSC/cPouta browser automation failed/timed out. No active project, service acceptance,
-quota, network, VM or SSH connection was verified. An existing non-CSC SSH configuration was
-not used as a substitute. No CSC resources were created and no remote measurements exist.
-Existing account resources/billing were not inspected; no claim is made about them.
+The supported browser successfully reattached to authenticated MyCSC on 19 October.
+No repeated CDP timeouts or new MyCSC login were needed. The earlier connection-level
+failure is no longer reproducible. A new VS Code log session exists, but the exact cause
+of the earlier timeout is not established; it is not evidence of a missing CSC account.
 
-Human action needed: securely authenticate at https://my.csc.fi and https://pouta.csc.fi,
-complete MFA, select an authorized project, and make that authenticated page/session available.
-Never paste credentials or MFA codes into chat. If cPouta is absent, the project manager must
-enable service access and the member must accept it. Inspect quota before provisioning.
+MyCSC explicitly showed **no projects**. Under the user's authorization, a Student Project
+application was prepared through **Step 4: Confirmation**:
+
+| Field | Prepared value, not an approved allocation |
+|---|---|
+| Name | Kvarken Earth Observation Thesis |
+| Purpose | University of Vaasa Master's thesis and educational demonstration |
+| Field | Natural sciences / 113 Computer and information sciences |
+| End date | 31 December 2026 |
+| Service | cPouta only |
+| Package shown by wizard | 30,000 Cloud BUs |
+| Project ID, activation, role and OpenStack quota | Not yet issued/verified |
+
+The author must personally review eligibility/responsibilities, cPouta terms, CSC General
+Terms, the Student Project Tutorial and Export Restrictions/Sanctions declarations, then
+click **Submit** in the open application at https://my.csc.fi/dashboard.
+The agent did not accept these declarations or submit the application. The interaction
+request returned that the user was unavailable. This is the current external gate.
+The offered package is not an active allocation or proof of instance quota.
+
+The separate official cPouta API Access URL redirects to CSC-account sign-in. No VM,
+network, SSH connection or remote measurements exist. No resources were created.
+The official CLI route was checked: CSC documents `python-openstackclient` and
+**API Access > Download OpenStack RC File v3**. It still requires an authorized project;
+it cannot bypass the personal declarations. No endpoints, passwords or project IDs were
+invented, and no browser cookies/tokens were extracted.
 
 The [CSC procedure](CSC_DEMONSTRATION.md) contains a locally tested metadata replay command
 and the exact missing remote evidence checklist. It is **prepared, not deployed**.
@@ -188,8 +210,13 @@ Checksums and measurable checks are retained in the local
 The existing native Google Doc ID, link and permissions were not changed:
 https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
 
-It has **not** been synchronized or reopened successfully. Secure Google/browser access is
-needed; do not upload a replacement Word file or create a new Doc as a workaround.
+It was successfully reopened in authenticated editing mode on 19 October. A read-only,
+same-origin plain-text export returned HTTP 200 and 66,734 characters, but contained neither
+the current **23.53** precision nor **95.99** baseline values. It is therefore not verified
+as synchronized. No content, sharing or document ID was changed. Synchronization is deferred
+until the substantive CSC result is available, rather than insert an invented result or
+replace the rich manuscript with unformatted text. Do not upload a replacement Word file
+or create a new Doc as a workaround.
 The old “Final Candidate” DOCX and Google Slides are historical, not revised deliverables.
 
 ## J. Verification and independent review
@@ -220,11 +247,11 @@ should enter the commit. The published local hostname is explicitly redacted.
 
 ## K. Git/GitHub disposition and remaining acceptance checklist
 
-Continue existing [PR #22](https://github.com/mhe931/kvarken/pull/22), rather than opening a
-duplicate manuscript PR. Main was independently verified at
-`22c2b3edad279ed1d4316a4f773606b1d8617c46` before integration.
-The final response/delivery audit records actual commit/push/CI status. Do not interpret
-prepared changes as a successful remote push, green CI or merge.
+[PR #22](https://github.com/mhe931/kvarken/pull/22) was merged by `mhe931` on
+19 October 2026 at **16:49:37 UTC**. Local and remote main were verified at
+`0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1`. All six pre-merge and five post-merge checks
+passed; five review threads were resolved. Do not reopen or recreate that PR.
+Remaining CSC execution and document synchronization are not implied by green software CI.
 
 - [x] Authentic satellite input and actual processing.
 - [x] Maps, source manifests, quantitative proxy comparison and honest limitations.
@@ -255,8 +282,9 @@ the map as validated total sea-ice extent. I would appreciate your priority feed
 whether this diagnostic case meets the practical-application requirement or needs further
 independent validation.
 
-The CSC run has not yet been completed because authenticated project access could not be
-verified. I have prepared the reproducible deployment procedure but have not presented
+The CSC run has not yet been completed. The thesis Student Project application is prepared
+but still needs my personal terms acceptance and submission, followed by service activation
+and quota verification. I have prepared the reproducible deployment procedure but have not presented
 local measurements as CSC results. The repository evidence is available at
 https://github.com/mhe931/kvarken/pull/22.
 
