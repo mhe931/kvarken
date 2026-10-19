@@ -6,7 +6,7 @@
 
 Native Google Slides: https://docs.google.com/presentation/d/1QTyciM7cg8vAszsHBpBuoQxTkVx4bKWPY6q5YFdzl4k/edit
 
-## Current 12-slide narrative
+## Historical 12-slide narrative
 
 1. 20-minute thesis progress update
 2. Thesis state now
@@ -21,14 +21,21 @@ Native Google Slides: https://docs.google.com/presentation/d/1QTyciM7cg8vAszsHBp
 11. Decisions needed from supervisor
 12. Progress conclusion
 
-## Current manuscript status
+## Manuscript status and artifact-specific pagination
 
-The final submission candidate is approximately 39 rendered pages and 9,480 words. The main scientific improvements are:
+The September outline recorded approximately 39 rendered pages and 9,480 words for
+the historical DOCX candidate, not the LaTeX PDF. That DOCX count has not been
+revalidated here; PR #22's original 44-page LaTeX claim also predates the current revision.
+Neither is the current manuscript count. The verified 19 October review exports have
+**71 Word-rendered pages** and **64 LaTeX pages**, respectively. Different pagination
+does not establish remote synchronization or final acceptance.
+
+The manuscript's structural improvements include:
 
 - explicit research gap;
 - design-and-evaluation methodology;
 - RQ-to-evidence mapping;
-- separate Results, Analysis, and Discussion chapters;
+- separate Evaluation (Chapter 6), Analysis, and Discussion chapters;
 - explicit validity boundaries;
 - accurate AI-assisted work disclosure;
 - explicit synthetic/fallback/live evidence separation.
