@@ -317,7 +317,7 @@ as independent field samples. Candidate areas use the projected 0.01~km$^2$ cell
 Changing the discriminant offset by plus or minus one gives a sensitivity analysis,
 not a statistical confidence interval or an estimate of total ice-extent uncertainty.
 
-\section{Execution environment and CSC boundary}
+\section{Local and CSC execution environments}
 
 The recorded application ran on the local Windows CPU with Python 3.12.15, NumPy,
 Rasterio/GDAL and Matplotlib, isolated in the optional \texttt{science} environment.
@@ -326,10 +326,28 @@ The NVIDIA T550 Laptop GPU has 4~GiB VRAM; driver 596.52 advertises CUDA API com
 The workload consists of range I/O, raster alignment and a small linear model, not neural
 network training.
 
-CSC cPouta is the intended second demonstration environment. Official documentation
-requires both an enabled project service and member acceptance; an existing CSC account
-alone does not prove this access \citep{csc-access,csc-pouta}. In this session, authenticated
-browser connections to MyCSC and cPouta timed out. No project, quota, VM or remote run was
-verified. The local execution must not be relabelled as CSC execution. The deployment
-procedure and evidence checklist are retained in the repository for execution after secure
-authentication. Allas and Roihu were not used.
+A separate infrastructure replay executed on CSC cPouta under thesis project 2021696.
+Project service access and the actual instance quota were verified through MyCSC and
+the authenticated OpenStack Horizon dashboard, rather than inferred from an account
+\citep{csc-access,csc-pouta}. The instance used the \texttt{standard.tiny} flavour
+(one vCPU, 1,000~MB RAM and 80~GB ephemeral disk), Ubuntu 24.04.5 LTS and Python 3.12.3.
+The source was checked out at revision
+\nolinkurl{0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1} with a clean working tree.
+
+Two restricted SSH connection attempts timed out despite an active VM. Instead of
+broadening ingress, a second temporary VM executed the existing runner through the
+supported cloud-init customization script. It installed the dependency-free package
+in an isolated Python environment and replayed the five captured actual scene records.
+The workload checked canonical payload provenance, closed and reopened SQLite, performed
+the Kvarken regional query, and checked exact scene identities and health through an
+API bound only to loopback. It did not acquire or classify satellite rasters remotely.
+
+The script retained UTC timestamps, operating-system and package details, source revision,
+stdout/stderr, exit status and input/output checksums. A compressed evidence archive was
+retrieved through the authenticated instance console log and independently hash-verified
+locally. Twenty source files were checked against the exact Git blobs; eight recorded
+output files were rehashed. The generic runner's provider field remains
+\texttt{not-verified}; separate authenticated control-plane evidence establishes CSC
+ownership of the identified instance. Both temporary VMs and the floating IP were
+released after retrieval, and the temporary SSH ingress rule was removed. Allas and
+Roihu were not used.

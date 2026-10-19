@@ -1,6 +1,6 @@
-# CSC demonstration: prepared, not executed
+# CSC demonstration: executed and verified
 
-**CSC project and Cloud BU allocation verified; no OpenStack quota, VM or execution yet.**
+**Actual five-scene metadata workload completed remotely on 19 October 2026, exit zero.**
 On 19 October the supported browser reattached successfully to authenticated MyCSC.
 The initially empty dashboard was followed by a prepared Student Project application.
 On the next live inspection it had been submitted and project creation was verified:
@@ -12,17 +12,51 @@ On the next live inspection it had been submitted and project creation was verif
 - MyCSC displayed lifetime: **19 October 2026 - 1 January 2027** (the application
   requested 31 December; retain the service's displayed boundary rather than infer an hour).
 - Service: **cPouta Enabled**, access granted **19 October 2026**.
-- Actual allocation: **30,000 Cloud BUs**, **0 used**, **30,000 remaining (100%)**.
+- Allocation before launch: **30,000 Cloud BUs**, **0 used**, **100% remaining**.
+- Verified OpenStack quota: **8 instances, 8 vCPUs, 32.2 GB RAM, 2 floating IPs, 10 volumes**.
 
 The agent did not accept personal declarations. MyCSC creation and service status were
 verified afterward at https://my.csc.fi/projects/2021696.
 Cloud BUs are **not OpenStack instance/vCPU/RAM/storage/network quotas**.
-The cPouta dashboard returned **"Login failed: You are not authorized for any projects
-or domains."** New-project provisioning/entitlement propagation is possible but unproven.
-One subsequent supported Sign In / Haka / University of Vaasa attempt reached the actual
-university sign-in screen. The interaction request returned that the user was unavailable.
-No credentials were supplied in chat, no resources were provisioned, and no local results
-are labelled CSC.
+An initial cPouta authorization denial was followed by successful authenticated access
+through the supported sign-in route. No account security/terms choices were made by the agent.
+No credentials were supplied in chat and no browser tokens were extracted.
+
+## Actual deployment and execution
+
+Execution instance **8d3f5911-360b-48fb-83a6-115a95d8bd5b** belonged to OpenStack project
+**a1842d0445334e65afc3a2be05c5ac80** in the authenticated CSC dashboard. It used
+`standard.tiny` (one vCPU, 1,000 MB RAM, 80 GB ephemeral disk), Ubuntu 24.04.5 LTS and
+Python 3.12.3. Clean source revision was `0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1`.
+
+After two restricted SSH connection attempts timed out on an initial VM, a second VM
+executed the workload using supported cloud-init customization. No wider ingress was added.
+The runner started at **17:29:42.844271 UTC**, completed **17:29:43.815320 UTC**, and returned
+**0**. Full runner elapsed was **0.971050 s**; the ingestion-only timer was **0.199499 s**
+for **5 scenes / 68,286 canonical bytes**, **0 failures/retries**, **25.062840 items/s**.
+VM provisioning, installation and raster work are excluded.
+
+The authenticated instance console supplied a compressed evidence archive. Its retrieved
+SHA-256 is `c12807b646e95916540826166c02febecdec39d85034a167d90282c21b3f85df`.
+All 8 recorded output hashes and 20 source hashes were independently verified against
+the retained bytes/exact Git blobs. Linux input matches the Git blob; Windows CRLF and
+Linux LF differ in bytes but parse identically. Catalog, regional query, API identities,
+health and five provenance records match the local validation exactly.
+
+See [remote run](research/20261019/csc_pipeline_run.json) and
+[separate control-plane summary](research/20261019/csc_execution_evidence.json).
+The [exact executed script](research/20261019/csc_bootstrap.sh) is privileged fresh-VM
+user data for inspection/reproduction, not a local command. Its `health.json` output
+contains plain CLI health text, despite the historical filename.
+Original console, archive, extracted logs, environment and bootstrap script remain in
+ignored `outputs/thesis_delivery_20261019/`. The script's dual console/logger output
+interleaves raw lines; retrieval decoded the complete cloud-init-prefixed base64 stream
+and checked the archive against the remote digest, not merely a success message.
+The runner's provider label remains `not-verified`; authenticated control-plane evidence
+establishes CSC ownership separately.
+
+This demonstrates actual remote metadata/provenance/catalog/API execution, **not remote
+raster classification, stronger sea-ice accuracy or cloud speedup**.
 
 ## Official prerequisites
 
@@ -32,12 +66,9 @@ are labelled CSC.
 - [Security](https://docs.csc.fi/cloud/pouta/security/)
 - [Flavours and billing](https://docs.csc.fi/cloud/pouta/vm-flavors-and-billing/)
 
-MyCSC authentication is already working; do not request login again without evidence of
-expiry. The separate cPouta session requires supported authentication. Complete the open
-university sign-in/MFA privately, then inspect cPouta project selection for `project_2021696`.
-If the authorization error persists, contact CSC Service Desk at `servicedesk@csc.fi` with
-project number **2021696**, enabled-service date and the exact error; do not create a duplicate
-student project. No support message has been sent. Before launching a VM, confirm
+MyCSC and cPouta authentication were verified; do not request login again without evidence
+of expiry. Select `project_2021696` for future work; do not create a duplicate student
+project. No support message has been sent. Before launching another VM, confirm
 OpenStack project membership/permissions, quota, image and SSH
 key ownership. An account alone is insufficient. Do not paste passwords, private keys,
 OpenRC secrets, tokens or MFA codes into chat. Obtain authorization before consuming a
@@ -59,7 +90,7 @@ Neither method can bypass project eligibility, personal terms or service activat
 The Windows preparation environment has OpenStack CLI **10.4.0** installed at
 `%LOCALAPPDATA%\kvarken-tools\openstack-client`; `openstack --version` and application
 credential command help were verified. It is separate from the scientific environment.
-No authenticated OpenStack API call has been made.
+No authenticated OpenStack **CLI** call was needed; deployment used the authorized dashboard.
 
 ## Minimal conditional deployment
 
@@ -85,7 +116,7 @@ python -m kvarken_eo.demonstration \
 python -m kvarken_eo verify-health
 ```
 
-The same runner has executed locally. It ingests five captured **actual** SAR/optical scene
+The same runner has executed locally and on CSC. It ingests five captured **actual** SAR/optical scene
 records, checks canonical raw-payload hashes, closes/reopens SQLite, verifies exact scene
 identities, and probes a loopback health/scenes API. It is a metadata/catalog workload,
 not fresh raster acquisition or a remote repeat of the full scientific application.
@@ -116,5 +147,10 @@ Do not publish personal account identifiers, private hostnames, addresses or cre
 Preserve required outputs first. Stopped/suspended VMs still consume Cloud BUs; allocated
 volumes/floating IPs can also consume allocation. Release authorized temporary resources
 that are no longer needed rather than assuming a stop is free. Never delete resources
-belonging to other projects. Since no resources were created here, no session-created
-CSC cleanup is pending; existing account resources remain uninspected.
+belonging to other projects.
+
+**Verified after this run:** both temporary VMs deleted, temporary floating IP released,
+and temporary SSH ingress rule removed. The dashboard showed **0 instances, 0 vCPUs,
+0 RAM, 0 floating IPs, 0 volumes** and the original four security-group rules. The project
+and its automatic network/router remain; billing may update later, so no zero-cost claim
+is made. The dedicated local SSH private key is outside the repository and never published.

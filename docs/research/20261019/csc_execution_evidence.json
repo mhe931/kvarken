@@ -1,0 +1,75 @@
+{
+  "archive_sha256": "c12807b646e95916540826166c02febecdec39d85034a167d90282c21b3f85df",
+  "bootstrap_sha256": "26a31d92bbf0d588769450528d720b444f433bae3675294a376d4c3598dcbea2",
+  "cleanup": {
+    "floating_ips_remaining": 0,
+    "instances_remaining": 0,
+    "project_network_and_router_retained": true,
+    "public_api_exposed": false,
+    "security_group_rules_restored_to": 4,
+    "volumes_remaining": 0
+  },
+  "completed_at": "2026-10-19T17:29:43.815320+00:00",
+  "control_plane_verification": "Authenticated CSC Horizon showed project_2021696, matching OpenStack project/instance IDs, Ubuntu image and flavor. Original console and archive retained locally.",
+  "disk_gb": 80,
+  "elapsed_seconds": 0.9710495990000112,
+  "environment": {
+    "host": "[redacted; original retained locally]",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "provider": "not-verified",
+    "python": "3.12.3"
+  },
+  "exit_status": 0,
+  "flavor": "standard.tiny",
+  "git_sha": "0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1",
+  "input_matches_git_blob": true,
+  "input_sha256": "a2535cbff6a9f6f6e545e5d3a00cfc98a3dd3daafc6192d4e6b85566da2be948",
+  "instance_id": "8d3f5911-360b-48fb-83a6-115a95d8bd5b",
+  "metrics": {
+    "elapsed_seconds": 0.19949853700001086,
+    "failure_count": 0,
+    "payload_bytes": 68286,
+    "retry_count": 0,
+    "scenes_ingested": 5,
+    "throughput_items_per_second": 25.062840435765843
+  },
+  "openstack_project_id": "a1842d0445334e65afc3a2be05c5ac80",
+  "original_report_sha256": "8984ac62a7280fd758d190636d896fd5dc386d21638f5209809d9ae9914ea9c6",
+  "project_number": "2021696",
+  "ram_mb": 1000,
+  "remote_local_validation_identical": true,
+  "started_at": "2026-10-19T17:29:42.844271+00:00",
+  "transport": "CSC Horizon authenticated console log; cloud-init user data",
+  "validation": {
+    "api_health": {
+      "status": "ok"
+    },
+    "api_scene_ids": [
+      "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953"
+    ],
+    "catalog_reopened": true,
+    "kvarken_scene_ids": [
+      "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953"
+    ],
+    "provenance_records": 5,
+    "scene_ids": [
+      "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953"
+    ]
+  },
+  "vcpus": 1,
+  "verified_output_files": 8,
+  "verified_source_files": 20,
+  "windows_input_difference": "Windows checkout CRLF versus Linux Git blob LF; parsed input and exact scene/API validation identical"
+}

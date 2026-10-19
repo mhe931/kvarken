@@ -18,6 +18,11 @@
   actual original public endpoints. Captured metadata is not a fresh provider-speed test.
 - Runtime records include executed-source hashes and software versions. Provider identity
   remains `not-verified`; a local hostname must never be used to infer CSC execution.
+- The actual cPouta replay uses the same metadata runner and exact reviewed Git revision.
+  Separate authenticated control-plane evidence establishes its project/instance ownership.
+  Cloud-init and authenticated console retrieval can supply execution evidence without
+  broadening inbound access; archive/input/output/source hashes must be independently checked.
+  A five-scene remote replay is portability evidence, not a distributed or speedup benchmark.
 - Source acquisition and supplemental quality-mask manifests are immutable. Raw rasters
   remain ignored; small licensed research outputs live outside the frozen offline folder.
 - The current batch gather bounds active work with a semaphore, not total scheduling memory.

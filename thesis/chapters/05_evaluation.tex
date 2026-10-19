@@ -284,7 +284,7 @@ The optical observation is later, selectively labels bright snow ice, and is not
 truth. These limitations prevent operational or universal-threshold claims. The useful
 scientific result is the diagnosed failure mode and the limited, reproducible evaluation.
 
-\section{Local infrastructure execution and CSC status}
+\section{Local and CSC infrastructure execution}
 
 The provenance-correct final analysis began at 16:06:54 UTC on 19 October 2026. Its measured
 8.54-second analysis interval includes raster calculations, publication figures and
@@ -299,10 +299,29 @@ inputs/outputs have SHA-256 identities. The Git record correctly reports a dirty
 tree during execution rather than attributing uncommitted science code to the old baseline
 alone.
 
-No CSC connection or execution succeeded. Project allocation, quota, VM identity, remote
-timestamps and output checksums could not be collected. Consequently this chapter reports
-no CSC runtime or result. The supervisor's additional execution objective remains open;
-a prepared deployment procedure does not satisfy it.
+The separate CSC replay began at 17:29:42.844271 UTC and completed at 17:29:43.815320 UTC
+on 19 October 2026, with exit status zero. The full runner interval was 0.971050~s.
+Its narrower ingestion timer recorded 0.199499~s, five scenes and 68,286 canonical payload
+bytes, with zero failures and retries. The derived ingestion rate was 25.062840 items/s.
+These two timing boundaries are distinct; neither includes VM provisioning, package
+installation, raster acquisition or scientific classification.
+
+All five catalog scene identities, all five regional query identities, all five API
+identities, the health response and five provenance records matched the corresponding
+local validation exactly. The Linux input bytes matched the reviewed Git blob under
+SHA-256. The Windows checkout uses CRLF rather than LF line endings, so raw input-file
+checksums differ across those checkouts while parsed metadata and validation results
+are identical. Timestamp-bearing provenance and SQLite files are not claimed to be
+byte-identical across hosts.
+
+The retrieved compressed archive has SHA-256
+\nolinkurl{c12807b646e95916540826166c02febecdec39d85034a167d90282c21b3f85df}.
+The sanitized run and separate control-plane/evidence summary are retained as
+\nolinkurl{docs/research/20261019/csc_pipeline_run.json} and
+\nolinkurl{docs/research/20261019/csc_execution_evidence.json}.
+The result demonstrates actual remote portability of the metadata/catalog/API path.
+It is one small replay, not a local/cloud performance comparison, a distributed-scale
+benchmark or additional validation of the sea-ice candidate map.
 
 \section{Interpretation}
 

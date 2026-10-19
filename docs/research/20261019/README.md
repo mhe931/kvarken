@@ -5,7 +5,8 @@
 Actual satellite pixels were acquired and processed. Evaluation is **agreement with a
 selective, independent-sensor optical proxy**, not field accuracy. Ice precision is only
 23.53%; the candidate map must not be called validated total sea-ice extent.
-No CSC processing or authenticated CDSE download occurred.
+Raster processing was local. A separate authentic-metadata replay executed on CSC cPouta;
+no authenticated CDSE pixel download occurred.
 
 ## Inputs and traceability
 
@@ -103,3 +104,36 @@ Do not expect timing, timestamps or catalog/provenance bytes to reproduce bitwis
 The initial pre-review output is retained separately in ignored storage. Its headline values
 are superseded because review identified mixed-tile references, lost small islands and
 incomplete single-class reporting. No historical synthetic/fallback artifacts were overwritten.
+
+## Actual CSC cPouta execution
+
+On 19 October 2026, project **2021696** executed the existing five-scene metadata runner
+on one `standard.tiny` CPU VM (one vCPU, 1,000 MB RAM, Ubuntu 24.04.5 LTS, Python 3.12.3).
+Source revision was `0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1`, clean.
+
+- UTC start/end: **17:29:42.844271 / 17:29:43.815320**; runner elapsed **0.971050 s**.
+- Ingestion timer: **0.199499 s**, **5 scenes**, **68,286 bytes**, **0 failures/retries**.
+- Persisted catalog, Kvarken query, loopback API and five provenance identities matched
+  the local validation exactly. The health CLI also passed.
+- All **8 recorded outputs** and **20 source files** were independently hash-verified.
+  Linux input matches the Git blob; Windows checkout CRLF differs from Linux LF while
+  parsed metadata is identical. Timestamp-bearing output files need not be byte-identical.
+- Original archive SHA-256:
+  `c12807b646e95916540826166c02febecdec39d85034a167d90282c21b3f85df`.
+
+[Sanitized remote run](csc_pipeline_run.json) and
+[control-plane/evidence summary](csc_execution_evidence.json) are generated from actual
+retrieved records. The [exact cloud-init script](csc_bootstrap.sh) is retained for inspection;
+it is privileged fresh-VM user data, not a Windows/local command, and must not be rerun on
+an existing host. The original `health.json` filename contains plain CLI health output,
+not structured JSON. Original console, archive, environment, command script and extracted
+outputs remain in ignored `outputs/thesis_delivery_20261019/`.
+The runner's `provider: not-verified` field is deliberately unchanged; authenticated CSC
+Horizon instance/project evidence, not that label, establishes the remote deployment.
+
+Cloud-init executed the workload after two restricted SSH attempts timed out. Evidence was
+retrieved through the authenticated instance console, not a public endpoint. Both temporary
+VMs and the floating IP were deleted, the SSH rule was removed, and the dashboard then
+showed zero instances, vCPUs, RAM, floating IPs and volumes in use. The project and its
+automatic network/router remain. This single metadata replay is **not a remote raster
+experiment, classifier improvement or cloud speedup benchmark**.

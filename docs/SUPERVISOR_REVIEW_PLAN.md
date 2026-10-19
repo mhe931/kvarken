@@ -10,24 +10,24 @@ here. Cem Özcan is proposed as reviewer; acceptance is not confirmed.
 
 An authentic Sentinel-1 case with independent Sentinel-2 proxy comparison has run locally.
 Its classifier has low positive precision and must not be called validated total ice extent.
-CSC execution has not occurred. The shared Google Doc has not been synchronized.
+CSC metadata/provenance/catalog/API execution is now verified, with unchanged scientific
+classifier results. The shared Google Doc has not been synchronized.
 See [the evidence](research/20261019/README.md) and
 [the full delivery report and email draft](THESIS_DELIVERY_REPORT_20261019.md).
 
 ## Immediate sequence
 
 1. Complete personal author review of the revised manuscript, figures, references and disclosure.
-2. MyCSC and Google browser access recovered on 19 October. Project **2021696**,
-   **Kvarken Earth Observation Thesis**, now exists with cPouta **Enabled** and an actual
-   30,000 Cloud BU allocation (0 used). Displayed lifetime is 19 October - 1 January 2027.
-   cPouta itself returned "not authorized for any projects or domains"; a supported
-   reauthentication attempt reached university sign-in. The author must finish that
-   private authentication/MFA. If the error persists, CSC must resolve the entitlement.
-   Verify OpenStack permissions and instance quotas, not just the BU balance.
-   Run the [recorded demonstration](CSC_DEMONSTRATION.md) on an authorized VM and preserve evidence.
+2. MyCSC and Google browser access recovered on 19 October. Project **2021696** has
+   cPouta enabled and 30,000 Cloud BUs. Actual remote replay completed at **17:29:43 UTC**,
+   exit zero; output/source hashes and local/remote validation match.
+   Review the [recorded demonstration](CSC_DEMONSTRATION.md) and
+   [evidence](research/20261019/csc_execution_evidence.json). Temporary VMs/IP were released.
 3. The existing Google Doc reopened successfully in authenticated editing mode. Its read-only
    text export lacks the current 23.53% precision and 95.99% baseline values, so it is not verified
-   as current. After substantive CSC changes are complete, synchronize from the canonical source,
+   as current. The CSC-integrated export is now available. Native editor automation did not
+   reliably operate; a human-assisted formatted transfer into the same Doc was requested.
+   Synchronize from the canonical source,
    preserving its ID, sharing and history. Verify the remote content by reopening it.
 4. Email the revised DOCX/PDF to **Dear Professor Arslan,**, signed **Däniel**, explicitly
    identifying the scientific limits and whether CSC execution has actually been completed.

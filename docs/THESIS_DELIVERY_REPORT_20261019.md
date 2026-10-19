@@ -10,7 +10,8 @@ infrastructure to that actual application. However:
 
 - Positive ice precision is low and most candidate ice area has no optical label.
   This is diagnostic proxy evaluation, **not validated total sea-ice extent**.
-- No actual CSC execution has been obtained.
+- Actual CSC metadata/provenance/catalog/API execution is now verified; raster analysis
+  remains local and the remote replay does not improve classifier accuracy.
 - The existing shared native Google Doc has not been synchronized or remotely verified.
 - Personal author review, supervisor acceptance, reviewer confirmation, final accessibility/
   PDF-A validation, Turnitin authorization and Osuva authorization remain open.
@@ -110,7 +111,7 @@ Final analysis started **16:06:54 UTC, 19 October 2026**; its **8.54 s** elapsed
 calculations, publication maps and the local metadata/API replay, excluding acquisition
 and native-mask retrieval. This is one local observation, not a stable performance benchmark.
 
-## F. CSC: project created and funded; cPouta session/entitlement unresolved
+## F. CSC: actual remote workload executed and independently verified
 
 The supported browser successfully reattached to authenticated MyCSC on 19 October.
 No repeated CDP timeouts or new MyCSC login were needed. The earlier connection-level
@@ -129,33 +130,57 @@ declarations. A subsequent live inspection verified that it had been submitted a
 | Field | Natural sciences / 113 Computer and information sciences |
 | Displayed lifetime | 19 October 2026 - 1 January 2027 |
 | Service | cPouta **Enabled**, access granted 19 October 2026 |
-| Actual allocated / used / remaining | **30,000 / 0 / 30,000 Cloud BUs (100%)** |
-| OpenStack instance/vCPU/RAM/storage/network quotas | Not yet accessible/verified |
+| Allocation verified before launch | **30,000 Cloud BUs**, 0 used, 100% remaining |
+| OpenStack quota verified | 8 instances, 8 vCPUs, 32.2 GB RAM, 2 floating IPs, 10 volumes |
 
 The agent did not accept declarations or submit the application. Creation and activation
 were verified afterward at https://my.csc.fi/projects/2021696. The service displays
 1 January 2027 as its boundary although the application requested 31 December; no precise
 expiry hour is inferred. This allocation is not proof of OpenStack resource quota.
 
-The actual cPouta page returned **"Login failed: You are not authorized for any projects
-or domains."** New-project entitlement propagation is possible, not established.
-A subsequent official Sign In / Haka / University of Vaasa attempt reached the actual
-university sign-in screen. The author must complete that authentication/MFA privately;
-the interaction request reported the user unavailable. If the denial persists, contact
-`servicedesk@csc.fi` with project **2021696** and the exact error. No support email was sent.
-Do not create a duplicate Student Project or request another MyCSC login.
+An initial cPouta authorization denial was followed by successful authenticated access
+after the supported sign-in route. The selected project was verified as `project_2021696`.
+The precise earlier entitlement/propagation cause is not established. No agent accepted
+personal security enrollment/terms. No support email was sent.
 
-The separate official cPouta API Access URL also requires service authentication. No VM,
-network, SSH connection or remote measurements exist. No resources were created.
-The official CLI route was checked: CSC documents `python-openstackclient` and
-**API Access > Download OpenStack RC File v3**. It still requires an authorized project;
-it cannot bypass the personal declarations. No endpoints, passwords or project IDs were
-invented, and no browser cookies/tokens were extracted.
+The actual execution VM was **8d3f5911-360b-48fb-83a6-115a95d8bd5b**, OpenStack project
+**a1842d0445334e65afc3a2be05c5ac80**. It used `standard.tiny`: **one vCPU, 1,000 MB RAM,
+80 GB ephemeral disk**, Ubuntu **24.04.5 LTS**, Python **3.12.3**, clean Git revision
+`0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1`.
 
-The [CSC procedure](CSC_DEMONSTRATION.md) contains a locally tested metadata replay command
-and the exact missing remote evidence checklist. It is **prepared, not deployed**.
-Allas and Roihu were not used. A stopped VM can still consume Cloud BUs; preserve outputs
-and release only authorized temporary resources when no longer required.
+Two restricted SSH attempts to an initial VM timed out. Instead of broadening access,
+a second VM executed the existing workload through supported cloud-init user data.
+The authenticated console recorded actual execution and supplied a compressed evidence archive:
+
+| Actual remote measurement | Value |
+|---|---:|
+| Runner start UTC, 19 October | 17:29:42.844271 |
+| Runner completion UTC | 17:29:43.815320 |
+| Runner elapsed | 0.971050 s |
+| Ingestion-only elapsed / derived rate | 0.199499 s / 25.062840 items/s |
+| Scenes / canonical payload bytes | 5 / 68,286 |
+| Failures / retries / command exit status | 0 / 0 / 0 |
+| Locally reverified output / source files | 8 / 20 |
+
+Exact catalog, regional-query and loopback-API scene identities, health response and five
+provenance records equal the local validation. Linux input matches the reviewed Git blob.
+Windows checkout CRLF versus Linux LF explains the raw input-file checksum difference;
+parsed metadata is identical. Timestamp-bearing outputs need not be byte-identical.
+No remote raster processing, fresh provider benchmark or cloud speedup is claimed.
+
+Archive SHA-256: `c12807b646e95916540826166c02febecdec39d85034a167d90282c21b3f85df`.
+See [sanitized remote run](research/20261019/csc_pipeline_run.json) and
+[control-plane/evidence summary](research/20261019/csc_execution_evidence.json).
+Original console, archive, extracted logs/environment/results and exact bootstrap script
+are retained in ignored `outputs/thesis_delivery_20261019/`. The generic runner's provider
+field remains `not-verified`; separate authenticated control-plane identity establishes CSC.
+
+**Cleanup verified:** both session-created VMs deleted, floating IP released, temporary SSH
+rule removed. The dashboard shows 0 instances/vCPUs/RAM, 0 floating IPs, 0 volumes and the
+original four security rules. The project and automatic network/router remain allocated.
+No public API was exposed. Cloud BU accounting may update later; no zero-cost claim is made.
+Allas/Roihu and password/application-credential API access were unnecessary. The isolated
+OpenStack CLI 10.4.0 remains installed locally; no cookies or tokens were extracted.
 
 ## G. Local CPU/GPU and reproducible environment
 
@@ -176,7 +201,8 @@ is redacted from the published replay copy, with the original report hash preser
 
 [Canonical source](../thesis/main.tex) remains modular LaTeX. The approved title is unchanged.
 Chapters 5–6 now contain actual acquisition, preprocessing, model/reference rules, maps,
-counts, majority comparison, area support, failure interpretation and the missing CSC boundary.
+counts, majority comparison, area support, failure interpretation and verified CSC
+metadata-deployment methods/results. Raster classification remains explicitly local.
 Abstract, introduction/RQ5, background, methodology, analysis, discussion, conclusions,
 abbreviations, AI disclosure and reproducibility appendix have also been revised.
 Acknowledgements open with thanks to the author's parents.
@@ -194,8 +220,8 @@ The AI appendix explicitly discloses substantial assistance and pending personal
 
 ## I. Documents and remote synchronization
 
-- [Official-template DOCX](../outputs/thesis_delivery_20261019/Thesis_Review_20261019.docx).
-- [Actual Word-rendered review PDF](../outputs/thesis_delivery_20261019/Thesis_Review_20261019.pdf).
+- [CSC-integrated official-template DOCX](../outputs/thesis_csc_review_20261019_v2/Thesis_Review_20261019.docx).
+- [CSC-integrated Word-rendered review PDF](../outputs/thesis_csc_review_20261019_v2/Thesis_Review_20261019.pdf).
 - [LaTeX source build](../thesis/main.pdf), generated locally, not committed.
 - [Scientific figures/manifests](research/20261019/README.md).
 - [Build/export instructions](../thesis/README.md).
@@ -206,24 +232,36 @@ DOTX and August 2026 guidelines were inspected. Word 16.0 rendered the actual DO
 PDF/A export option is **not independently validated conformance**. Personal final accessibility,
 pagination and university-format review are still required.
 
-The current Word-rendered review PDF has **71 pages**; the same canonical text compiled
-with Tectonic/Biber has **64 pages**. Their layout engines paginate differently. All pages
+The earlier pre-CSC Word/LaTeX review PDFs had **71/64 pages**. The CSC-integrated
+review exports have **71/65 pages** after correcting abstract and conclusion overflow.
+Their latest measured page counts and hashes are recorded in
+[the CSC document audit](../outputs/thesis_csc_review_20261019_v2/csc_document_audit.json).
+Their layout engines paginate differently. All pages
 were rendered to images; contact sheets and critical pages were inspected. Both abstracts
 fit one page. The Word contents/page fields were actually updated, the five figure and four
 table captions were checked, and a decimal-truncation defect in the figure list was fixed
 with a regression test. No unresolved Word field/citation placeholder was found.
-Checksums and measurable checks are retained in the local
-[document audit](../outputs/thesis_delivery_20261019/document_audit.json).
+The pre-CSC [document audit](../outputs/thesis_delivery_20261019/document_audit.json)
+is retained as historical evidence, not the identity of the new export.
+
+| Current review artifact | SHA-256 |
+|---|---|
+| DOCX | `bfd77c211290706028e4abbff5493b82dc12f571b450c60b3a3d0d5e7e233af1` |
+| Word-rendered PDF | `4da7fa55723f05a6910cce714a17eab1504ed2e89df4d2c4f93c8c454429c0df` |
+| LaTeX PDF | `bcfac35ccd488d0390fea6fb3d8b93e0ff1d3a177623d42642a0f60166e2d2ef` |
 
 The existing native Google Doc ID, link and permissions were not changed:
 https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
 
 It was successfully reopened in authenticated editing mode on 19 October. A read-only,
 same-origin plain-text export returned HTTP 200 and 66,734 characters, but contained neither
-the current **23.53** precision nor **95.99** baseline values. It is therefore not verified
-as synchronized. No content, sharing or document ID was changed. Synchronization is deferred
-until the substantive CSC result is available, rather than insert an invented result or
-replace the rich manuscript with unformatted text. Do not upload a replacement Word file
+the current **23.53** precision nor **95.99** baseline values. A recheck after the CSC
+export also found neither project **2021696** nor **0.971050** timing. It is therefore not verified
+as synchronized. No content, sharing or document ID was changed. The canvas editor's
+automation actions did not reliably operate, including after reload; no authorized Google
+Docs/Drive API connector was found. A precise human-assisted rich-content transfer from
+the CSC-integrated Word draft into the **same** native Doc was requested; the user was
+unavailable. Remote re-export and verification are still required. Do not upload a replacement Word file
 or create a new Doc as a workaround.
 The old “Final Candidate” DOCX and Google Slides are historical, not revised deliverables.
 
@@ -259,14 +297,17 @@ should enter the commit. The published local hostname is explicitly redacted.
 19 October 2026 at **16:49:37 UTC**. Local and remote main were verified at
 `0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1`. All six pre-merge and five post-merge checks
 passed; five review threads were resolved. Do not reopen or recreate that PR.
-Remaining CSC execution and document synchronization are not implied by green software CI.
+The completed CSC run has separate remote evidence; document synchronization and academic
+approval are not implied by green software CI. Follow-up branch
+`csc-thesis-completion-20261019` contains that actual evidence and manuscript integration;
+its final Git/CI disposition is recorded in the generated delivery audit and final handoff.
 
 - [x] Authentic satellite input and actual processing.
 - [x] Maps, source manifests, quantitative proxy comparison and honest limitations.
 - [x] Existing pipeline integration and source-hashed local execution.
 - [x] Full working-draft revision and local Word/PDF exports.
 - [ ] Convincing total-extent validation, if required beyond this diagnostic case.
-- [ ] Actual authorized CSC run and independently verified remote evidence.
+- [x] Actual authorized CSC run and independently verified remote evidence.
 - [ ] Existing Google Doc synchronization/reopen verification.
 - [ ] Personal author review and acceptance of every revised claim/reference/disclosure.
 - [ ] Professor Arslan's scientific approval and reviewer confirmation.
@@ -276,7 +317,7 @@ Remaining CSC execution and document synchronization are not implied by green so
 
 **Draft only; no email has been sent.** Attach the reviewed DOCX/PDF, not an old candidate.
 
-**Subject:** Revised Kvarken thesis: actual satellite experiment and CSC execution blocker
+**Subject:** Revised Kvarken thesis: satellite application and verified CSC demonstration
 
 Dear Professor Arslan,
 
@@ -290,11 +331,12 @@ the map as validated total sea-ice extent. I would appreciate your priority feed
 whether this diagnostic case meets the practical-application requirement or needs further
 independent validation.
 
-The CSC run has not yet been completed. Thesis project 2021696 has been created with cPouta
-enabled and 30,000 Cloud BUs, but cPouta session/entitlement and instance-quota verification
-remain unresolved. I have prepared the reproducible deployment procedure but have not presented
-local measurements as CSC results. The repository evidence is available at
-https://github.com/mhe931/kvarken/pull/22.
+I also executed the five-scene metadata, provenance, catalog and API workload on CSC cPouta.
+The retrieved remote evidence passed checksum verification and matched the local scene
+and query results. This is infrastructure deployment evidence, not an improvement in
+sea-ice accuracy or a remote repeat of raster classification. Both temporary instances
+were released after preserving their evidence. The repository evidence is available at
+https://github.com/mhe931/kvarken/tree/csc-thesis-completion-20261019/docs/research/20261019.
 
 The revised working draft is attached for review, not submitted as an approved final thesis.
 Please also confirm the individual deadline and the proposed reviewer, Cem Özcan, given

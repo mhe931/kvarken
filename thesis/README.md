@@ -55,4 +55,5 @@ accessibility still need independent validation; a requested export option is no
 
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
 the modular source. The existing shared native Google Doc must retain its ID and permissions;
-this session could not synchronize it because browser automation/authentication was unavailable.
+synchronization must be verified separately from the local export. Browser access recovered;
+the old shared manuscript was read successfully but lacks the revised scientific results.
