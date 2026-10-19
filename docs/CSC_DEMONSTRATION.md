@@ -1,21 +1,26 @@
 # CSC demonstration: prepared, not executed
 
-**No CSC project, quota, VM, remote connection or execution has been verified.**
+**CSC project and Cloud BU allocation verified; no OpenStack quota, VM or execution yet.**
 On 19 October the supported browser reattached successfully to authenticated MyCSC.
-The dashboard explicitly showed no projects. A Student Project application is prepared
-at **Step 4: Confirmation**, but has not been submitted:
+The initially empty dashboard was followed by a prepared Student Project application.
+On the next live inspection it had been submitted and project creation was verified:
 
+- Project number: **2021696**, Unix group `project_2021696`.
 - Name: **Kvarken Earth Observation Thesis**.
 - Field: Natural sciences / 113 Computer and information sciences.
-- End date: **31 December 2026**.
-- Requested service: **cPouta only**.
-- Proposed fixed package displayed by the wizard: **30,000 Cloud BUs**.
+- Home organization: **University of Vaasa**; the author is shown as project manager.
+- MyCSC displayed lifetime: **19 October 2026 - 1 January 2027** (the application
+  requested 31 December; retain the service's displayed boundary rather than infer an hour).
+- Service: **cPouta Enabled**, access granted **19 October 2026**.
+- Actual allocation: **30,000 Cloud BUs**, **0 used**, **30,000 remaining (100%)**.
 
-This is an application preview, **not an allocation, activated service or OpenStack quota**.
-The current gate is the author's personal review and acceptance of the cPouta terms,
-project-manager eligibility/responsibilities, general research-service terms, Student
-Project Tutorial and Export Restrictions/Sanctions declarations. The agent left all
-declarations unchecked. The interaction request returned that the user was unavailable.
+The agent did not accept personal declarations. MyCSC creation and service status were
+verified afterward at https://my.csc.fi/projects/2021696.
+Cloud BUs are **not OpenStack instance/vCPU/RAM/storage/network quotas**.
+The cPouta dashboard returned **"Login failed: You are not authorized for any projects
+or domains."** New-project provisioning/entitlement propagation is possible but unproven.
+One subsequent supported Sign In / Haka / University of Vaasa attempt reached the actual
+university sign-in screen. The interaction request returned that the user was unavailable.
 No credentials were supplied in chat, no resources were provisioned, and no local results
 are labelled CSC.
 
@@ -28,9 +33,12 @@ are labelled CSC.
 - [Flavours and billing](https://docs.csc.fi/cloud/pouta/vm-flavors-and-billing/)
 
 MyCSC authentication is already working; do not request login again without evidence of
-expiry. The separate cPouta API Access page currently redirects to its CSC-account sign-in
-page; this does not establish an active cPouta project. After the author submits the
-prepared application, confirm an active project, enabled cPouta service, member acceptance, quota, image and SSH
+expiry. The separate cPouta session requires supported authentication. Complete the open
+university sign-in/MFA privately, then inspect cPouta project selection for `project_2021696`.
+If the authorization error persists, contact CSC Service Desk at `servicedesk@csc.fi` with
+project number **2021696**, enabled-service date and the exact error; do not create a duplicate
+student project. No support message has been sent. Before launching a VM, confirm
+OpenStack project membership/permissions, quota, image and SSH
 key ownership. An account alone is insufficient. Do not paste passwords, private keys,
 OpenRC secrets, tokens or MFA codes into chat. Obtain authorization before consuming a
 substantial allocation or changing organizational access.

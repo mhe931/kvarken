@@ -17,11 +17,13 @@ See [the evidence](research/20261019/README.md) and
 ## Immediate sequence
 
 1. Complete personal author review of the revised manuscript, figures, references and disclosure.
-2. MyCSC and Google browser access recovered on 19 October. The Student Project application
-   **Kvarken Earth Observation Thesis** is prepared at Confirmation (cPouta only,
-   proposed 30,000 Cloud BUs, end date 31 December). The author must personally review the
-   declarations and click Submit; no project ID, activation or quota exists yet.
-   After submission, verify project service access, member acceptance and quota.
+2. MyCSC and Google browser access recovered on 19 October. Project **2021696**,
+   **Kvarken Earth Observation Thesis**, now exists with cPouta **Enabled** and an actual
+   30,000 Cloud BU allocation (0 used). Displayed lifetime is 19 October - 1 January 2027.
+   cPouta itself returned "not authorized for any projects or domains"; a supported
+   reauthentication attempt reached university sign-in. The author must finish that
+   private authentication/MFA. If the error persists, CSC must resolve the entitlement.
+   Verify OpenStack permissions and instance quotas, not just the BU balance.
    Run the [recorded demonstration](CSC_DEMONSTRATION.md) on an authorized VM and preserve evidence.
 3. The existing Google Doc reopened successfully in authenticated editing mode. Its read-only
    text export lacks the current 23.53% precision and 95.99% baseline values, so it is not verified

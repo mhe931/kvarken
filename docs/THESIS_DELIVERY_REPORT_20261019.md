@@ -110,34 +110,42 @@ Final analysis started **16:06:54 UTC, 19 October 2026**; its **8.54 s** elapsed
 calculations, publication maps and the local metadata/API replay, excluding acquisition
 and native-mask retrieval. This is one local observation, not a stable performance benchmark.
 
-## F. CSC: browser recovered; personal project declarations pending
+## F. CSC: project created and funded; cPouta session/entitlement unresolved
 
 The supported browser successfully reattached to authenticated MyCSC on 19 October.
 No repeated CDP timeouts or new MyCSC login were needed. The earlier connection-level
 failure is no longer reproducible. A new VS Code log session exists, but the exact cause
 of the earlier timeout is not established; it is not evidence of a missing CSC account.
 
-MyCSC explicitly showed **no projects**. Under the user's authorization, a Student Project
-application was prepared through **Step 4: Confirmation**:
+MyCSC initially showed **no projects**. Under the user's authorization, a Student Project
+application was prepared through **Step 4: Confirmation** without accepting personal
+declarations. A subsequent live inspection verified that it had been submitted and created:
 
-| Field | Prepared value, not an approved allocation |
+| Field | Actual verified MyCSC value |
 |---|---|
+| Project number / Unix group | **2021696** / `project_2021696` |
 | Name | Kvarken Earth Observation Thesis |
-| Purpose | University of Vaasa Master's thesis and educational demonstration |
+| Organization / role | University of Vaasa / author shown as project manager |
 | Field | Natural sciences / 113 Computer and information sciences |
-| End date | 31 December 2026 |
-| Service | cPouta only |
-| Package shown by wizard | 30,000 Cloud BUs |
-| Project ID, activation, role and OpenStack quota | Not yet issued/verified |
+| Displayed lifetime | 19 October 2026 - 1 January 2027 |
+| Service | cPouta **Enabled**, access granted 19 October 2026 |
+| Actual allocated / used / remaining | **30,000 / 0 / 30,000 Cloud BUs (100%)** |
+| OpenStack instance/vCPU/RAM/storage/network quotas | Not yet accessible/verified |
 
-The author must personally review eligibility/responsibilities, cPouta terms, CSC General
-Terms, the Student Project Tutorial and Export Restrictions/Sanctions declarations, then
-click **Submit** in the open application at https://my.csc.fi/dashboard.
-The agent did not accept these declarations or submit the application. The interaction
-request returned that the user was unavailable. This is the current external gate.
-The offered package is not an active allocation or proof of instance quota.
+The agent did not accept declarations or submit the application. Creation and activation
+were verified afterward at https://my.csc.fi/projects/2021696. The service displays
+1 January 2027 as its boundary although the application requested 31 December; no precise
+expiry hour is inferred. This allocation is not proof of OpenStack resource quota.
 
-The separate official cPouta API Access URL redirects to CSC-account sign-in. No VM,
+The actual cPouta page returned **"Login failed: You are not authorized for any projects
+or domains."** New-project entitlement propagation is possible, not established.
+A subsequent official Sign In / Haka / University of Vaasa attempt reached the actual
+university sign-in screen. The author must complete that authentication/MFA privately;
+the interaction request reported the user unavailable. If the denial persists, contact
+`servicedesk@csc.fi` with project **2021696** and the exact error. No support email was sent.
+Do not create a duplicate Student Project or request another MyCSC login.
+
+The separate official cPouta API Access URL also requires service authentication. No VM,
 network, SSH connection or remote measurements exist. No resources were created.
 The official CLI route was checked: CSC documents `python-openstackclient` and
 **API Access > Download OpenStack RC File v3**. It still requires an authorized project;
@@ -282,9 +290,9 @@ the map as validated total sea-ice extent. I would appreciate your priority feed
 whether this diagnostic case meets the practical-application requirement or needs further
 independent validation.
 
-The CSC run has not yet been completed. The thesis Student Project application is prepared
-but still needs my personal terms acceptance and submission, followed by service activation
-and quota verification. I have prepared the reproducible deployment procedure but have not presented
+The CSC run has not yet been completed. Thesis project 2021696 has been created with cPouta
+enabled and 30,000 Cloud BUs, but cPouta session/entitlement and instance-quota verification
+remain unresolved. I have prepared the reproducible deployment procedure but have not presented
 local measurements as CSC results. The repository evidence is available at
 https://github.com/mhe931/kvarken/pull/22.
 
