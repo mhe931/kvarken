@@ -123,11 +123,19 @@ Source revision was `0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1`, clean.
 
 [Sanitized remote run](csc_pipeline_run.json) and
 [control-plane/evidence summary](csc_execution_evidence.json) are generated from actual
-retrieved records. The [exact cloud-init script](csc_bootstrap.sh) is retained for inspection;
+retrieved records. The [submitted cloud-init script](csc_bootstrap.sh) is retained for inspection;
 it is privileged fresh-VM user data, not a Windows/local command, and must not be rerun on
 an existing host. The original `health.json` filename contains plain CLI health output,
 not structured JSON. Original console, archive, environment, command script and extracted
 outputs remain in ignored `outputs/thesis_delivery_20261019/`.
+The original uploaded script uses CRLF and hashes to
+`26a31d92bbf0d588769450528d720b444f433bae3675294a376d4c3598dcbea2`.
+Git normalizes the published blob to LF, hashing to
+`baaf51d925d6f5b4d20a47b992c457bb2b4567659a58fa60ad64c5879862ae0a`.
+Their normalized source text is identical; the evidence JSON distinguishes both digests.
+A Windows checkout can restore CRLF, so identify the actual bytes before comparing hashes.
+No on-instance bootstrap-file checksum was collected; the upload digest is not labelled
+as a separately measured remote file digest.
 The runner's `provider: not-verified` field is deliberately unchanged; authenticated CSC
 Horizon instance/project evidence, not that label, establishes the remote deployment.
 

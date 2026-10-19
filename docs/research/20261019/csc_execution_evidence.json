@@ -1,6 +1,13 @@
 {
   "archive_sha256": "c12807b646e95916540826166c02febecdec39d85034a167d90282c21b3f85df",
   "bootstrap_sha256": "26a31d92bbf0d588769450528d720b444f433bae3675294a376d4c3598dcbea2",
+  "bootstrap_line_endings": {
+    "submitted_original": "CRLF; bootstrap_sha256 identifies retained original upload bytes",
+    "published_git_blob": "LF; published_bootstrap_sha256 identifies Git-normalized bytes",
+    "difference": "CRLF-to-LF normalization only; source text identical",
+    "remote_bootstrap_file_hash_collected": false
+  },
+  "published_bootstrap_sha256": "baaf51d925d6f5b4d20a47b992c457bb2b4567659a58fa60ad64c5879862ae0a",
   "cleanup": {
     "floating_ips_remaining": 0,
     "instances_remaining": 0,

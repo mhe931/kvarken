@@ -45,9 +45,12 @@ health and five provenance records match the local validation exactly.
 
 See [remote run](research/20261019/csc_pipeline_run.json) and
 [separate control-plane summary](research/20261019/csc_execution_evidence.json).
-The [exact executed script](research/20261019/csc_bootstrap.sh) is privileged fresh-VM
+The [submitted script](research/20261019/csc_bootstrap.sh) is privileged fresh-VM
 user data for inspection/reproduction, not a local command. Its `health.json` output
 contains plain CLI health text, despite the historical filename.
+The evidence summary distinguishes the original CRLF upload digest from the published
+LF Git-blob digest; they differ only in newline encoding. An on-instance bootstrap-file
+checksum was not collected, so the upload digest must not be presented as one.
 Original console, archive, extracted logs, environment and bootstrap script remain in
 ignored `outputs/thesis_delivery_20261019/`. The script's dual console/logger output
 interleaves raw lines; retrieval decoded the complete cloud-init-prefixed base64 stream
