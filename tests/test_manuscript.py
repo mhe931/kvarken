@@ -10,7 +10,7 @@ from thesis.export_documents import format_document  # noqa: E402
 def test_document_has_continuous_pages_numbered_chapters_and_references_before_appendix(tmp_path):
     path = tmp_path / "review.docx"
     document = docx.Document()
-    document.add_paragraph("Daniel Ebrahimzadeh Esfahani")
+    document.add_paragraph("Däniel Ebrahimzadeh Esfahani")
     document.add_paragraph("Vaasa 2026")
     document.add_paragraph("UNIVERSITY OF VAASA")
     document.add_table(rows=1, cols=2)
@@ -53,7 +53,7 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     assert saved.core_properties.title == (
         "Design and Implementation of a Hybrid Earth Observation Data Infrastructure"
     )
-    assert saved.core_properties.author == "Daniel Ebrahimzadeh Esfahani"
+    assert saved.core_properties.author == "Däniel Ebrahimzadeh Esfahani"
     assert "17.90 hours" in saved.inline_shapes[0]._inline.docPr.get("descr", "")
     assert "not field ground truth" in saved.inline_shapes[0]._inline.docPr.get("descr", "")
     descriptions = [shape._inline.docPr.get("descr", "") for shape in saved.inline_shapes]
