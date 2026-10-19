@@ -38,6 +38,10 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     document.save(path)
     format_document(path)
     saved = docx.Document(path)
+    assert saved.core_properties.title == (
+        "Design and Implementation of a Hybrid Earth Observation Data Infrastructure"
+    )
+    assert saved.core_properties.author == "Daniel Ebrahimzadeh Esfahani"
     text = [paragraph.text for paragraph in saved.paragraphs]
     assert "1  Introduction" in text
     assert "1.1  Motivation" in text

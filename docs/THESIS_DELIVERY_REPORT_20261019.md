@@ -220,8 +220,8 @@ The AI appendix explicitly discloses substantial assistance and pending personal
 
 ## I. Documents and remote synchronization
 
-- [CSC-integrated official-template DOCX](../outputs/thesis_csc_review_20261019_v2/Thesis_Review_20261019.docx).
-- [CSC-integrated Word-rendered review PDF](../outputs/thesis_csc_review_20261019_v2/Thesis_Review_20261019.pdf).
+- [CSC-integrated official-template DOCX](../outputs/thesis_csc_review_20261019_final/Thesis_Review_20261019.docx).
+- [CSC-integrated Word-rendered review PDF](../outputs/thesis_csc_review_20261019_final/Thesis_Review_20261019.pdf).
 - [LaTeX source build](../thesis/main.pdf), generated locally, not committed.
 - [Scientific figures/manifests](research/20261019/README.md).
 - [Build/export instructions](../thesis/README.md).
@@ -235,7 +235,7 @@ pagination and university-format review are still required.
 The earlier pre-CSC Word/LaTeX review PDFs had **71/64 pages**. The CSC-integrated
 review exports have **71/65 pages** after correcting abstract and conclusion overflow.
 Their latest measured page counts and hashes are recorded in
-[the CSC document audit](../outputs/thesis_csc_review_20261019_v2/csc_document_audit.json).
+[the CSC document audit](../outputs/thesis_csc_review_20261019_final/csc_document_audit.json).
 Their layout engines paginate differently. All pages
 were rendered to images; contact sheets and critical pages were inspected. Both abstracts
 fit one page. The Word contents/page fields were actually updated, the five figure and four
@@ -246,9 +246,18 @@ is retained as historical evidence, not the identity of the new export.
 
 | Current review artifact | SHA-256 |
 |---|---|
-| DOCX | `bfd77c211290706028e4abbff5493b82dc12f571b450c60b3a3d0d5e7e233af1` |
-| Word-rendered PDF | `4da7fa55723f05a6910cce714a17eab1504ed2e89df4d2c4f93c8c454429c0df` |
-| LaTeX PDF | `bcfac35ccd488d0390fea6fb3d8b93e0ff1d3a177623d42642a0f60166e2d2ef` |
+| DOCX | `6c72c1f7db8c439bc68e7695783b5cd273245eec31d5abc3e0ebe8945685c423` |
+| Word-rendered PDF | `d645bb0b6786e5953d9e29af4fca5a7aaa7315a016a3913bcfd747f5ca654dcf` |
+| LaTeX PDF | `891d337b0b4aec65c56b2874c0a39814c97637c4c58d848bd7bf33ee60a23d63` |
+
+Official Osuva guidance also requires correct PDF title/author properties. Inspection
+found a blank title; the exporter and LaTeX metadata were corrected, with an assertion
+observed failing before the fix and passing afterward. Both final PDFs now contain the
+main title (without subtitle) and author. Every final page was rendered and is
+pixel-identical to the visually inspected layout. The Word PDF has a structure tree,
+101 bookmarks and **PDF/A-3A identification**; this is not independent conformance or
+accessibility validation. The LaTeX PDF has **no structure tree or PDF/A identification**
+and must not be used directly as an approved accessible Osuva submission.
 
 The existing native Google Doc ID, link and permissions were not changed:
 https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
