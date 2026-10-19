@@ -32,6 +32,15 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     document.add_paragraph(
         "Independent Sentinel-2A input, approximately 17.90 hours later. Details."
     )
+    for caption in (
+        "Selective optical proxy reference: details.",
+        "Scene-specific SAR candidate classes, details.",
+        "Held-out optical-reference agreement details.",
+    ):
+        document.add_picture(
+            str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg")
+        )
+        document.add_paragraph(caption)
     document.add_paragraph("Research questions, primary evidence, and claim boundaries.")
     document.add_paragraph("Held-out confusion matrix. Details.")
     document.add_heading("Disclosure of AI-Assisted Work", 1)
@@ -47,6 +56,13 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     assert saved.core_properties.author == "Daniel Ebrahimzadeh Esfahani"
     assert "17.90 hours" in saved.inline_shapes[0]._inline.docPr.get("descr", "")
     assert "not field ground truth" in saved.inline_shapes[0]._inline.docPr.get("descr", "")
+    descriptions = [shape._inline.docPr.get("descr", "") for shape in saved.inline_shapes]
+    assert "Grey areas lack usable coverage" in descriptions[0]
+    assert "pale-cyan snow-ice" in descriptions[1]
+    assert "grey water without a label and white excluded" in descriptions[1]
+    assert "pale-cyan ice candidates" in descriptions[2]
+    assert "white areas are excluded" in descriptions[2]
+    assert "Green cells agree and red cells disagree" in descriptions[3]
     text = [paragraph.text for paragraph in saved.paragraphs]
     assert "1  Introduction" in text
     assert "1.1  Motivation" in text

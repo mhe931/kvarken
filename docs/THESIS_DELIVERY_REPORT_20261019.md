@@ -224,11 +224,11 @@ The AI appendix explicitly discloses substantial assistance and pending personal
 
 ### Latest final-verification package
 
-- [Current DOCX with scientific figure descriptions](../outputs/thesis_accessible_review_20261019/Thesis_Review_20261019.docx).
-- [Current locally remediated PDF/A submission candidate, 71 pages](../outputs/thesis_accessible_review_20261019/Thesis_Submission_Candidate_20261019_v2.pdf).
-- [Final content/layout/metadata audit](../outputs/thesis_accessible_review_20261019/final_verification.json).
-- [Independent PDF/A-3A report](../outputs/thesis_google_verification_20261019/candidate_v2_pdfa3a.xml).
-- [Independent PDF/UA-1 report](../outputs/thesis_google_verification_20261019/candidate_v2_pdfua1.xml).
+- [Current DOCX with scientific figure descriptions](../outputs/thesis_verified_review_20261019/Thesis_Review_20261019.docx).
+- [Current locally remediated PDF/A submission candidate, 71 pages](../outputs/thesis_verified_review_20261019/Thesis_Submission_Candidate_20261019.pdf).
+- [Final content/layout/metadata audit](../outputs/thesis_verified_review_20261019/final_verification.json).
+- [Independent PDF/A-3A report](../outputs/thesis_verified_review_20261019/pdfa3a_validation.xml).
+- [Independent PDF/UA-1 report](../outputs/thesis_verified_review_20261019/pdfua1_validation.xml).
 
 **veraPDF 1.30.3 ran locally**, not an online upload: PDF/A-3A passed **155 rules /
 753,556 checks, zero failures**. This is independent validation, not inference from XMP.
@@ -247,11 +247,16 @@ are preserved. Every candidate page was rendered and is **pixel- and text-identi
 the previously inspected 71-page review PDF. All six original image byte sequences,
 all paragraphs and all table text match the canonical DOCX export. Author/title metadata
 and the university template are unchanged.
+The PR review identified incorrect colour names in the first alternative descriptions.
+They were corrected against the actual plotting source: pale-cyan snow ice, blue water,
+grey missing/unlabelled areas, white exclusions and red disagreement. Expanded regression
+checks failed against the previous exporter and passed after correction; the latest
+linked files and validator reports include the corrected descriptions.
 
 | Latest final-verification artifact | SHA-256 |
 |---|---|
-| DOCX | `89d3760ac02a78d04da45a00718f509d624e8625a7b6ac8ead182a4486bea807` |
-| Remediated PDF/A candidate | `9e45a052f523b0fd7d779e571ba463025561ef7bd1d4f205515c50ab852aac4a` |
+| DOCX | `71274e55c2fedf331639bfb6853d39f8fa0148b66a4c4df9a568236bafee0685` |
+| Remediated PDF/A candidate | `97554ba83eb62922326ae6a11afe03d5583b813877c20679943decb7de8721aa` |
 
 An independent AI scientific/source audit recalculated the unchanged precision, baseline,
 confusion counts, areas and temporal offset, and reverified 20 source files, 22 scientific

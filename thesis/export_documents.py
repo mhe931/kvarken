@@ -26,15 +26,17 @@ FIGURE_DESCRIPTIONS = (
     "Independent Sentinel-2A false-colour optical observation of eastern Kvarken, "
     "approximately 17.90 hours after the radar acquisition. Bright snow-covered ice "
     "and dark water support selective proxy labels, not field ground truth. "
-    "Black areas lack usable coverage.",
-    "Selective optical proxy reference on the analysed water domain: white snow-ice "
-    "labels, blue dark-water labels, unlabelled water and excluded land/coastal areas. "
+    "Grey areas lack usable coverage; dark pixels are not a missing-data mask.",
+    "Selective optical proxy reference on the analysed water domain: pale-cyan snow-ice "
+    "labels, blue dark-water labels, grey water without a label and white excluded "
+    "land/coastal areas. "
     "The proxy does not label all ice types or establish total sea-ice extent.",
-    "Scene-specific SAR candidate map, with white ice candidates and blue water "
-    "candidates within the screened domain. Candidate ice covers 1,219.28 square "
+    "Scene-specific SAR candidate map, with pale-cyan ice candidates and blue water "
+    "candidates within the screened domain; white areas are excluded. "
+    "Candidate ice covers 1,219.28 square "
     "kilometres; 65.28 percent has no optical label. This is not validated total ice extent.",
     "Held-out spatial-block agreement map comparing SAR candidates with selective "
-    "optical labels. Green cells agree and brown cells disagree; other cells are "
+    "optical labels. Green cells agree and red cells disagree; other cells are "
     "unlabelled or excluded. Ice precision is 23.53 percent against this proxy.",
 )
 TABLES = (
