@@ -1,0 +1,98 @@
+{
+  "completed_at": "2026-10-19T17:29:43.815320+00:00",
+  "concurrency": 4,
+  "elapsed_seconds": 0.9710495990000112,
+  "environment": {
+    "host": "[redacted; original retained locally]",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "provider": "not-verified",
+    "python": "3.12.3"
+  },
+  "input": {
+    "bytes": 107969,
+    "sha256": "a2535cbff6a9f6f6e545e5d3a00cfc98a3dd3daafc6192d4e6b85566da2be948",
+    "source_uri": "capture://planetary-computer/kvarken-20210330-31"
+  },
+  "limitations": [
+    "No satellite raster download, decoding, calibration, classification, or validation.",
+    "A captured page is replayed; pagination and provider network speed are not measured.",
+    "Host information is not proof of CSC project or cPouta provenance.",
+    "Missing eo:cloud_cover uses the baseline model default; it is not an observation."
+  ],
+  "metrics": {
+    "elapsed_seconds": 0.19949853700001086,
+    "failure_count": 0,
+    "payload_bytes": 68286,
+    "retry_count": 0,
+    "scenes_ingested": 5,
+    "throughput_items_per_second": 25.062840435765843
+  },
+  "original_report_sha256": "8984ac62a7280fd758d190636d896fd5dc386d21638f5209809d9ae9914ea9c6",
+  "output_sha256": {
+    "catalog.sqlite": "0704cf6444dbac7e65c6950f568c603e7fbff61f978be473b17e338685e72f9c",
+    "input.json": "a2535cbff6a9f6f6e545e5d3a00cfc98a3dd3daafc6192d4e6b85566da2be948",
+    "provenance/manifest.jsonl": "d7b738a37f5fe364bf5da4f304726b628c9221c5accc467199b4a3b641c9b20e",
+    "provenance/raw/0eb9823f7c41c3d68cd1428320a3eda87490e5d4cdd29682e2d6087fb24d2ad4.json": "c7b68d545e165dca7a613be52f86d6ea914ac451a1d67a4ae9a8653116fe29ab",
+    "provenance/raw/1c61a9c415108785d7cd10e20da8146902309b914e453995591a23e10b0bb278.json": "960042a2b7018661ca7b9c8a92fab4e464bb37ba35d4d6417875c7ec05a00348",
+    "provenance/raw/4b32fdfee38f34f655f2a25cf53d038cb53887168fe33ccd23d5b56db328044d.json": "73fabb0cf64be837cbb4504017aa5cd30edcac0bbbfc6214025e2f4e5f757dc0",
+    "provenance/raw/a64d52176c414361962ff4f6131c4137dafa7144ed776220d4fb064565def3d2.json": "2f62275cce1ac63950ecf323d68e6a40e8666d1012ff611b0a3355c0daeaf195",
+    "provenance/raw/c02ce349531b003c06aca0e6e1065daefd10d15d5fa5d591561e90508bdb9b38.json": "f982efe5fc8c910959901b10dae840433904da504a80a0ad9c91d827f36b6260"
+  },
+  "schema_version": 1,
+  "source_revision": {
+    "dirty": false,
+    "sha": "0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1"
+  },
+  "source_sha256": {
+    "__init__.py": "51d2755d4562e48b3a395ef7684dcc41ffd6af520fe2679025a6907c55248130",
+    "__main__.py": "eb5935c6b0fb5c496e66622091805268e64af8c6ab2a4809a5c32c2ea817a33a",
+    "api.py": "7aa6b45ef0ae24cb3a4b815bb97f45b0dfb17978903abefe0c8fc27310574cab",
+    "case_study.py": "2f271a7cac0577b9a83bc188d9cf79ace0c76d74bf79815e5b7cdcbd0033f819",
+    "catalog.py": "84edbfb8954347ddf63f86a95ac524884abcf5e2d8a14e91d78151dbfd1a4f39",
+    "cdse.py": "0b87e71d76033f686e5ed336af117d3ef05f9142e5dc811d5835d83420c9bb90",
+    "concurrent.py": "c2ade272d2a794f52628b53ea132952caf9d875e0c497ff3121b19af3607e263",
+    "demonstration.py": "88636500f4cc8be3718d735f849cb076b7e085cb0cdfd9380df3e43491507ee0",
+    "ingestion.py": "48b1ddbf0fd4368488f52b9b9f94af9edbda49a7789bc4a2ec55d282373fb48c",
+    "models.py": "f1c549bb89b4ed19502a2c6a466918fabd98266d8da08e8fd0385941e90d536b",
+    "provenance.py": "cee5cfb50faf3fb9ec71248ecdff5c4b4a92a2422b27d7497e53cd9ffe69e0c5",
+    "quality.py": "d70b794f4c04ddfa698a5c81b9b0de1a36a41ba86a65b86321ed5ef8d66e452a",
+    "raster.py": "71ae48ee98a383ee71a480f5ca5d8c7dd150c444c7ca0b8aca05925eaf9bf12d",
+    "reports.py": "59d30bf92464ea497bb6de12fab93aa65caabbb824600e2b9bd3220f7dfa4b7a",
+    "runner.py": "7d4ca42af4a5a0a45ba86cc8c5889cbd2b4ee883f8f9a90d63abb5c6a046a486",
+    "sea_ice.py": "8e6d91c769ff6aae515c79a0d8770fc865d83ff0910ed5f0228f49efa966281c",
+    "source.py": "cbfa7a03ecea900709c9474339ef1ee68a049ddd54f74ac41758df268c7d28c6",
+    "spatial.py": "8296725801c84959201f7702038e6f30318d45e13f330e92c9b78d06c3404e78",
+    "stac.py": "ea057bca98f1b413b05a4577d7b610ed2a7907260fed44b8b85e3025eabd50dd",
+    "transform.py": "7ba040883865cfadfb897af6447441f83240d39acbc8862bcc54fcb840fc9cf1"
+  },
+  "started_at": "2026-10-19T17:29:42.844271+00:00",
+  "validation": {
+    "api_health": {
+      "status": "ok"
+    },
+    "api_scene_ids": [
+      "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953"
+    ],
+    "catalog_reopened": true,
+    "kvarken_scene_ids": [
+      "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953"
+    ],
+    "provenance_records": 5,
+    "scene_ids": [
+      "S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156",
+      "S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953",
+      "S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115",
+      "S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953"
+    ]
+  },
+  "workload": "metadata-catalog-replay"
+}

@@ -11,8 +11,14 @@
 - Published small checksummed evidence under [research/20261019](research/20261019/README.md);
   raw windows remain ignored. Frozen synthetic artifacts are unchanged.
 - Expanded local suite: 90 passing tests with optional science/document dependencies.
-- CSC authentication/project access and native Google Docs synchronization remain blocked.
-  No cloud resources, emails, submissions or approvals were created or claimed.
+- CSC project **2021696** was verified with cPouta enabled and 30,000 Cloud BUs. The
+  five-scene metadata/provenance/catalog/API workload actually executed remotely at
+  17:29:42 UTC, exit zero; retrieved hashes and exact local/remote validation passed.
+  See [CSC evidence](research/20261019/csc_execution_evidence.json).
+- Both temporary VMs, floating IP and SSH ingress rule were released after retrieval;
+  the project and automatic network/router remain. No public API was exposed.
+- Existing Google Doc synchronization, personal author review and university approvals
+  remain open. No emails or university submissions were made.
 - Revised the manuscript and produced official-styled review exports. Local rendering does
   not establish author acceptance, supervisor acceptance or university submission readiness.
 

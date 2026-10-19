@@ -49,6 +49,9 @@ def _prefix(paragraph, text: str) -> None:
 
 def format_document(path: Path) -> dict:
     document = Document(path)
+    document.core_properties.title = (
+        "Design and Implementation of a Hybrid Earth Observation Data Infrastructure"
+    )
     document.core_properties.author = "Daniel Ebrahimzadeh Esfahani"
     document.core_properties.last_modified_by = "AI-assisted manuscript export"
     paragraphs = document.paragraphs

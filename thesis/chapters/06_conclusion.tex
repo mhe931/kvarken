@@ -13,7 +13,8 @@ The application addresses the earlier absence of practical pixel processing. It 
 shows why scientific validation cannot be replaced by infrastructure success. Positive
 radar candidates have low precision against the selected optical proxy, and most candidate
 ice area has no reference label. The output must not be described as reliable total
-sea-ice extent. No actual CSC execution has been verified.
+sea-ice extent. A separate CSC cPouta metadata replay verified the same five scene
+identities, persistent provenance, regional queries and loopback API as the local run.
 
 \section{Answers to the research questions}
 
@@ -54,8 +55,8 @@ Actual observations can be connected to cached pixels, preprocessing, candidate 
 independent-sensor proxy comparison and the existing catalog/API. Shared optical tile
 ownership and native categorical class purity are necessary to avoid misleading reference
 construction. The held-out comparison diagnoses a weak classifier; it does not establish
-accurate total ice extent or universal SAR thresholds. The independent CSC execution
-objective is still open because secure project access was not available.
+accurate total ice extent or universal SAR thresholds. The CSC replay supplies genuine
+remote infrastructure evidence, not a second scientific validation experiment.
 
 \section{Contributions and limitations}
 
@@ -68,11 +69,11 @@ constrain the scientific conclusions.
 
 \section{Immediate and future work}
 
-The immediate deployment task is an authorized CSC cPouta run with verified project access,
-deployed source revision, remote identity, timestamps, sanitized commands, output checksums
-and health results. Keep the API on loopback and use SSH tunnelling rather than an
-unprotected public service. Release temporary resources after preserving evidence; stopping
-a VM alone need not stop cloud allocation consumption.
+The CSC demonstration retained verified project and instance identity, deployed source,
+remote timestamps, commands, output checksums and health results. Its temporary instances
+and floating IP were released after evidence retrieval. Future deployments should retain
+that evidence boundary and keep APIs on loopback rather than expose an unprotected public
+service. Repeated equivalent workloads are needed before local/cloud performance claims.
 
 Scientific follow-up should use several radar acquisitions, independent temporally matched
 observations, wind records and incidence-angle analysis. The optical proxy needs validation
@@ -86,8 +87,6 @@ offline regression path and immutable evidence.
 
 \section{Closing statement}
 
-The work now demonstrates a real local application and an explicit evaluation failure mode.
-That is more informative than infrastructure descriptions alone, but it does not close
-the missing CSC execution, author review or supervisor approval gates. The value of the
-infrastructure is that these boundaries, like the observations and computations, remain
-visible and auditable.
+The work connects real satellite analysis with a verified CSC metadata deployment while
+exposing a scientific failure mode. Its auditable evidence supports infrastructure
+portability, not operational ice mapping. Author review and supervisor approval remain required.

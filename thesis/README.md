@@ -55,4 +55,10 @@ accessibility still need independent validation; a requested export option is no
 
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
 the modular source. The existing shared native Google Doc must retain its ID and permissions;
-this session could not synchronize it because browser automation/authentication was unavailable.
+synchronization must be verified separately from the local export. Browser access recovered;
+the old shared manuscript was read successfully but lacks the revised scientific results.
+
+Both export paths set PDF/document title and author metadata. For Osuva, the metadata
+title excludes the cover subtitle. Verify these fields in the actually rendered PDF;
+metadata, tags and an archival export option alone do not establish accessibility or
+independently validated PDF/A conformance.
