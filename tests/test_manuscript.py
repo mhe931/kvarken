@@ -138,13 +138,20 @@ def test_document_describes_the_cover_logo(tmp_path):
 def test_architecture_diagram_replaces_the_empty_pandoc_placeholder(tmp_path):
     path = tmp_path / "architecture.docx"
     document = docx.Document()
+    document.add_paragraph("The architecture is shown in Figure 4.1.")
+    document.add_paragraph("Figure 4.1. Provider-to-application architecture\tUpdate field")
+    document.add_paragraph(
+        "Figure 4.1. Provider-to-application architecture and subsystem boundaries."
+    )
     placeholder = document.add_table(rows=1, cols=1)
     placeholder._tbl.remove(placeholder.rows[0]._tr)
+    document.add_paragraph("Appendix content follows.")
     document.save(path)
 
     _insert_architecture_diagram(path)
 
-    diagram = docx.Document(path).tables[0]
+    saved = docx.Document(path)
+    diagram = next(table for table in saved.tables if len(table.rows) == 11)
     assert len(diagram.rows) == 11
     text = [row.cells[0].text for row in diagram.rows]
     assert text[0].startswith("Provider\n")
@@ -152,3 +159,14 @@ def test_architecture_diagram_replaces_the_empty_pandoc_placeholder(tmp_path):
     assert "EOScene" in text[4]
     assert text[9] == "↓"
     assert text[10].startswith("Scientific application\n")
+    body = list(saved.element.body)
+    assert body.index(diagram._tbl) < body.index(
+        next(
+            p._p
+            for p in saved.paragraphs
+            if p.text.startswith("Figure 4.1. ") and "Update field" not in p.text
+        )
+    )
+    assert body.index(diagram._tbl) < body.index(
+        next(p._p for p in saved.paragraphs if p.text == "Appendix content follows.")
+    )

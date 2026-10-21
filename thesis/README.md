@@ -61,19 +61,20 @@ six-stage flow diagram. It does not update the remote Google Doc or render Word 
 
 The current 22 October DOCX was generated and structurally checked, including heading styles,
 caption numbering, the architecture flow diagram, figure descriptions and document metadata.
-It has not been opened in Word for field updates or visual pagination; update TOC/page fields
-and repaginate before PDF export. The 19 October Word/PDF candidate was rendered and its
-historical PDF/A validation is not evidence for this revised source. PDF/A conformance and
-current accessibility still need independent validation; a requested export option is not
-a validator.
+Word updated its contents, figure/table lists and page-reference fields, then rendered an
+82-page review PDF. The diagram was visually verified at its Chapter 4 caption (page 29);
+the contents, scientific figures, evaluation tables and Appendix B were also inspected.
+The 19 October Word/PDF candidate was rendered and its historical PDF/A validation is not
+evidence for this revised source. PDF/A conformance and current accessibility still need
+independent validation; a requested export option is not a validator.
 
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
 the modular source. The existing shared native Google Doc must retain its ID and permissions; synchronization
 must be verified separately from the local export. The 19 October delivery record documents
-the previous saved-content mismatch. On 22 October the existing document opened under the
-author's signed-in account and showed a saved-to-Drive status and prior supervisor edit
-attribution. Revised content was not synchronized or reopened for verification; do not claim
-that the shared document is current.
+the previous saved-content mismatch. On 22 October the existing document was reopened under
+the author's signed-in account and showed a saved-to-Drive status and prior supervisor edit
+attribution. Revised content was not synchronized or verified; do not claim that the shared
+document is current.
 
 Both export paths set PDF/document title and author metadata. For Osuva, the metadata
 title excludes the cover subtitle. Verify these fields in the actually rendered PDF;

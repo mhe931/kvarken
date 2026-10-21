@@ -10,21 +10,24 @@ for Research and Education: A Case Study of Kvarken Space Center**.
 - [Actual-data maps, results, manifests and reproduction](research/20261019/README.md).
 - [Official-template export/build procedure](../thesis/README.md).
 - [Verified CSC metadata demonstration and reproduction boundaries](CSC_DEMONSTRATION.md).
-- [Current-source XeLaTeX/Biber CI build (run 68)](https://github.com/mhe931/kvarken/actions/runs/39684624403).
+- [Current-source XeLaTeX/Biber CI build (run 70)](https://github.com/mhe931/kvarken/actions/runs/39688468030).
 - The 69-page CI review PDF was inspected for TOC/list numbering, cross-references, Figure 4.1,
   all five scientific figures and Appendix B. CI uses Carlito as its fallback font.
 - A current-source DOCX was generated with the University June 2025 DOTX, APA CSL and Pandoc
   3.12.1. Headings, six figure captions, four table captions, image descriptions, metadata and
-  the editable six-stage architecture diagram were inspected programmatically. The DOCX still
-  requires Word field updates and visual repagination.
+  the editable six-stage architecture diagram were inspected programmatically. Word updated
+  the TOC, figure/table lists and page references and rendered an 82-page review PDF. The TOC,
+  Figure 4.1 at p. 29, all five scientific figures, evaluation tables and Appendix B were
+  visually inspected. This export is not independently validated for PDF/A or accessibility.
 - The 19 October local DOCX/PDF exports and their 71/64-page counts are historical.
   The 22 October CI PDF is a source-build review copy; neither current export has current-source
   PDF/A or independent accessibility validation, and neither is an authorized submission
-  candidate.
+  candidate. The current Word PDF is also a review copy, not a submission candidate.
 - Existing shared native Google Doc:
   https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
-  (opened in the author's signed-in account; saved-to-Drive status and prior supervisor edit
-  attribution were visible. It was not synchronized or reopened to verify revised content).
+  (reopened in the author's signed-in account; saved-to-Drive status and prior supervisor
+  edit attribution were visible. Revised content is not synchronized or verified; the private
+  conversion copies are not the canonical document).
 
 The pre-existing `Daniel_Ebrahimzadeh_Esfahani_Thesis_Final_Candidate.docx` and September
 presentation materials remain historical. Do not email or present them as the revised

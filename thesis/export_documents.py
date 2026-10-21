@@ -305,6 +305,14 @@ def _insert_architecture_diagram(path: Path) -> None:
         raise ValueError(
             f"expected one empty Pandoc architecture placeholder, found {len(placeholders)}"
         )
+    captions = [
+        paragraph
+        for paragraph in document.paragraphs
+        if paragraph.text.startswith("Figure 4.1. " + FIGURES[0])
+        and "\tUpdate field" not in paragraph.text
+    ]
+    if len(captions) != 1:
+        raise ValueError(f"expected one Figure 4.1 caption, found {len(captions)}")
     placeholder = placeholders[0]
     diagram = document.add_table(rows=11, cols=1)
     diagram.style = "Table Grid"
@@ -350,7 +358,7 @@ def _insert_architecture_diagram(path: Path) -> None:
         title_run.font.size = Pt(10)
         detail_run = paragraph.add_run(detail)
         detail_run.font.size = Pt(10)
-    diagram._tbl.addprevious(placeholder._tbl)
+    captions[0]._p.addprevious(diagram._tbl)
     placeholder._tbl.getparent().remove(placeholder._tbl)
     document.save(path)
 
