@@ -13,6 +13,7 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 FIGURES = (
+    "Provider-to-application architecture",
     "Actual Sentinel-1A VV",
     "Independent Sentinel-2A",
     "Selective optical proxy reference:",
@@ -20,6 +21,10 @@ FIGURES = (
     "Held-out optical-reference agreement",
 )
 FIGURE_DESCRIPTIONS = (
+    "Vector architecture diagram showing the metadata path from provider through transport "
+    "and validation, typed EOScene, provenance and SQLite catalog, read-only queries/API/"
+    "reports, and the scientific application. The case-study raster path used local "
+    "Planetary Computer COG assets; CSC execution covered metadata only.",
     "Sentinel-1A VV gamma-zero radar backscatter in eastern Kvarken on 30 March 2021. "
     "Grey tones show measured backscatter, not an ice classification; patterns can also "
     "reflect wind, incidence angle and residual preprocessing effects.",
@@ -184,7 +189,7 @@ def format_document(path: Path) -> dict:
                 for paragraph in cell.paragraphs:
                     paragraph.paragraph_format.line_spacing = 1
                     paragraph.paragraph_format.space_after = Pt(3)
-    chapter = section = subsection = 0
+    chapter = section = subsection = figure_number = 0
     appendix = False
     appendix_letter = ""
     figure_entries, table_entries = [], []
@@ -230,10 +235,12 @@ def format_document(path: Path) -> dict:
         if kind:
             entries = figure_entries if kind == "Figure" else table_entries
             number = (
-                f"6.{len(entries) + 1}"
+                ("4.1" if text.startswith(FIGURES[0]) else f"6.{figure_number + 1}")
                 if kind == "Figure"
                 else ("3.1" if not entries else f"6.{len(entries)}")
             )
+            if kind == "Figure" and not text.startswith(FIGURES[0]):
+                figure_number += 1
             _prefix(paragraph, f"{kind} {number}. ")
             paragraph.paragraph_format.line_spacing = 1
             paragraph.paragraph_format.keep_together = True
@@ -265,7 +272,7 @@ def format_document(path: Path) -> dict:
     outline = OxmlElement("w:outlineLvl")
     outline.set(qn("w:val"), "9")
     contents._p.get_or_add_pPr().append(outline)
-    _field(anchor.insert_paragraph_before(), r'TOC \o "1-3" \h \z \u')
+    _field(anchor.insert_paragraph_before(), r'TOC \o "1-2" \h \z \u')
     for title, entries in (("Figures", figure_entries), ("Tables", table_entries)):
         heading = anchor.insert_paragraph_before(title, "Front Matter")
         outline = OxmlElement("w:outlineLvl")
@@ -299,7 +306,7 @@ def main() -> None:
                     b"wordprocessingml.template.main+xml", b"wordprocessingml.document.main+xml"
                 )
             target.writestr(item, data)
-    output = args.output_dir.resolve() / "Thesis_Review_20261019.docx"
+    output = args.output_dir.resolve() / "Thesis_Review_20261022.docx"
     subprocess.run(
         [
             str(args.pandoc.resolve()),
@@ -322,7 +329,7 @@ def main() -> None:
         check=True,
     )
     counts = format_document(output)
-    if counts != {"figures": 5, "tables": 4}:
+    if counts != {"figures": 6, "tables": 4}:
         raise ValueError(f"canonical caption inventory changed: {counts}; review export numbering")
     print(output)
 

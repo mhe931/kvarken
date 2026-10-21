@@ -9,14 +9,17 @@ Professor Arslan/Education Services rather than treating it as a public universa
 - [x] Obtain and process authentic radar, optical and static-mask data.
 - [x] Produce georeferenced maps, exact counts, selective independent-sensor comparison and manifests.
 - [x] Diagnose low positive precision and unsupported extrapolation without inflating claims.
-- [x] Revise the full manuscript and prepare local review exports.
-- [ ] Obtain authorized CSC project access and retain an actual remote execution.
+- [x] Revise the manuscript and prepare local review exports (the 19 October exports are historical).
+- [x] Obtain authorized CSC project access and retain the actual remote metadata execution.
 - [ ] Reopen and verify synchronization of the existing native Google Doc.
+- [ ] Build and inspect the 22 October source revision; verify final pagination and independently
+  validate any current PDF/A/accessibility output.
 - [ ] Author examines the actual maps, code, references, AI disclosure and final pagination.
-- [ ] Professor Arslan reviews the revised scientific scope and missing CSC evidence.
+- [ ] Professor Arslan reviews the revised scientific scope and retained CSC metadata-execution evidence.
 - [ ] Complete the authorized Turnitin/Osuva/assessment/graduation sequence.
 
-The [delivery report](THESIS_DELIVERY_REPORT_20261019.md) is the operational handoff.
+The [review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md) maps the supplied comments.
+The [delivery report](THESIS_DELIVERY_REPORT_20261019.md) records historical evidence and gates.
 
 ## Foundation (complete)
 
@@ -43,7 +46,7 @@ The [delivery report](THESIS_DELIVERY_REPORT_20261019.md) is the operational han
 
 ## Evaluation and operations (baseline complete)
 
-- Measured bounded-ingestion throughput, retries, payload footprint, catalog query latency, and
+- Measured bounded-active-concurrency throughput, retries, payload footprint, catalog query latency, and
   quality distributions in deterministic reports.
 - Added structured ingestion metrics, WAL contention profiling, durability regression coverage,
   and environment-aware live-run telemetry.

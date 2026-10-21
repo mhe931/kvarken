@@ -17,7 +17,7 @@ This framing is important because the central research object is an infrastructu
 \textbf{RQ} & \textbf{Primary evidence} & \textbf{What the evidence supports} & \textbf{What it does not support} \\
 \midrule
 RQ1 & Boundary validation, \texttt{EOScene} transformation, provenance records, schema tests & Provider-neutral normalization with traceable source evidence & Universal compatibility with all EO providers or schemas \\
-RQ2 & Bounded ingestor, timeout/429/token tests, explicit error classes & Controlled recovery and bounded active work & Production CDSE reliability or bounded scheduling memory \\
+RQ2 & Semaphore-limited ingestor, timeout/429/token tests, explicit error classes & Controlled recovery and bounded active concurrency & Production CDSE reliability or bounded scheduling memory \\
 RQ3 & SQLite/WAL catalog, query tests, contention coverage, frozen latency value & Functional regional, temporal, quality, and platform queries in the local baseline & Distributed scalability or general latency guarantees \\
 RQ4 & Frozen reports, dated artifacts, CI, checked-in fixtures, release baseline & Repeatable offline baseline and inspectable evidence lineage & Perfect reproducibility across all hardware and provider conditions \\
 RQ5 & Real SAR/optical pixels, spatially held-out comparison, maps and checksums & Executed application and agreement with optical proxy labels & Field accuracy, validated total extent or a transferable ice classifier \\
@@ -33,17 +33,32 @@ The evaluated release baseline is version 0.1.0. The core runtime declares no th
 
 \section{Implementation method}
 
-Implementation establishes narrow interfaces between provider access, domain validation, persistence, and analysis. Provider responses are validated before persistence. The resulting \texttt{EOScene} is immutable at the domain boundary. Concurrent ingestion is limited by a configured maximum-worker semaphore. Filesystem and SQLite operations are separated from asynchronous provider operations where needed, and append-only manifest writes are serialized.
+Implementation establishes narrow interfaces between provider access, domain validation,
+persistence, and analysis. Provider responses are validated before persistence. The resulting
+\texttt{EOScene} is immutable at the domain boundary. A configured semaphore limits active
+ingestion work. Filesystem and SQLite operations are separated from asynchronous provider
+operations where needed, and append-only manifest writes are serialized. The current batch
+implementation still schedules one coroutine per input item with \texttt{asyncio.gather}; the
+semaphore does not bound the number of scheduled coroutines or make scheduling memory constant
+for an unbounded stream.
 
 Failure handling follows an explicit classification. Timeouts and HTTP 429 responses are treated as transient and may be retried under bounded policy. Malformed JSON, missing required fields, invalid token shapes, impossible quality values, and unsupported coordinate assumptions are treated as permanent input failures. This prevents repeated attempts from hiding deterministic data-quality problems.
 
 \section{Evaluation strategy}
 
-Evaluation has three layers. First, automated tests exercise malformed payload rejection, pagination, timeout and rate-limit recovery, OAuth2 expiry and token errors, provenance integrity, bounded worker limits, quality filters, raster range behavior, NDVI calculation, HTTP queries, artifact retention, SQLite contention, WAL durability, and deterministic reports. The released baseline records 53 passing offline tests.
+Evaluation has three layers. First, automated tests exercise malformed payload rejection, pagination, timeout and rate-limit
+recovery, OAuth2 expiry and token errors, provenance integrity, bounded active-worker limits,
+quality filters, raster range behavior, NDVI calculation, HTTP queries, artifact retention,
+SQLite contention, WAL durability, and deterministic reports. CDSE token and STAC behavior is
+tested with injected offline transports; these tests are not live-provider verification. The
+released baseline records 53 passing offline tests.
 
 Second, the frozen synthetic benchmark uses 256 generated scenes with concurrency set to eight. The checked-in STAC fixture is used as a metadata template. Temporary SQLite and provenance storage are used for the run. The benchmark measures the complete metadata path from validation through provenance persistence and catalog indexing to regional querying and report generation. It does not measure production-provider latency or representative raster-download throughput.
 
-Third, the dated 20260915 experiment artifact exercises the live-experiment harness. Because live credentials were absent, the run explicitly selected \texttt{offline-fallback} mode and the \texttt{offline-fixture} provider. The artifact tests the instrumentation path and a synthetic numerical raster window, but it is not evidence of authenticated CDSE performance.
+Third, the dated 20260915 experiment artifact exercises the live-experiment harness. Because
+live credentials were absent, the run explicitly selected \texttt{offline-fallback} mode and
+the \texttt{offline-fixture} provider. The artifact tests the instrumentation path and a
+synthetic numerical raster window, but it is not evidence of authenticated CDSE performance.
 
 Fourth, the real-data application uses Sentinel-1 RTC from 30 March 2021 and Sentinel-2 Level-2A from the following morning. The optical reference is independent of the SAR measurement but is not field ground truth. Training and evaluation use different ten-kilometre spatial blocks, with one-kilometre exclusions at block edges. Only optically clear, conservative water and snow-ice labels are evaluated. Metrics describe agreement on this selected subset, not accuracy over every water pixel. The acquisition dates, reference selection and classification rules are documented in Chapter~5 before interpreting their results in Chapter~6.
 
@@ -53,7 +68,10 @@ Official Baltic ice charts were considered as a reference. Their producer docume
 
 The principal recorded metrics are scene count, elapsed time, ingestion throughput, failures, retries, payload bytes, catalog count, quality summaries, and spatial-query latency. Metrics are interpreted only within the workload that produced them. The throughput value is a local metadata-path value, not a network or raster-download rate. The query-latency value is a recorded regression point, not a latency guarantee.
 
-The benchmark field \texttt{failure\_recovery\_ratio} is not treated as substantive recovery evidence because the frozen benchmark observed zero failures. Controlled failure tests provide stronger evidence for recovery behavior.
+The frozen report retains its legacy \texttt{failure\_recovery\_ratio} value of 1.000000.
+Because the run observed zero failures and zero retries, this value is a reporting convention,
+not a measured recovery rate; the scientific interpretation is not measured (N/A). Controlled
+fault-injection tests provide the recovery evidence.
 
 \section{Research integrity, validity, and AI-assisted work}
 

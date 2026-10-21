@@ -6,27 +6,43 @@ Earth Observation (EO) has become an important source of information for researc
 
 These requirements create a data-engineering problem. A research group may have access to public EO services but still lack a compact infrastructure that connects provider access, validation, storage, spatial indexing, controlled processing, and reproducible reporting. Large cloud platforms can provide substantial capability, but a university research environment may also need a local path that remains understandable, auditable, and usable when credentials or network access are unavailable. The engineering challenge is therefore not simply to download satellite products. It is to construct a trustworthy path from an external provider response to a research-ready and traceable local representation.
 
-The Kvarken Space Center provides the contextual setting for this thesis. The implementation uses a predefined Kvarken study region and focuses on requirements relevant to a small research and educational environment: standards-based access, reproducibility, transparent failure handling, modest infrastructure requirements, and the ability to demonstrate the processing path without depending on a live production service. The thesis does not evaluate the organizational performance of Kvarken Space Center or student learning outcomes. The case-study framing therefore refers to the institutional and regional context used to motivate and bound the artifact.
+The Kvarken Space Center and the University of Vaasa provide the institutional setting for
+this thesis. Its main objective is to build an in-house EO infrastructure that supports their
+research and teaching through standards-based data access, reproducibility, transparent failure
+handling and an inspectable path from local exercises to a first remote metadata workflow on
+CSC. The current implementation supports fixture-based metadata experiments, source validation,
+provenance inspection, spatial catalog queries, a read-only educational API, and local
+real-data processing and evaluation. It does not establish improved learning outcomes or
+institutional service performance; neither was evaluated.
 
 \section{Problem statement and research gap}
 
 Standards and public platforms address important parts of EO access. STAC provides a common JSON-based description of spatiotemporal assets, OGC standards support interoperable geospatial interfaces, and the Copernicus Data Space Ecosystem (CDSE) provides access to Copernicus data and cloud-oriented processing services \citep{ogc-api-features,stac-spec,cdse,kovacs2026cdse}. These facilities reduce fragmentation at the provider boundary, but they do not by themselves define how a small research project should validate incoming metadata, preserve raw evidence, bound concurrent work, separate transient from permanent failures, maintain a local spatial catalog, or freeze empirical artifacts for later comparison.
 
-Within the scope of this thesis, the research gap is therefore operational and architectural rather than a claim that equivalent technologies do not exist. The question is how standards-based provider access can be assembled into a small, reproducible, and inspectable research infrastructure with explicit contracts. The system must be usable both with external providers and deterministic offline fixtures. It must avoid hidden retry behavior, unbounded task creation, silent coordinate-system assumptions, and mutable experiment evidence.
+Within the scope of this thesis, the research gap is operational and architectural rather than a claim that equivalent technologies do not exist. The question is how standards-based provider access can be assembled into a small, reproducible, and inspectable research and teaching infrastructure with explicit contracts. The system must be usable with deterministic offline fixtures and support bounded active concurrency, explicit retry behavior, stated coordinate assumptions and immutable experiment evidence. The current batch implementation schedules one coroutine per item; it does not claim constant scheduling memory for an unbounded input stream.
 
 \section{Objective and scope}
 
-The objective is to design, implement, and evaluate a hybrid EO data infrastructure that connects external standards-based access with local reproducible storage and processing. In this thesis, \emph{hybrid} refers to that combination of external provider access and local research infrastructure, including an offline execution path based on checked-in fixtures.
+The objective is to design, implement, and evaluate an in-house hybrid EO data infrastructure
+for research and teaching within Kvarken Space Center and the University of Vaasa. It connects
+external standards-based metadata access with local reproducible storage and processing. In
+this thesis, \emph{hybrid} refers to that combination and its offline execution path based on
+checked-in fixtures.
 
 The implemented scope includes STAC/CDSE access concepts, typed validation, a provider-neutral \texttt{EOScene} model, OAuth2 token handling, bounded asynchronous ingestion, SHA-256 content addressing, append-only provenance, a SQLite/WAL spatial catalog, metadata quality profiling, a range-based raster/NDVI slice, deterministic experiment reports, and a read-only educational HTTP interface.
 
-The evaluation includes an executed Sentinel-1 sea-ice application in the eastern Kvarken study rectangle. Actual calibrated radar pixels are compared with conservative labels derived from a separate Sentinel-2 acquisition. This extends the infrastructure evaluation to raster decoding, common-grid processing, land exclusion, classification, and sensor-independent reference agreement. A separate five-scene metadata, provenance, catalog and loopback-API replay also executed on CSC cPouta. It establishes a small remote deployment, not a remote repeat of raster analysis. Neither experiment establishes field-validated sea-ice accuracy, production CDSE performance, distributed scalability, or educational learning outcomes.
+The evaluation includes local processing of Sentinel-1 RTC pixels and comparison with a
+selective Sentinel-2 optical proxy. A separate five-scene metadata, provenance, catalog and
+loopback-API replay executed on CSC cPouta. This is a verified first-stage remote prototype,
+not remote raster classification. Neither experiment establishes field-validated sea-ice
+accuracy, a live CDSE pixel-download path, distributed scalability or educational learning
+outcomes.
 
 \section{Research questions}
 
 \begin{enumerate}
   \item How can heterogeneous STAC and CDSE metadata be validated and transformed into a transport-neutral EO scene model while preserving provenance?
-  \item How can asynchronous ingestion remain bounded and recover from transient timeouts, OAuth2 expiration, and HTTP 429 responses without retrying malformed payloads?
+  \item How can asynchronous ingestion bound active concurrency and recover from transient timeouts, OAuth2 expiration, and HTTP 429 responses without retrying malformed payloads?
   \item How effectively can a dependency-free SQLite catalog support regional, temporal, quality, and platform queries under concurrent reader/writer contention?
   \item Which empirical measurements and artifacts are sufficient to make an offline EO pipeline baseline reproducible for research and education?
   \item Can the infrastructure support a traceable real-data sea-ice application, and what does comparison with independent optical evidence reveal about its scientific limitations?
@@ -34,10 +50,24 @@ The evaluation includes an executed Sentinel-1 sea-ice application in the easter
 
 \section{Contributions}
 
-The thesis makes four related contributions. First, it defines an architectural baseline in which provider-specific behavior is isolated from a typed domain model. Second, it implements an engineering artifact that combines bounded concurrency, provenance, embedded spatial persistence, quality filtering, lightweight raster analysis, and a read-only educational interface. Third, it defines a reproducibility protocol based on frozen fixtures, deterministic reports, versioned source, CI, and dated additive experiment artifacts. Fourth, it makes the limits of the evidence explicit so that synthetic benchmark results are not presented as production-provider performance.
+The thesis makes four related contributions. First, it defines an architectural baseline in
+which provider-specific behavior is isolated from a typed domain model. Second, it implements
+an in-house research and teaching prototype that combines bounded active concurrency,
+provenance, embedded spatial persistence, quality filtering, lightweight raster analysis,
+offline exercises and a read-only educational interface. Third, it defines a reproducibility
+protocol based on frozen fixtures, deterministic reports, versioned source, CI and dated
+additive experiment artifacts. Fourth, it connects local scientific processing to a verified
+five-scene CSC metadata workflow while stating the limits of both technical and scientific
+evidence. No educational benefit or learning outcome is claimed without evaluation.
 
 The contribution is architectural and methodological rather than a new remote-sensing algorithm. The application also tests an important boundary: an infrastructure can run correctly while its scientific classifier remains unsuitable for operational extent estimation. Reporting both outcomes is more informative than treating a successful processing command as scientific validation.
 
 \section{Structure of the thesis}
 
-Chapter 2 reviews the EO standards, provider context, provenance, and embedded persistence concepts used by the system. Chapter 3 explains the research methodology and evidence strategy. Chapter 4 presents the architecture and its invariants. Chapter 5 documents implementation and the real-data application. Chapter 6 reports the synthetic baseline and observed satellite results separately. Chapter 7 analyzes the research questions. Chapter 8 discusses contributions and validity. Chapter 9 concludes the thesis and identifies remaining work.
+Chapter 2 reviews the EO standards, provider context, provenance, and embedded persistence
+concepts used by the system. Chapter 3 explains the methodology and evidence strategy. Chapter
+4 presents the architecture. Chapter 5 documents implementation and the real-data application.
+Chapter 6 reports the synthetic baseline and satellite results separately. Chapter 7 analyzes
+the research questions, and Chapter 8 discusses contributions and validity. Chapter 9 examines
+the value and limits of in-house EO infrastructure for education and innovation. Chapter 10
+concludes the thesis and identifies remaining work.

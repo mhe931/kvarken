@@ -1,60 +1,197 @@
-\chapter{Reproducibility and Claim Boundaries}
+\chapter{Reproducibility, Product Provenance, and Claim Boundaries}
+\label{app:repro}
 
-\section{Historical evidence}
+\section{Source selection and attribution}
+
+The single case study uses an overlapping Sentinel-1 and Sentinel-2 observation pair that
+was available as analysis-ready raster assets for a reproducible, local application. The
+Sentinel-1 acquisition was made on 30 March 2021 at 16:06:12 UTC. The Sentinel-2 acquisition
+was made on 31 March 2021 at 10:00:21 UTC, 17.90 hours later. The records were selected to
+exercise the end-to-end workflow; the selection was not a temporal sample or a claim of
+representativeness. This acquisition mismatch permits changes in surface conditions between
+observations and limits the optical comparison.
+
+ESA supplied the Sentinel satellite observations. The Sentinel-1 raster is an upstream
+CATALYST radiometric terrain-correction (RTC) product. Microsoft Planetary Computer hosted
+and distributed the STAC records and Cloud-Optimized GeoTIFF assets used for spatial-window
+access. The analysis relies on the upstream gamma-zero RTC processing; it does not claim to
+have independently run or verified that processor's version, thermal-noise treatment or
+border-noise treatment. This source permits the thesis to separate upstream radar processing
+from its own reprojection, masking, optical-proxy construction, classification, evaluation
+and plotting. It demonstrates a scientific application, not the CDSE pixel-download path.
+The collection and product documentation used to identify the RTC, Sentinel-2 processing
+and WorldCover source roles is cited here \citep{pc-s1-rtc,s2-processing,worldcover2021};
+the recorded provider roles and licenses are retained in
+\texttt{docs/research/20261019/source\_licenses.json}.
+
+ESA WorldCover 2021 v200 supplies the static land-cover mask. It is an annual, retrospective
+land-cover product and is not a contemporaneous March 2021 ice observation or validation
+reference. The four selected tiles screen mapped land; they do not classify ice.
+
+\begin{description}
+\item[Sentinel-1 product.] Collection \texttt{sentinel-1-rtc}; item
+\nolinkurl{S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288_rtc};
+assets \texttt{vv} and \texttt{vh}. The original GRDH product stem is
+\nolinkurl{S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288}.
+\item[Sentinel-2 products.] Collection \texttt{sentinel-2-l2a}; each item provides
+\texttt{B03}, \texttt{B08}, \texttt{B11} and \texttt{SCL}:
+\nolinkurl{S2A_MSIL2A_20210331T100021_R122_T34VER_20210401T101953};
+\nolinkurl{S2A_MSIL2A_20210331T100021_R122_T34VEQ_20210401T100115};
+\nolinkurl{S2A_MSIL2A_20210331T100021_R122_T34VDR_20210401T095953};
+\nolinkurl{S2A_MSIL2A_20210331T100021_R122_T34VDQ_20210401T102156}.
+\item[WorldCover products.] Collection \texttt{esa-worldcover}, asset \texttt{map}:
+\nolinkurl{ESA_WorldCover_10m_2021_v200_N63E021};
+\nolinkurl{ESA_WorldCover_10m_2021_v200_N63E018};
+\nolinkurl{ESA_WorldCover_10m_2021_v200_N60E021};
+\nolinkurl{ESA_WorldCover_10m_2021_v200_N60E018}.
+\end{description}
+
+\section{Recorded processing parameters}
+
+The following values are taken from \texttt{docs/research/20261019/case\_config.json},
+the retained run records and the implementation:
 
 \begin{itemize}
-\item Package 0.1.0 is the released baseline; its runtime has no third-party dependencies.
-\item The historical release recorded 53 passing tests; later additions are separate checkpoints.
-\item The frozen benchmark has 256 synthetic scenes at concurrency eight.
-\item Its 220.819653 items/s throughput is local metadata-path performance, not CDSE or raster bandwidth.
-\item Its 9.117~ms query measurement is not a general latency guarantee.
-\item The 20260915 artifact is \texttt{offline-fallback} / \texttt{offline-fixture}, not a live CDSE run.
-\item The earlier range/NDVI slice uses aligned fixture arrays. The optional science environment
-separately processes actual GeoTIFF windows; it is not a general-purpose SAR processor.
-\item The educational API was tested, but learning outcomes and distributed scale were not evaluated.
+\item Study rectangle: \([20.5,62.8,22.5,63.8]\) in EPSG:4326; analysis grid: EPSG:32634
+  at 100~m resolution.
+\item Mapped-water threshold: fraction \(\geq0.999999\); retain the largest eight-connected
+  water component; apply a 300~m square coastal erosion.
+\item Sentinel-2 reflectance quantification factor: 10,000 for the recorded N0212 products.
+  Resample reflectance by averaging and categorical SCL/WorldCover with nearest neighbour;
+  native-resolution class fractions supply the purity screening.
+\item Optical dark-water proxy: SCL class 6, near-infrared \(<0.04\), green \(<0.10\).
+  Snow-covered-ice proxy: SCL class 11, green \(>0.15\), near-infrared \(>0.10\), and
+  \(\mathrm{NDSI}>0.4\). Require at least 99\% native SCL class purity for each label.
+\item Classifier: linear discriminant using VV and VH, equal class priors and 5\% isotropic
+  covariance shrinkage; no held-out tuning.
+\item Spatial evaluation: 10,000~m blocks with a 1,000~m edge exclusion. Report all
+  held-out blocks, including single-class blocks.
 \end{itemize}
 
-\section{Actual-data reproduction}
+The acquisition and quality-mask manifests preserve source item identifiers, processing
+roles, asset names, resampling and checksums. Hashes identify retained reprojected windows;
+they do not identify complete original SAFE packages. Large raster windows are excluded from
+Git and must be acquired again for a clean checkout. Do not copy signed URLs or credentials
+into source, reports or shell history.
 
-The canonical configuration and small evidence files are in
-\texttt{docs/research/20261019/}; large raster windows remain in ignored local storage.
-The following commands run from the repository root. Enter each on one line in PowerShell.
-Use a new output directory for each completed analysis.
+\section{Scientific and engineering evidence}
+
+The actual one-case comparison reports ice precision of 23.53\%, ordinary agreement of
+88.00\%, and 95.99\% ordinary agreement for the always-water baseline on the same held-out
+cells. The modelled candidate ice area is 1,219.28~km$^2$; 795.91~km$^2$ of candidate area
+has no optical proxy label. The full candidate area is not validated sea-ice extent. These
+figures describe agreement with selected Sentinel-2 proxy labels, not field accuracy.
+
+The CSC project 2021696 demonstration processed five authentic captured scene-metadata
+records through provenance storage, SQLite catalog persistence, Kvarken regional queries
+and a loopback API. The saved evidence records zero failures and retries, elapsed timings,
+source identity and checksums. Raster classification ran locally; CSC did not perform
+satellite-image classification, large-scale raster processing, distributed execution or
+GPU acceleration.
+
+The frozen 256-scene benchmark is synthetic and remains unchanged. Its legacy recovery-ratio
+value of 1.000000 is retained as a reporting convention. Because that run observed zero
+failures and retries, recovery was not measured (N/A); fault-injection tests provide the
+recovery evidence. The 20260915 report is an offline fallback using fixtures, not a live
+CDSE experiment. CDSE OAuth2/STAC metadata interfaces are covered by offline tests; no
+successful live CDSE metadata request or CDSE pixel download is confirmed. A previously
+recorded unauthenticated CDSE raster request returned HTTP 401.
+
+\section{Clean-checkout reproduction}
+
+These commands are written for PowerShell from a directory in which the repository is to be
+created. The package supports Python 3.11 and later; the verified local scientific run used
+Windows 11, Python 3.12.15, NumPy 2.5.4, Rasterio 1.5.2, GDAL 3.12.2, Matplotlib 3.11.2
+and SciPy 1.18.1. The CSC metadata demonstration used Ubuntu 24.04.5 and Python 3.12.3.
+No command in this appendix was run to reacquire the satellite data during this revision.
+
+\subsection{Clone and create a Python environment}
+
+\begin{verbatim}
+git clone https://github.com/mhe931/kvarken.git
+Set-Location kvarken
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+\end{verbatim}
+
+\subsection{Install dependencies}
+
+The core runtime is standard-library-only. Install development and scientific extras for the
+full test suite and raster case study:
 
 \begin{verbatim}
 python -m pip install -e ".[dev,science]"
-python -m kvarken_eo.case_study --help
+\end{verbatim}
+
+The optional Word exporter also requires the \texttt{documents} extra, Pandoc, the official
+University of Vaasa DOTX template, and the APA CSL file. Those external files are not included
+in Git; their official sources and the export command are documented in
+\texttt{thesis/README.md}.
+
+\subsection{Run tests and offline checks}
+
+Each line below is a separate command. Success means the process exits with status zero; test
+counts may change as tests are added.
+
+\begin{verbatim}
 python -m pytest
 python -m ruff check .
 python -m ruff format --check .
 python -m kvarken_eo verify-health
 \end{verbatim}
 
-For fresh acquisition, invoke \texttt{python -m kvarken\_eo.case\_study} with
-\texttt{--config} \nolinkurl{docs/research/20261019/case_config.json},
-\texttt{--inputs-dir} \nolinkurl{data/seaice_reproduction}, and
-\texttt{--output-dir} \nolinkurl{outputs/seaice_reproduction}; use the platform's path separators.
-For another analysis of those verified inputs, omit the configuration and add
-\texttt{--reuse-inputs}, choosing a different output directory.
+\subsection{Acquire fresh source data}
 
-Acquisition requires live source access and temporary read-only signing tokens.
-Reuse checks cached hashes and contacts only the local API. The interrupted initial
-acquisition is retained. Native categorical coverage corrections have a supplemental,
-immutable quality-mask manifest linked to the original input manifest.
-The native-mask preparation option is required only when extending an older cache lacking
-those masks, not for ordinary fresh acquisition.
+The following command performs fresh source acquisition and scientific analysis. It requires
+network access to Microsoft Planetary Computer and a new output directory. The large raster
+windows are not in Git; this step is necessary on a clean checkout.
 
-Numerical results are deterministic for the retained inputs and parameters. Timing,
-timestamps and catalog/provenance bytes may change between runs. Executed-source hashes
-and package/GDAL versions identify the actual implementation when Git was dirty;
-the old base commit alone does not contain that extension. The published report lists
-all held-out blocks and uses null for undefined metrics.
+\begin{verbatim}
+python -m kvarken_eo.case_study --config docs\research\20261019\case_config.json --inputs-dir data\seaice_reproduction --output-dir outputs\seaice_fresh_20261022
+\end{verbatim}
 
-\section{Environment and acceptance gates}
+The expected success indicator is exit status zero and a populated output directory including
+\texttt{results.json}, georeferenced outputs, figures, and acquisition/provenance records.
+The command's exact supported options are printed by
+\texttt{python -m kvarken\_eo.case\_study --help}. Use
+\texttt{--resume-acquisition} only to continue an interrupted acquisition with the same
+configuration. \texttt{--prepare-quality-masks} is for an older cache missing its supplemental
+native-resolution masks; it is not required for a fresh acquisition.
 
-Raster processing ran on the local Windows CPU, not the GPU or CSC. No authenticated
-CDSE pixel download is claimed. A separate five-scene metadata replay executed on CSC
-cPouta with verified source, environment and retrieved output hashes. The evidence is in
-\nolinkurl{docs/research/20261019/csc_execution_evidence.json}; it does not include remote
-raster classification. The repository delivery
-report records the secure-access prerequisites and submission sequence. The existing shared Google Doc has been updated as an editable supervisor-review copy. Its conversion from PDF may differ from the canonical manuscript in equations, native tables, and pagination. Personal author and accessibility review, a compliant final PDF/A export, and university approvals remain separate gates.
+\subsection{Reuse previously captured data and generate a report}
+
+Previously captured raster inputs are not tracked in Git. Copy a complete, checksum-verified
+input cache from a retained local archive into
+\texttt{data\textbackslash{}seaice\_reproduction}; if that archive is unavailable, run the fresh-acquisition command
+above. To reuse the cache without reacquiring pixels and create a new scientific report and
+figures, use a distinct output directory:
+
+\begin{verbatim}
+python -m kvarken_eo.case_study --inputs-dir data\seaice_reproduction --output-dir outputs\seaice_reused_20261022 --reuse-inputs
+\end{verbatim}
+
+This command validates cached hashes, processes the captured data and writes a new
+\texttt{results.json} and figures. It does not overwrite the frozen benchmark, the 20260915
+offline-fallback artifact, or the recorded 20261019 actual-data evidence. The CLI requires
+both \texttt{--inputs-dir} and \texttt{--output-dir}; the correct option spelling is
+\texttt{--output-dir}. A reuse run is successful only when its input checks pass and its
+reported source/configuration identities match the intended cache.
+
+\subsection{Build the LaTeX manuscript}
+
+With XeLaTeX, Biber, and the listed TeX packages installed, run each command from the
+\texttt{thesis} directory. The final two XeLaTeX passes resolve the table of contents,
+figure/table lists, page numbers, and cross-references.
+
+\begin{verbatim}
+Set-Location thesis
+xelatex -interaction=nonstopmode -halt-on-error main.tex
+biber main
+xelatex -interaction=nonstopmode -halt-on-error main.tex
+xelatex -interaction=nonstopmode -halt-on-error main.tex
+\end{verbatim}
+
+The CI smoke build uses Ubuntu 24.04, XeLaTeX, Biber and Carlito when Calibri is unavailable.
+The local review manuscript uses the installed Calibri font when present. A successful build
+does not establish independent PDF/A conformance, PDF accessibility, author approval,
+supervisor acceptance or submission authorization.

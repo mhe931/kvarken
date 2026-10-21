@@ -43,27 +43,29 @@ and choose a new output directory:
 
 ```powershell
 python -m pip install -e ".[documents]"
-python thesis\export_documents.py --pandoc C:\Tools\pandoc.exe --template C:\Downloads\Word_template_ENG_VY_06_2025_5.dotx --csl C:\Downloads\apa.csl --output-dir outputs\new_thesis_review
+python thesis\export_documents.py --pandoc C:\Tools\pandoc.exe --template C:\Downloads\Word_template_ENG_VY_06_2025_5.dotx --csl C:\Downloads\apa.csl --output-dir outputs\thesis_review_20261022
 ```
 
 This reads the canonical LaTeX, uses official Word styles/page geometry, formats the cover
 and abstract, numbers headings/captions, places references before appendices and creates
-native TOC/page fields. It does not update the remote Google Doc or render Word by itself.
+native TOC/page fields for chapters and sections. It does not update the remote Google Doc or
+render Word by itself.
 Open the result in Word, update fields/contents and repaginate before PDF export. Actual
 Word 16.0 rendering and PDF/A export were exercised locally. PDF/A conformance and final
 accessibility still need independent validation; a requested export option is not a validator.
 
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
-the modular source. The existing shared native Google Doc must retain its ID and permissions;
-synchronization must be verified separately from the local export. Browser access recovered;
-the old shared manuscript was read successfully but lacks the revised scientific results.
+the modular source. The existing shared native Google Doc must retain its ID and permissions; synchronization
+must be verified separately from the local export. The 19 October delivery record documents
+the previous saved-content mismatch. On 22 October the provided browser opened Google sign-in,
+so no current remote content could be inspected or changed; do not claim synchronization.
 
 Both export paths set PDF/document title and author metadata. For Osuva, the metadata
 title excludes the cover subtitle. Verify these fields in the actually rendered PDF;
 metadata, tags and an archival export option alone do not establish accessibility or
 independently validated PDF/A conformance.
 
-The exporter assigns alternative descriptions to the five scientific maps, preserving
+The exporter assigns alternative descriptions to the scientific figures, preserving
 the distinction between radar candidates, optical proxy agreement and field truth.
 When rendering in Word, set each hyperlink's screen tip to its visible text. Word can
 still omit descriptions for figure/table page-reference links and omit structure-based
@@ -72,8 +74,10 @@ annotation-only remediation must retain full link labels, preserve all page pixe
 and title/author metadata, and be revalidated for PDF/A. Retain both the original and
 remediated bytes and their checksums.
 
-The final-verification candidate passed local veraPDF 1.30.3 PDF/A-3A validation. It is
-not certified PDF/UA-1: the identification requirement remains unsatisfied, and automated
-checks cannot replace human reading-order, screen-reader and alternative-text review.
-See the [delivery report](../docs/THESIS_DELIVERY_REPORT_20261019.md) for the exact candidate,
-validation reports and remaining approvals.
+The 19 October final-verification candidate passed local veraPDF 1.30.3 PDF/A-3A validation.
+That candidate predates the 22 October source revisions and does not validate a PDF generated
+from the current manuscript. No current-source PDF/A or accessibility validation is claimed.
+The earlier candidate was not certified PDF/UA-1: its identification requirement remained
+unsatisfied, and automated checks did not replace human reading-order, screen-reader and
+alternative-text review. See the [delivery report](../docs/THESIS_DELIVERY_REPORT_20261019.md)
+for the historical candidate and validation reports.

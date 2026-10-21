@@ -28,6 +28,12 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     abbreviations.rows[0]._tr.get_or_add_trPr().append(docx.oxml.OxmlElement("w:tblHeader"))
     document.add_heading("Introduction", 1)
     document.add_heading("Motivation", 2)
+    document.add_heading("System Architecture", 1)
+    document.add_paragraph(
+        "Provider-to-application architecture and subsystem boundaries. The metadata path "
+        "is distinct from the raster case-study path."
+    )
+    document.add_heading("Evaluation", 1)
     document.add_picture(str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg"))
     document.add_paragraph(
         "Independent Sentinel-2A input, approximately 17.90 hours later. Details."
@@ -66,6 +72,10 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     text = [paragraph.text for paragraph in saved.paragraphs]
     assert "1  Introduction" in text
     assert "1.1  Motivation" in text
+    assert any(
+        p.text.startswith("Figure 4.1. Provider-to-application architecture")
+        for p in saved.paragraphs
+    )
     assert (
         text.index("References")
         < text.index("Verified source.")

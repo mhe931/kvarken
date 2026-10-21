@@ -4,17 +4,21 @@ Production-minded research scaffold for hybrid Earth Observation (EO) data inges
 
 ## Current thesis status
 
-As of 19 October 2026, the working draft includes an executed Sentinel-1 application with
-independent Sentinel-2 optical proxy comparison. Positive precision is low: the candidate map
-is **not validated total sea-ice extent**. Actual CSC execution and synchronization of the
-existing shared Google Doc remain blocked by authenticated access. No submission approval
-has been received. See the [delivery report](docs/THESIS_DELIVERY_REPORT_20261019.md).
+As of 22 October 2026, the canonical source has been revised against the supplied review
+brief. Current-source compilation and synchronization of the existing shared Google Doc are
+not verified; the browser redirected to Google sign-in. The actual Sentinel-1 application
+uses a Sentinel-2 optical proxy, has low positive precision, and does **not** validate total
+sea-ice extent. The CSC demonstration is a verified five-scene metadata/provenance/catalog/
+regional-query/loopback-API prototype; raster classification ran locally. See the
+[review-response matrix](docs/THESIS_REVIEW_RESPONSE_20261022.md) and
+[historical delivery report](docs/THESIS_DELIVERY_REPORT_20261019.md).
 
 The frozen 256-scene baseline remains synthetic and the 20260915 artifact remains offline
 fallback. New real-data evidence is separate in [the research record](docs/research/20261019/README.md).
-The expanded local suite passed 90 tests with the optional science/document dependencies.
+The 19 October expanded suite passed 90 tests; the 22 October revision passed 91 tests,
+with Ruff lint/format and the offline health check passing.
 
-The [supervisor review plan](docs/SUPERVISOR_REVIEW_PLAN.md) records received feedback,
+The [supervisor review plan](docs/SUPERVISOR_REVIEW_PLAN.md) records the user-supplied review brief,
 remaining acceptance gates and the user-supplied 23 October working deadline. Thesis documents maintained in Google
 Drive use native Google Docs. Word files are exports for email attachments when requested;
 this repository retains the existing LaTeX manuscript sources.
@@ -55,7 +59,7 @@ python -m kvarken_eo --demo
 - `docs/` - goals, architecture, current status, and roadmap
 - `docs/THESIS_SUMMARY.md` - academic overview of methods, data flow, evidence, and limitations
 - `docs/SUPERVISOR_REVIEW_PLAN.md` - current draft status, review questions, and proposed completion plan
-- `thesis/` - canonical modular manuscript, nine chapters, appendices and document export tooling
+- `thesis/` - canonical modular manuscript, ten chapters, appendices and document export tooling
 - `AGENTS.md` - continuity and contribution rules for people and coding agents
 
 The raster slice also provides dependency-free multiscale processing: `downsample_band` and
@@ -80,14 +84,17 @@ python -m kvarken_eo.case_study --help
 
 Use the [recorded configuration and acquisition/reuse commands](docs/research/20261019/README.md).
 For official-template DOCX and local PDF builds, see [the manuscript build guide](thesis/README.md).
-Metadata replay on a remote host must be independently evidenced; the
-[CSC procedure](docs/CSC_DEMONSTRATION.md) is not a claim that deployment happened.
+The [CSC record](docs/CSC_DEMONSTRATION.md) documents an actual five-scene remote metadata
+replay. It is not evidence of remote raster classification or distributed processing.
 
 Keep source code under `src/`, add a focused test for every behavior change, and update the relevant document in `docs/` when a milestone or architectural decision changes. Do not commit credentials, raw datasets, generated artifacts, or local environment files.
 
 ### Concurrent ingestion
 
-`ConcurrentEOIngestor` transforms and persists STAC items with a bounded `max_workers` semaphore. The default is four workers; use a lower value when a provider has stricter rate limits:
+`ConcurrentEOIngestor` transforms and persists STAC items with a `max_workers` semaphore that
+bounds active concurrency. The default is four workers; use a lower value when a provider has
+stricter rate limits. The batch API still schedules one coroutine per input item, so very large
+materialized batches require caution; streaming scheduling is future work:
 
 ```python
 from pathlib import Path

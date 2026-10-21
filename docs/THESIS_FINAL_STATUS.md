@@ -1,24 +1,34 @@
-# Thesis review status: 19 October 2026
+# Thesis review status: 22 October 2026
 
-**Working review draft, not submission-ready or approved.**
+**The canonical source has been revised against the supplied review brief. It remains a
+working draft; current-source compilation, Google Docs synchronization and academic approval
+are not verified.**
 
 - Canonical source: [the modular LaTeX manuscript](../thesis/main.tex).
-- Actual satellite application and diagnostic evaluation:
-  [research evidence](research/20261019/README.md).
-- Local official-styled DOCX/PDF and full handoff:
-  [delivery report](THESIS_DELIVERY_REPORT_20261019.md).
-- Existing native shared Google Doc:
+- Scientific, acquisition and CSC evidence:
+  [the 19 October evidence record](research/20261019/README.md).
+- Corrected sections and unresolved evidence:
+  [the review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md).
+- Existing shared native Google Doc:
   https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
-  (remote synchronization not verified).
+  (the browser required Google sign-in on 22 October; saved content could not be verified or updated).
+- The previously verified CSC run is a five-scene metadata/provenance/catalog/regional-query/
+  loopback-API prototype. Raster classification ran locally.
+- The scientific result remains a single-case optical-proxy comparison. Ice precision is
+  23.53%; candidate area is not validated sea-ice extent.
+- The frozen 256-scene synthetic benchmark is unchanged; its legacy recovery-ratio value is
+  a reporting convention, not measured recovery evidence.
 
-The standard-library metadata baseline is preserved. Optional real GeoTIFF processing,
-maps and independent-sensor proxy comparison now exist. Ice precision is low and candidate
-area is not validated total sea-ice extent. No actual CSC run has been obtained.
+Current-source PDF/DOCX exports, final page numbers, PDF/A and accessibility checks remain
+unverified because the local environment lacks XeLaTeX, Biber, Pandoc, the official DOTX
+template and independent PDF validators. The existing 19 October exports and their page counts
+are historical, not current deliverables.
 
-Remaining gates: authenticated CSC project execution; verified Google Docs synchronization;
-author review; stronger scientific evidence if required by Professor Arslan; supervisor
-acceptance and reviewer confirmation; final accessibility/PDF-A checks; authorized Turnitin,
-Osuva and degree-completion procedures.
+Local repository verification for the 22 October source revision passed: 91 tests, Ruff lint
+and formatting, offline `verify-health`, documented CLI help, and a source-level citation and
+cross-reference check. GitHub CI has not yet run on this revision.
 
-The earlier 39/44-page candidates and presentation links are historical, not current
-verified final documents. A successful build or release is not thesis acceptance.
+Remaining gates: build and inspect the revised manuscript, independently validate any final
+PDF/PDF-A and accessibility, synchronize and reopen the same Google Doc, complete author
+review, obtain supervisor authorization for Turnitin and Osuva, and confirm the individual
+submission deadline with the University. No submission or email is claimed.
