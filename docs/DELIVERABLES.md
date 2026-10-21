@@ -10,12 +10,17 @@ for Research and Education: A Case Study of Kvarken Space Center**.
 - [Actual-data maps, results, manifests and reproduction](research/20261019/README.md).
 - [Official-template export/build procedure](../thesis/README.md).
 - [Verified CSC metadata demonstration and reproduction boundaries](CSC_DEMONSTRATION.md).
-- [Current-source XeLaTeX/Biber CI build (run 67)](https://github.com/mhe931/kvarken/actions/runs/39684054300).
+- [Current-source XeLaTeX/Biber CI build (run 68)](https://github.com/mhe931/kvarken/actions/runs/39684624403).
 - The 69-page CI review PDF was inspected for TOC/list numbering, cross-references, Figure 4.1,
   all five scientific figures and Appendix B. CI uses Carlito as its fallback font.
+- A current-source DOCX was generated with the University June 2025 DOTX, APA CSL and Pandoc
+  3.12.1. Headings, six figure captions, four table captions, image descriptions, metadata and
+  the editable six-stage architecture diagram were inspected programmatically. The DOCX still
+  requires Word field updates and visual repagination.
 - The 19 October local DOCX/PDF exports and their 71/64-page counts are historical.
-  The 22 October CI PDF is a source-build review copy, not an official-template Word export,
-  PDF/A-validated file or authorized submission candidate.
+  The 22 October CI PDF is a source-build review copy; neither current export has current-source
+  PDF/A or independent accessibility validation, and neither is an authorized submission
+  candidate.
 - Existing shared native Google Doc:
   https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
   (not synchronized or verified on 22 October; the browser redirected to Google sign-in).

@@ -4,7 +4,10 @@ import pytest
 
 docx = pytest.importorskip("docx")
 
-from thesis.export_documents import format_document  # noqa: E402
+from thesis.export_documents import (  # noqa: E402
+    _insert_architecture_diagram,
+    format_document,
+)
 
 
 def test_document_has_continuous_pages_numbered_chapters_and_references_before_appendix(tmp_path):
@@ -36,12 +39,13 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     document.add_heading("Evaluation", 1)
     document.add_picture(str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg"))
     document.add_paragraph(
-        "Independent Sentinel-2A input, approximately 17.90 hours later. Details."
+        "Sentinel-2A Level-2A false-colour observation from 31 March 2021, "
+        "approximately 17.90 hours later. Details."
     )
     for caption in (
-        "Selective optical proxy reference: details.",
-        "Scene-specific SAR candidate classes, details.",
-        "Held-out optical-reference agreement details.",
+        "Selective Sentinel-2 optical proxy labels for dark water and snow-covered ice.",
+        "Scene-specific SAR candidate classes derived from Sentinel-1 observations.",
+        "Held-out agreement between thesis-derived radar candidates and optical labels.",
     ):
         document.add_picture(
             str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg")
@@ -53,6 +57,14 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     document.add_paragraph("AI disclosure.")
     document.styles.add_style("Bibliography", 1)
     document.add_paragraph("Verified source.", style="Bibliography")
+    empty_figure_table = docx.oxml.OxmlElement("w:tbl")
+    table_properties = docx.oxml.OxmlElement("w:tblPr")
+    table_style = docx.oxml.OxmlElement("w:tblStyle")
+    table_style.set(docx.oxml.ns.qn("w:val"), "FigureTable")
+    table_properties.append(table_style)
+    empty_figure_table.append(table_properties)
+    empty_figure_table.append(docx.oxml.OxmlElement("w:tblGrid"))
+    document._element.body.append(empty_figure_table)
     document.save(path)
     format_document(path)
     saved = docx.Document(path)
@@ -87,9 +99,7 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     assert saved.styles["Normal"].font.name == "Calibri"
     assert saved.styles["Normal"].font.size.pt == 12
     assert any(
-        p.text.startswith(
-            "Figure 6.1. Independent Sentinel-2A input, approximately 17.90 hours later"
-        )
+        p.text.startswith("Figure 6.1. Sentinel-2A Level-2A false-colour observation")
         and "PAGEREF" in p._p.xml
         for p in saved.paragraphs
     )
@@ -107,3 +117,38 @@ def test_document_formatting_rejects_a_missing_abstract(tmp_path):
     docx.Document().save(path)
     with pytest.raises(ValueError, match="abstract"):
         format_document(path)
+
+
+def test_document_describes_the_cover_logo(tmp_path):
+    path = tmp_path / "cover.docx"
+    document = docx.Document()
+    document.add_picture(str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg"))
+    document.add_paragraph("UNIVERSITY OF VAASA")
+    document.add_paragraph("Keywords: Earth Observation")
+    document.add_heading("Acknowledgements", 1)
+    document.add_heading("Disclosure of AI-Assisted Work", 1)
+    document.save(path)
+
+    format_document(path)
+
+    saved = docx.Document(path)
+    assert saved.inline_shapes[0]._inline.docPr.get("descr") == "University of Vaasa logo"
+
+
+def test_architecture_diagram_replaces_the_empty_pandoc_placeholder(tmp_path):
+    path = tmp_path / "architecture.docx"
+    document = docx.Document()
+    placeholder = document.add_table(rows=1, cols=1)
+    placeholder._tbl.remove(placeholder.rows[0]._tr)
+    document.save(path)
+
+    _insert_architecture_diagram(path)
+
+    diagram = docx.Document(path).tables[0]
+    assert len(diagram.rows) == 11
+    text = [row.cells[0].text for row in diagram.rows]
+    assert text[0].startswith("Provider\n")
+    assert text[1] == "↓"
+    assert "EOScene" in text[4]
+    assert text[9] == "↓"
+    assert text[10].startswith("Scientific application\n")

@@ -55,11 +55,17 @@ python thesis\export_documents.py --pandoc C:\Tools\pandoc.exe --template C:\Dow
 
 This reads the canonical LaTeX, uses official Word styles/page geometry, formats the cover
 and abstract, numbers headings/captions, places references before appendices and creates
-native TOC/page fields for chapters and sections. It does not update the remote Google Doc or
-render Word by itself.
-Open the result in Word, update fields/contents and repaginate before PDF export. Actual
-Word 16.0 rendering and PDF/A export were exercised locally. PDF/A conformance and final
-accessibility still need independent validation; a requested export option is not a validator.
+native TOC/page fields for chapters and sections. Pandoc does not render the TikZ architecture
+figure into DOCX, so the exporter replaces its empty placeholder with an editable, styled
+six-stage flow diagram. It does not update the remote Google Doc or render Word by itself.
+
+The current 22 October DOCX was generated and structurally checked, including heading styles,
+caption numbering, the architecture flow diagram, figure descriptions and document metadata.
+It has not been opened in Word for field updates or visual pagination; update TOC/page fields
+and repaginate before PDF export. The 19 October Word/PDF candidate was rendered and its
+historical PDF/A validation is not evidence for this revised source. PDF/A conformance and
+current accessibility still need independent validation; a requested export option is not
+a validator.
 
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
 the modular source. The existing shared native Google Doc must retain its ID and permissions; synchronization

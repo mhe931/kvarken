@@ -7,6 +7,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from docx import Document
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -14,11 +15,11 @@ from docx.shared import Cm, Pt
 
 FIGURES = (
     "Provider-to-application architecture",
-    "Actual Sentinel-1A VV",
-    "Independent Sentinel-2A",
-    "Selective optical proxy reference:",
-    "Scene-specific SAR candidate classes,",
-    "Held-out optical-reference agreement",
+    "Sentinel-1A VV gamma-zero input",
+    "Sentinel-2A Level-2A false-colour observation",
+    "Selective Sentinel-2 optical proxy labels",
+    "Scene-specific SAR candidate classes derived",
+    "Held-out agreement between thesis-derived",
 )
 FIGURE_DESCRIPTIONS = (
     "Vector architecture diagram showing the metadata path from provider through transport "
@@ -93,11 +94,16 @@ def format_document(path: Path) -> dict:
         if not drawings:
             continue
         caption = next((p.text for p in paragraphs[i + 1 :] if p.text.strip()), "")
-        for prefix, description in zip(FIGURES, FIGURE_DESCRIPTIONS, strict=True):
+        matched = False
+        for prefix, description in zip(FIGURES[1:], FIGURE_DESCRIPTIONS[1:], strict=True):
             if caption.startswith(prefix):
                 for drawing in drawings:
                     drawing.set("descr", description)
+                matched = True
                 break
+        if not matched and i < abstract_start:
+            for drawing in drawings:
+                drawing.set("descr", "University of Vaasa logo")
     styles = document.styles
     for name in ("Normal", "Body Text", "Bibliography"):
         if name not in styles:
@@ -180,6 +186,8 @@ def format_document(path: Path) -> dict:
                     for run in paragraph.runs:
                         run.font.name, run.font.size = "Calibri", Pt(11)
     for table in document.tables:
+        if not table.rows:
+            continue
         if table.cell(0, 0).text != "ACID":
             continue
         for header in table.rows[0]._tr.xpath("./w:trPr/w:tblHeader"):
@@ -229,19 +237,20 @@ def format_document(path: Path) -> dict:
         elif paragraph.style.name == "Heading 3":
             subsection += 1
             _prefix(paragraph, f"{appendix_letter or chapter}.{section}.{subsection}  ")
-        kind = (
-            "Figure" if text.startswith(FIGURES) else "Table" if text.startswith(TABLES) else None
-        )
+        architecture_caption = text.startswith(("Figure 4.1. " + FIGURES[0], FIGURES[0]))
+        figure_caption = architecture_caption or text.startswith(FIGURES[1:])
+        kind = "Figure" if figure_caption else "Table" if text.startswith(TABLES) else None
         if kind:
             entries = figure_entries if kind == "Figure" else table_entries
             number = (
-                ("4.1" if text.startswith(FIGURES[0]) else f"6.{figure_number + 1}")
+                ("4.1" if architecture_caption else f"6.{figure_number + 1}")
                 if kind == "Figure"
                 else ("3.1" if not entries else f"6.{len(entries)}")
             )
-            if kind == "Figure" and not text.startswith(FIGURES[0]):
+            if kind == "Figure" and not architecture_caption:
                 figure_number += 1
-            _prefix(paragraph, f"{kind} {number}. ")
+            if not text.startswith("Figure 4.1. "):
+                _prefix(paragraph, f"{kind} {number}. ")
             paragraph.paragraph_format.line_spacing = 1
             paragraph.paragraph_format.keep_together = True
             if kind == "Table":
@@ -289,6 +298,63 @@ def format_document(path: Path) -> dict:
     return {"figures": len(figure_entries), "tables": len(table_entries)}
 
 
+def _insert_architecture_diagram(path: Path) -> None:
+    document = Document(path)
+    placeholders = [table for table in document.tables if not table.rows]
+    if len(placeholders) != 1:
+        raise ValueError(
+            f"expected one empty Pandoc architecture placeholder, found {len(placeholders)}"
+        )
+    placeholder = placeholders[0]
+    diagram = document.add_table(rows=11, cols=1)
+    diagram.style = "Table Grid"
+    diagram.autofit = False
+    stages = (
+        ("Provider", "STAC collections, CDSE metadata interface, or offline fixtures"),
+        (
+            "Transport and validation",
+            "Injectable HTTP/OAuth2 transport, retries, pagination, and schema validation",
+        ),
+        ("EOScene", "Validated provider item transformed to a typed, transport-neutral record"),
+        (
+            "Provenance and catalog",
+            "SHA-256 raw payloads, append-only manifest, and SQLite SpatialCatalog",
+        ),
+        (
+            "Queries, API, and reports",
+            "Regional/quality filters, read-only educational API, and reproducible reports",
+        ),
+        (
+            "Scientific application",
+            "Local Planetary Computer COG raster analysis; CSC replay covers metadata only",
+        ),
+    )
+    for index, row in enumerate(diagram.rows):
+        cell = row.cells[0]
+        cell.width = Cm(15)
+        cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+        paragraph = cell.paragraphs[0]
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph.paragraph_format.space_after = Pt(2)
+        paragraph.paragraph_format.space_before = Pt(2)
+        if index % 2:
+            run = paragraph.add_run("↓")
+            run.font.size = Pt(12)
+            continue
+        title, detail = stages[index // 2]
+        shading = OxmlElement("w:shd")
+        shading.set(qn("w:fill"), "DDEBF7")
+        cell._tc.get_or_add_tcPr().append(shading)
+        title_run = paragraph.add_run(title + "\n")
+        title_run.bold = True
+        title_run.font.size = Pt(10)
+        detail_run = paragraph.add_run(detail)
+        detail_run.font.size = Pt(10)
+    diagram._tbl.addprevious(placeholder._tbl)
+    placeholder._tbl.getparent().remove(placeholder._tbl)
+    document.save(path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pandoc", required=True, type=Path)
@@ -329,6 +395,7 @@ def main() -> None:
         check=True,
     )
     counts = format_document(output)
+    _insert_architecture_diagram(output)
     if counts != {"figures": 6, "tables": 4}:
         raise ValueError(f"canonical caption inventory changed: {counts}; review export numbering")
     print(output)
