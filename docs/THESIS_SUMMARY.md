@@ -3,9 +3,10 @@
 ## Review status
 
 **22 October update:** the canonical manuscript was revised against the supplied review
-brief. Current-source compilation and saved Google Docs synchronization remain unverified;
-the browser redirected to Google sign-in. The [review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md)
-maps each item to source sections and evidence.
+brief. The current source compiled in [GitHub Actions run 67](https://github.com/mhe931/kvarken/actions/runs/39684054300);
+its 69-page CI PDF was inspected. Saved Google Docs synchronization remains unverified; the
+browser redirected to Google sign-in. The [review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md)
+maps each item to sections, pages and evidence.
 
 Actual Sentinel-1/independent Sentinel-2 pixels were processed locally on 19 October. The
 [research record](research/20261019/README.md) reports the method, selective proxy evaluation

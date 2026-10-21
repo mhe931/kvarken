@@ -19,14 +19,17 @@ are not verified.**
 - The frozen 256-scene synthetic benchmark is unchanged; its legacy recovery-ratio value is
   a reporting convention, not measured recovery evidence.
 
-Current-source PDF/DOCX exports, final page numbers, PDF/A and accessibility checks remain
-unverified because the local environment lacks XeLaTeX, Biber, Pandoc, the official DOTX
-template and independent PDF validators. The existing 19 October exports and their page counts
-are historical, not current deliverables.
+GitHub Actions run 67 compiled the current LaTeX source and produced a 69-page CI review PDF.
+Its TOC/list page references, figure/table numbering, cross-reference markers, Figure 4.1,
+five scientific figures and Appendix B were inspected. It uses Carlito as a fallback font,
+not an official-template Word export. Current DOCX, PDF/A and accessibility validation remain
+unverified because Pandoc, the official DOTX template and independent validators are
+unavailable. The 19 October exports and their page counts are historical.
 
 Local repository verification for the 22 October source revision passed: 91 tests, Ruff lint
 and formatting, offline `verify-health`, documented CLI help, and a source-level citation and
-cross-reference check. GitHub CI has not yet run on this revision.
+cross-reference check. The current-source thesis build passed on GitHub Actions; full Python
+CI still requires a PR, which could not be opened from the unauthenticated browser session.
 
 Remaining gates: build and inspect the revised manuscript, independently validate any final
 PDF/PDF-A and accessibility, synchronize and reopen the same Google Doc, complete author

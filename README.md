@@ -5,8 +5,11 @@ Production-minded research scaffold for hybrid Earth Observation (EO) data inges
 ## Current thesis status
 
 As of 22 October 2026, the canonical source has been revised against the supplied review
-brief. Current-source compilation and synchronization of the existing shared Google Doc are
-not verified; the browser redirected to Google sign-in. The actual Sentinel-1 application
+brief and compiled in [GitHub Actions run 67](https://github.com/mhe931/kvarken/actions/runs/39684054300).
+The 69-page CI review PDF was inspected for pagination, figure/table lists and rendered figures;
+it is not an official-template DOCX or validated PDF/A/accessibility submission candidate.
+Synchronization of the existing shared Google Doc is not verified; the browser redirected
+to Google sign-in. The actual Sentinel-1 application
 uses a Sentinel-2 optical proxy, has low positive precision, and does **not** validate total
 sea-ice extent. The CSC demonstration is a verified five-scene metadata/provenance/catalog/
 regional-query/loopback-API prototype; raster classification ran locally. See the

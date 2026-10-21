@@ -15,11 +15,14 @@
 - Updated the clean-checkout command appendix from the actual CLI help. Large raster inputs
   remain absent from Git.
 - The shared Google Doc could not be accessed: its URL redirected to Google sign-in. It was
-  not edited or replaced. The current source has not yet been built; final pagination,
-  DOCX/PDF export, PDF/A and accessibility validation remain open.
+  not edited or replaced. Current-source GitHub Actions run 67 compiled a 69-page review PDF.
+  The TOC, figure/table lists, cross-reference markers, Figure 4.1, scientific figures and
+  Appendix B were inspected. This CI build uses Carlito; official-template Word export,
+  PDF/A and accessibility validation remain open.
 - Local verification passed: 91 tests, Ruff lint and formatting, offline `verify-health`,
   both documented CLI help commands, and a source-level citation/reference-label check.
-  GitHub CI for this revision has not run.
+  The thesis-build workflow passed; general Python GitHub CI requires a pull request, which
+  could not be created because GitHub required sign-in.
 - No satellite acquisition, CSC deployment, email, Turnitin upload or Osuva submission was
   performed during this revision.
 

@@ -10,9 +10,12 @@ for Research and Education: A Case Study of Kvarken Space Center**.
 - [Actual-data maps, results, manifests and reproduction](research/20261019/README.md).
 - [Official-template export/build procedure](../thesis/README.md).
 - [Verified CSC metadata demonstration and reproduction boundaries](CSC_DEMONSTRATION.md).
+- [Current-source XeLaTeX/Biber CI build (run 67)](https://github.com/mhe931/kvarken/actions/runs/39684054300).
+- The 69-page CI review PDF was inspected for TOC/list numbering, cross-references, Figure 4.1,
+  all five scientific figures and Appendix B. CI uses Carlito as its fallback font.
 - The 19 October local DOCX/PDF exports and their 71/64-page counts are historical.
-  The canonical sources changed on 22 October; a current-source export and final page
-  numbers have not been verified.
+  The 22 October CI PDF is a source-build review copy, not an official-template Word export,
+  PDF/A-validated file or authorized submission candidate.
 - Existing shared native Google Doc:
   https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
   (not synchronized or verified on 22 October; the browser redirected to Google sign-in).
@@ -26,7 +29,7 @@ Architecture, Implementation, **Evaluation** (Chapter 6), Analysis, Discussion,
 In-House EO Infrastructure for Education and Research Innovation (Chapter 9), and
 Conclusion and Future Work (Chapter 10).
 
-This is not an approved final submission. Current-source compilation, author review,
+This is not an approved final submission. Official-template DOCX export, author review,
 supervisor authorization, verified synchronization, independent PDF/A/accessibility checks
 and university submission procedures remain explicit gates. The historical CSC execution
 is verified for metadata, provenance, catalog, regional queries and loopback API only;

@@ -12,6 +12,13 @@ official-font compliance. Margins are 3 cm, body 12 pt/1.5 spacing, abstract 11 
 Arabic numbering is continuous from counted/unprinted cover 1 to abstract 2.
 The bibliography uses BibLaTeX APA and Biber.
 
+The 22 October source revision compiled successfully in
+[GitHub Actions run 67](https://github.com/mhe931/kvarken/actions/runs/39684054300). The
+69-page artifact was inspected for contents/list pagination, figure/table numbering,
+cross-references and figure rendering. CI uses Carlito as a fallback font. This is a review
+build, not an official-template Word export or independently validated PDF/A/accessibility
+submission file.
+
 With TeX Live:
 
 ```powershell

@@ -12,8 +12,10 @@ Professor Arslan/Education Services rather than treating it as a public universa
 - [x] Revise the manuscript and prepare local review exports (the 19 October exports are historical).
 - [x] Obtain authorized CSC project access and retain the actual remote metadata execution.
 - [ ] Reopen and verify synchronization of the existing native Google Doc.
-- [ ] Build and inspect the 22 October source revision; verify final pagination and independently
-  validate any current PDF/A/accessibility output.
+- [x] Build and inspect the 22 October source revision; verify CI-PDF pagination, figures and
+  cross-references.
+- [ ] Produce the official-template Word/PDF exports and independently validate PDF/A and
+  accessibility.
 - [ ] Author examines the actual maps, code, references, AI disclosure and final pagination.
 - [ ] Professor Arslan reviews the revised scientific scope and retained CSC metadata-execution evidence.
 - [ ] Complete the authorized Turnitin/Osuva/assessment/graduation sequence.

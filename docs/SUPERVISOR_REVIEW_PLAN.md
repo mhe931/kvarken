@@ -8,10 +8,13 @@ repository, so this plan records the supplied brief without inventing an email d
 quoting unseen comments. The canonical LaTeX manuscript has been revised; see the
 [review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md).
 
-Current-source compilation and pagination remain unverified because XeLaTeX and Biber are not
-available in the local environment. The same shared Google Doc remains the required review
-copy, but the browser redirected to Google sign-in on 22 October. No replacement Doc was
-created and no remote change is claimed.
+GitHub Actions run 67 compiled the current source with XeLaTeX/Biber and uploaded a 69-page
+CI review PDF. The contents/list pages, numbering, cross-reference markers, Figure 4.1, the
+five scientific figures and Appendix B were inspected. The CI build uses Carlito as a font
+fallback; it is not the official-template Word/PDF export and has not undergone PDF/A or
+accessibility validation. The same shared Google Doc remains the required review copy, but
+the browser redirected to Google sign-in on 22 October. No replacement Doc was created and
+no remote change is claimed.
 
 The existing CSC demonstration remains the verified five-record metadata/provenance/catalog/
 regional-query/loopback-API prototype. Raster processing remains local. No new acquisition,
