@@ -70,8 +70,10 @@ a validator.
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
 the modular source. The existing shared native Google Doc must retain its ID and permissions; synchronization
 must be verified separately from the local export. The 19 October delivery record documents
-the previous saved-content mismatch. On 22 October the provided browser opened Google sign-in,
-so no current remote content could be inspected or changed; do not claim synchronization.
+the previous saved-content mismatch. On 22 October the existing document opened under the
+author's signed-in account and showed a saved-to-Drive status and prior supervisor edit
+attribution. Revised content was not synchronized or reopened for verification; do not claim
+that the shared document is current.
 
 Both export paths set PDF/document title and author metadata. For Osuva, the metadata
 title excludes the cover subtitle. Verify these fields in the actually rendered PDF;

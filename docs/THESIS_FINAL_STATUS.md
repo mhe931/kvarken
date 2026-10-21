@@ -11,7 +11,9 @@ academic approval are not.**
   [the review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md).
 - Existing shared native Google Doc:
   https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
-  (the browser required Google sign-in on 22 October; saved content could not be verified or updated).
+  (opened under the author's signed-in account; the title, edit mode, saved-to-Drive status and
+  prior supervisor edit attribution were visible. No content was replaced or synchronized;
+  the saved manuscript text and page layout were not independently verified).
 - The previously verified CSC run is a five-scene metadata/provenance/catalog/regional-query/
   loopback-API prototype. Raster classification ran locally.
 - The scientific result remains a single-case optical-proxy comparison. Ice precision is
@@ -38,4 +40,5 @@ unauthenticated browser session.
 Remaining gates: Word rendering and repagination of the current DOCX, independent validation
 of any final PDF/PDF-A and accessibility, synchronization and reopening of the same Google
 Doc, author review, supervisor authorization for Turnitin and Osuva, and confirmation of the
-individual submission deadline with the University. No submission or email is claimed.
+individual submission deadline with the University. The revision branch has no PR; GitHub
+compare requires sign-in. No submission or email is claimed.

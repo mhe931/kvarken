@@ -23,7 +23,8 @@ for Research and Education: A Case Study of Kvarken Space Center**.
   candidate.
 - Existing shared native Google Doc:
   https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
-  (not synchronized or verified on 22 October; the browser redirected to Google sign-in).
+  (opened in the author's signed-in account; saved-to-Drive status and prior supervisor edit
+  attribution were visible. It was not synchronized or reopened to verify revised content).
 
 The pre-existing `Daniel_Ebrahimzadeh_Esfahani_Thesis_Final_Candidate.docx` and September
 presentation materials remain historical. Do not email or present them as the revised
