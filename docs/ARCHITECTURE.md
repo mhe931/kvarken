@@ -25,8 +25,9 @@
   A five-scene remote replay is portability evidence, not a distributed or speedup benchmark.
 - Source acquisition and supplemental quality-mask manifests are immutable. Raw rasters
   remain ignored; small licensed research outputs live outside the frozen offline folder.
-- The current batch gather bounds active work with a semaphore, not total scheduling memory.
-  The actual-data replay uses five items; unbounded streaming is not claimed.
+-   The current batch gather uses a semaphore for bounded active concurrency, not bounded
+  scheduling memory: it schedules one coroutine per supplied item. The actual-data replay used
+  five items; unbounded streaming is not supported or claimed.
 
 See [the research record](research/20261019/README.md) and
 [the CSC execution boundary](CSC_DEMONSTRATION.md).

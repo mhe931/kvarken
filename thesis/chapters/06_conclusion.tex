@@ -2,19 +2,20 @@
 
 \section{Conclusion}
 
-This thesis connects an auditable EO metadata infrastructure to an actual satellite-data
-application in eastern Kvarken. The core combines typed boundaries, injectable transport,
-bounded active ingestion, content-addressed provenance, a WAL-enabled SQLite spatial catalog,
-quality filters and a read-only educational interface. An optional scientific environment
-adds observed Sentinel-1 and Sentinel-2 raster windows, WorldCover screening, candidate maps
-and quantitative proxy evaluation without changing the lightweight runtime requirement.
+This thesis designs and implements an in-house EO infrastructure to support research and
+teaching within Kvarken Space Center and the University of Vaasa. The core combines typed
+boundaries, injectable transport, bounded active concurrency, content-addressed provenance,
+a WAL-enabled SQLite spatial catalog, quality filters and a read-only educational interface.
+An optional scientific environment adds local Sentinel-1 and Sentinel-2 raster processing,
+WorldCover screening, candidate maps and quantitative proxy evaluation without changing the
+lightweight metadata runtime.
 
 The application addresses the earlier absence of practical pixel processing. It also
 shows why scientific validation cannot be replaced by infrastructure success. Positive
 radar candidates have low precision against the selected optical proxy, and most candidate
 ice area has no reference label. The output must not be described as reliable total
-sea-ice extent. A separate CSC cPouta metadata replay verified the same five scene
-identities, persistent provenance, regional queries and loopback API as the local run.
+sea-ice extent. A separate CSC cPouta replay processed five authentic captured scene-metadata records through
+provenance, SQLite catalog persistence, regional queries and a loopback API.
 
 \section{Answers to the research questions}
 
@@ -26,7 +27,7 @@ records preserve source and acquisition context while SQLite supports convenient
 The application exposed the importance of distinguishing geographic STAC geometry from
 the projected raster CRS and of preserving each optical item's own source endpoint.
 
-\subsection{RQ2: bounded active work and recovery}
+\subsection{RQ2: bounded active concurrency and recovery}
 
 A semaphore limits active processing and persistence. Bounded retries distinguish transient
 timeouts and throttling from malformed inputs. The current batch gather still schedules
@@ -60,12 +61,15 @@ remote infrastructure evidence, not a second scientific validation experiment.
 
 \section{Contributions and limitations}
 
-The contribution is methodological and software-oriented: small, inspectable contracts link
-provider standards to reproducible local research. The real application adds a practical
-test of those contracts and retains its negative findings. It is not a new SAR algorithm,
-a field-validated sea-ice product, a production cloud service or an educational outcome study.
-The annual mask, selective proxy labels, acquisition mismatch and single-scene design
-constrain the scientific conclusions.
+The contribution is methodological and software-oriented: inspectable contracts link
+provider standards to reproducible local research and teaching exercises. Implemented
+educational capabilities include fixture-based metadata work, validation, provenance
+inspection, spatial catalog queries, a read-only API and local real-data processing. The
+five-scene CSC replay demonstrates only the first remote metadata stage. No learning outcome
+was evaluated. The scientific application is not a new SAR algorithm or a field-validated
+sea-ice product, and the CSC demonstration is not a remote raster service. The annual mask,
+selective proxy labels, acquisition mismatch and single-scene design constrain the scientific
+conclusions.
 
 \section{Immediate and future work}
 
@@ -81,12 +85,14 @@ of its own, especially for thin or dark ice. Candidate-area uncertainty requires
 evidence than the reported decision-offset sensitivity.
 
 Longer-term engineering work includes bounded scheduling for large streaming batches,
-repeated resource measurements, continuous authenticated CDSE ingestion, backup/restore drills
-and appropriately governed distributed storage. These extensions should preserve the
-offline regression path and immutable evidence.
+repeated resource measurements, authenticated CDSE metadata and asset-access validation,
+backup/restore drills, educational evaluation and appropriately governed distributed storage.
+These extensions should preserve the offline regression path and immutable evidence.
 
 \section{Closing statement}
 
-The work connects real satellite analysis with a verified CSC metadata deployment while
-exposing a scientific failure mode. Its auditable evidence supports infrastructure
-portability, not operational ice mapping. Author review and supervisor approval remain required.
+The work connects local satellite analysis with a verified five-record CSC metadata
+demonstration while exposing a scientific failure mode. Its evidence supports an inspectable
+research and teaching prototype, not operational ice mapping or improved learning outcomes.
+Author review, verified synchronization of the existing Google Doc and supervisor approval
+remain separate requirements.

@@ -1,0 +1,63 @@
+\chapter{In-House EO Infrastructure for Education and Research Innovation}
+
+\section{Purpose and scope}
+
+An in-house Earth Observation (EO) environment can make data handling and analytical
+assumptions available for inspection during research and teaching. In this thesis, its
+value is assessed through capabilities implemented and exercised in the repository, not
+through assumed educational outcomes. The objective is to support research and teaching
+within Kvarken Space Center and the University of Vaasa with a modest, reproducible
+prototype that can run locally and expose its evidence and limits.
+
+\section{Capabilities available for student use}
+
+The current codebase supports a sequence of practical exercises:
+\begin{itemize}
+\item Offline, fixture-based metadata searches and experiments, including deterministic
+  timeout, rate-limit and malformed-input cases.
+\item Source validation and transformation of provider-shaped records into typed,
+  transport-neutral \texttt{EOScene} values.
+\item Inspection of content-addressed source payloads and append-only provenance records.
+\item Regional and quality-filtered queries against the persistent SQLite spatial catalog.
+\item Read-only query exercises through the educational HTTP API.
+\item Local processing and evaluation of the retained Sentinel raster case study when
+  optional scientific dependencies and input data are available.
+\item A first remote workflow on CSC in which five authentic captured scene-metadata records
+  passed through provenance, SQLite catalog persistence, regional queries and a loopback API.
+\end{itemize}
+
+The CSC record does not include remote satellite-image classification. Raster classification
+and scientific evaluation ran locally. The CDSE adapter is an implemented metadata interface,
+but its tests use offline transports and do not provide a live-provider exercise.
+
+\section{Demonstrated capabilities and proposed benefits}
+
+The implemented exercises make processing steps, source records, validation decisions and
+query results inspectable. Offline fixtures allow the metadata path to be run without
+credentials or external services. Provider-specific interfaces and the transport-neutral
+scene model provide a basis for adding other sources, but provider-neutral operation has not
+been demonstrated against a range of live providers.
+
+Future teaching work could turn these components into guided labs on metadata quality,
+provenance, geospatial filtering, failure handling and reproducible scientific evaluation.
+Future research prototypes could add provider adapters or analytical methods while retaining
+the offline test path. Migration from local execution to CSC has been demonstrated only for
+the five-record metadata workflow; portability of larger raster workloads remains untested.
+These are proposed extensions, not evaluated benefits.
+
+\section{Resource requirements and maintenance}
+
+The metadata baseline uses the Python standard library, SQLite and small fixtures. The
+optional raster case study requires additional scientific packages, network access to
+reacquire its large input windows, local storage, and enough memory for geospatial window
+processing. Those input files are not included in Git. The CSC demonstration used one
+small CPU instance for five metadata records; it does not establish minimum resources for
+other workloads or any cloud cost advantage.
+
+An in-house environment also requires maintenance: dependency and provider-interface updates,
+data-license and attribution checks, credential protection, storage and retention management,
+backup procedures, documented commands, and review of changes in product processing. The
+educational API is read-only and was tested on loopback; public deployment, authentication,
+availability and multi-user operations were not evaluated. No claim is made about improved
+learning outcomes, student satisfaction, comparative superiority or cost savings. An
+educational evaluation would be needed to assess those outcomes.

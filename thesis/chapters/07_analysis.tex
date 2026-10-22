@@ -6,7 +6,7 @@ RQ1 asks how heterogeneous STAC and CDSE-shaped metadata can be validated and tr
 
 This design separates two needs that are often conflated: convenient normalized state for queries and immutable source evidence for audit. The catalog can evolve independently from the raw evidence without erasing what arrived from the provider. The evidence is strong within the implemented schema and fixtures, but it does not establish compatibility with every EO provider or every STAC extension.
 
-\section{Analysis of RQ2: bounded concurrency and failure recovery}
+\section{Analysis of RQ2: bounded active concurrency and failure recovery}
 
 RQ2 concerns bounded asynchronous work and selective recovery. The implementation uses an explicit semaphore to constrain active processing and persistence.
 Its current batch gather still schedules a coroutine for each supplied item; the bound is on
@@ -47,4 +47,6 @@ supports infrastructure portability, not additional scientific classifier valida
 
 Across the five questions, the strongest result is the explicit connection between software contracts and claim boundaries. Provider behavior is isolated, concurrency is bounded, raw evidence is retained, spatial assumptions are stated, and experiment artifacts are preserved. This makes the baseline suitable for regression-oriented research and educational demonstrations.
 
-At the same time, the evidence remains deliberately narrower than a production evaluation. Real authenticated CDSE performance, large raster workloads, distributed execution, and learning outcomes remain future research tasks.
+At the same time, the evidence remains deliberately narrower than a production evaluation.
+Live CDSE metadata and pixel access, large raster workloads, distributed execution, streaming
+scheduling, and educational outcomes remain untested or future research tasks.

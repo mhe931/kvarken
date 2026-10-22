@@ -16,43 +16,44 @@ Year & 2026\\
 Earth Observation research depends on more than downloading satellite images. A usable
 infrastructure must validate metadata, preserve the origin of observations, control external
 requests, support spatial queries, and connect these operations to a scientific application.
-University research groups also need reproducible procedures when credentials or computing
-resources are unavailable. This thesis designs and
-evaluates a hybrid Earth Observation infrastructure in the Kvarken Space Center context.
+This thesis designs and evaluates an in-house hybrid Earth Observation infrastructure to
+support research and teaching within Kvarken Space Center and the University of Vaasa.
 Here, hybrid means external standards-based data access combined with local persistence,
 processing and an offline-safe engineering baseline.
 
 The work follows an engineering design-and-evaluation approach. Provider responses are
 validated before transformation into a transport-neutral scene model. The implementation
-combines bounded asynchronous ingestion, content-addressed payload storage, append-only
-provenance, an embedded spatial catalog, metadata quality filters and a read-only educational
-interface. An optional scientific environment adds raster processing without changing the
-lightweight metadata runtime.
+combines bounded active concurrency, content-addressed payload storage, append-only provenance,
+an embedded spatial catalog, metadata quality filters and a read-only educational interface.
+Students can use offline metadata fixtures, source validation, provenance inspection, spatial
+queries, the read-only API and local real-data processing. A five-scene CSC execution verifies
+the first remote metadata workflow. These are implemented exercises; learning outcomes were
+not evaluated.
 
 The practical application examines sea-ice candidate mapping in eastern Kvarken using actual
-Sentinel-1 radar observations. An independently acquired Sentinel-2 observation supplies
-conservative optical proxy labels for snow-covered ice and dark water. A static land-cover
-product supports land exclusion, while native-resolution categorical coverage and a coastal
-buffer reduce mixed-cell contamination. A scene-specific linear discriminant uses both radar
-polarisations. Spatially separated training and evaluation blocks avoid direct sample overlap.
-Outputs include georeferenced maps, quantitative reports and checksummed acquisition records. Actual scene metadata is replayed through the
-implemented catalog and provenance path.
+Sentinel-1 radar observations and upstream CATALYST radiometric terrain-correction products
+hosted by Microsoft Planetary Computer. Sentinel-2 observations provide conservative optical
+proxy labels for snow-covered ice and dark water; ESA WorldCover 2021 v200 supplies an annual
+retrospective land mask, not a March 2021 ice observation. A scene-specific linear discriminant
+uses both radar polarisations. Spatially separated training and evaluation blocks avoid direct
+sample overlap. Outputs include georeferenced maps, quantitative reports and checksummed
+acquisition records. A separate five-scene CSC replay covers metadata, provenance, catalog
+queries and the loopback API; raster classification ran locally.
 
 The engineering evaluation combines automated failure-oriented tests with a preserved
-synthetic benchmark. The scientific application demonstrates a complete local processing path,
-but also exposes a substantial limitation: many radar ice candidates disagree with the
-selective optical water reference. Ordinary agreement is lower than an always-water baseline,
-although balanced agreement detects information about both reference classes. The difference
-between acquisition times, incomplete optical coverage, wind-sensitive radar backscatter and
-unverified upstream noise treatment prevent interpreting candidate area as validated sea-ice
-extent. The experiment therefore provides evidence of application integration and diagnostic
-evaluation, not an operational ice-monitoring algorithm.
+synthetic benchmark. The scientific application exposes a substantial limitation: ice
+precision is 23.53%, and ordinary agreement is 88.00%, below the 95.99% always-water baseline.
+The full candidate ice area is 1,219.28 km$^2$, of which 795.91 km$^2$ lacks optical reference
+labels. This area is not validated sea-ice extent. The 17.90-hour acquisition mismatch,
+incomplete optical coverage, wind-sensitive radar backscatter and unverified upstream noise
+treatment limit interpretation. The experiment provides evidence of application integration
+and diagnostic evaluation, not an operational ice-monitoring algorithm.
 
-Raster analysis ran locally. A separate five-scene CSC cPouta replay verified provenance,
-persisted regional queries and a loopback API against local results, with remote timestamps
-and checksums. This demonstrates infrastructure portability, not improved classifier
-accuracy or cloud scalability. Further independent observations and repeated acquisitions
-remain necessary.
+Raster analysis ran locally. A separate five-scene CSC cPouta replay verified scene identities,
+persistent provenance, regional queries and the loopback API. This demonstrates a first-stage
+remote research and teaching workflow, not image classification, distributed processing,
+improved classifier accuracy or cloud scalability. Further independent observations and
+educational evaluation remain future work.
 
 \par\medskip\noindent\textbf{Keywords:} Earth Observation; Sentinel-1; sea ice; STAC;
 provenance; spatial catalog; reproducibility; Kvarken

@@ -7,19 +7,25 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from docx import Document
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 FIGURES = (
-    "Actual Sentinel-1A VV",
-    "Independent Sentinel-2A",
-    "Selective optical proxy reference:",
-    "Scene-specific SAR candidate classes,",
-    "Held-out optical-reference agreement",
+    "Provider-to-application architecture",
+    "Sentinel-1A VV gamma-zero input",
+    "Sentinel-2A Level-2A false-colour observation",
+    "Selective Sentinel-2 optical proxy labels",
+    "Scene-specific SAR candidate classes derived",
+    "Held-out agreement between thesis-derived",
 )
 FIGURE_DESCRIPTIONS = (
+    "Vector architecture diagram showing the metadata path from provider through transport "
+    "and validation, typed EOScene, provenance and SQLite catalog, read-only queries/API/"
+    "reports, and the scientific application. The case-study raster path used local "
+    "Planetary Computer COG assets; CSC execution covered metadata only.",
     "Sentinel-1A VV gamma-zero radar backscatter in eastern Kvarken on 30 March 2021. "
     "Grey tones show measured backscatter, not an ice classification; patterns can also "
     "reflect wind, incidence angle and residual preprocessing effects.",
@@ -88,11 +94,16 @@ def format_document(path: Path) -> dict:
         if not drawings:
             continue
         caption = next((p.text for p in paragraphs[i + 1 :] if p.text.strip()), "")
-        for prefix, description in zip(FIGURES, FIGURE_DESCRIPTIONS, strict=True):
+        matched = False
+        for prefix, description in zip(FIGURES[1:], FIGURE_DESCRIPTIONS[1:], strict=True):
             if caption.startswith(prefix):
                 for drawing in drawings:
                     drawing.set("descr", description)
+                matched = True
                 break
+        if not matched and i < abstract_start:
+            for drawing in drawings:
+                drawing.set("descr", "University of Vaasa logo")
     styles = document.styles
     for name in ("Normal", "Body Text", "Bibliography"):
         if name not in styles:
@@ -175,6 +186,8 @@ def format_document(path: Path) -> dict:
                     for run in paragraph.runs:
                         run.font.name, run.font.size = "Calibri", Pt(11)
     for table in document.tables:
+        if not table.rows:
+            continue
         if table.cell(0, 0).text != "ACID":
             continue
         for header in table.rows[0]._tr.xpath("./w:trPr/w:tblHeader"):
@@ -184,7 +197,7 @@ def format_document(path: Path) -> dict:
                 for paragraph in cell.paragraphs:
                     paragraph.paragraph_format.line_spacing = 1
                     paragraph.paragraph_format.space_after = Pt(3)
-    chapter = section = subsection = 0
+    chapter = section = subsection = figure_number = 0
     appendix = False
     appendix_letter = ""
     figure_entries, table_entries = [], []
@@ -224,17 +237,20 @@ def format_document(path: Path) -> dict:
         elif paragraph.style.name == "Heading 3":
             subsection += 1
             _prefix(paragraph, f"{appendix_letter or chapter}.{section}.{subsection}  ")
-        kind = (
-            "Figure" if text.startswith(FIGURES) else "Table" if text.startswith(TABLES) else None
-        )
+        architecture_caption = text.startswith(("Figure 4.1. " + FIGURES[0], FIGURES[0]))
+        figure_caption = architecture_caption or text.startswith(FIGURES[1:])
+        kind = "Figure" if figure_caption else "Table" if text.startswith(TABLES) else None
         if kind:
             entries = figure_entries if kind == "Figure" else table_entries
             number = (
-                f"6.{len(entries) + 1}"
+                ("4.1" if architecture_caption else f"6.{figure_number + 1}")
                 if kind == "Figure"
                 else ("3.1" if not entries else f"6.{len(entries)}")
             )
-            _prefix(paragraph, f"{kind} {number}. ")
+            if kind == "Figure" and not architecture_caption:
+                figure_number += 1
+            if not text.startswith("Figure 4.1. "):
+                _prefix(paragraph, f"{kind} {number}. ")
             paragraph.paragraph_format.line_spacing = 1
             paragraph.paragraph_format.keep_together = True
             if kind == "Table":
@@ -265,7 +281,7 @@ def format_document(path: Path) -> dict:
     outline = OxmlElement("w:outlineLvl")
     outline.set(qn("w:val"), "9")
     contents._p.get_or_add_pPr().append(outline)
-    _field(anchor.insert_paragraph_before(), r'TOC \o "1-3" \h \z \u')
+    _field(anchor.insert_paragraph_before(), r'TOC \o "1-2" \h \z \u')
     for title, entries in (("Figures", figure_entries), ("Tables", table_entries)):
         heading = anchor.insert_paragraph_before(title, "Front Matter")
         outline = OxmlElement("w:outlineLvl")
@@ -280,6 +296,71 @@ def format_document(path: Path) -> dict:
     document.settings.element.append(update)
     document.save(path)
     return {"figures": len(figure_entries), "tables": len(table_entries)}
+
+
+def _insert_architecture_diagram(path: Path) -> None:
+    document = Document(path)
+    placeholders = [table for table in document.tables if not table.rows]
+    if len(placeholders) != 1:
+        raise ValueError(
+            f"expected one empty Pandoc architecture placeholder, found {len(placeholders)}"
+        )
+    captions = [
+        paragraph
+        for paragraph in document.paragraphs
+        if paragraph.text.startswith("Figure 4.1. " + FIGURES[0])
+        and "\tUpdate field" not in paragraph.text
+    ]
+    if len(captions) != 1:
+        raise ValueError(f"expected one Figure 4.1 caption, found {len(captions)}")
+    placeholder = placeholders[0]
+    diagram = document.add_table(rows=11, cols=1)
+    diagram.style = "Table Grid"
+    diagram.autofit = False
+    stages = (
+        ("Provider", "STAC collections, CDSE metadata interface, or offline fixtures"),
+        (
+            "Transport and validation",
+            "Injectable HTTP/OAuth2 transport, retries, pagination, and schema validation",
+        ),
+        ("EOScene", "Validated provider item transformed to a typed, transport-neutral record"),
+        (
+            "Provenance and catalog",
+            "SHA-256 raw payloads, append-only manifest, and SQLite SpatialCatalog",
+        ),
+        (
+            "Queries, API, and reports",
+            "Regional/quality filters, read-only educational API, and reproducible reports",
+        ),
+        (
+            "Scientific application",
+            "Local Planetary Computer COG raster analysis; CSC replay covers metadata only",
+        ),
+    )
+    for index, row in enumerate(diagram.rows):
+        cell = row.cells[0]
+        cell.width = Cm(15)
+        cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+        paragraph = cell.paragraphs[0]
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph.paragraph_format.space_after = Pt(2)
+        paragraph.paragraph_format.space_before = Pt(2)
+        if index % 2:
+            run = paragraph.add_run("↓")
+            run.font.size = Pt(12)
+            continue
+        title, detail = stages[index // 2]
+        shading = OxmlElement("w:shd")
+        shading.set(qn("w:fill"), "DDEBF7")
+        cell._tc.get_or_add_tcPr().append(shading)
+        title_run = paragraph.add_run(title + "\n")
+        title_run.bold = True
+        title_run.font.size = Pt(10)
+        detail_run = paragraph.add_run(detail)
+        detail_run.font.size = Pt(10)
+    captions[0]._p.addprevious(diagram._tbl)
+    placeholder._tbl.getparent().remove(placeholder._tbl)
+    document.save(path)
 
 
 def main() -> None:
@@ -299,7 +380,7 @@ def main() -> None:
                     b"wordprocessingml.template.main+xml", b"wordprocessingml.document.main+xml"
                 )
             target.writestr(item, data)
-    output = args.output_dir.resolve() / "Thesis_Review_20261019.docx"
+    output = args.output_dir.resolve() / "Thesis_Review_20261022.docx"
     subprocess.run(
         [
             str(args.pandoc.resolve()),
@@ -322,7 +403,8 @@ def main() -> None:
         check=True,
     )
     counts = format_document(output)
-    if counts != {"figures": 5, "tables": 4}:
+    _insert_architecture_diagram(output)
+    if counts != {"figures": 6, "tables": 4}:
         raise ValueError(f"canonical caption inventory changed: {counts}; review export numbering")
     print(output)
 

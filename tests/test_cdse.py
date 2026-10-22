@@ -1,6 +1,8 @@
+from unittest.mock import patch
+
 import pytest
 
-from kvarken_eo.cdse import CDSEClient, CDSETokenProvider
+from kvarken_eo.cdse import BearerSTACTransport, CDSEClient, CDSETokenProvider
 from kvarken_eo.ingestion import FetchTimeout, RateLimitExceeded, RetryPolicy
 
 
@@ -38,6 +40,33 @@ class STACTransport:
             ],
             "links": [],
         }
+
+
+@pytest.mark.asyncio
+async def test_bearer_transport_sends_access_token_in_authorization_header():
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback):
+            return None
+
+        def read(self):
+            return b"{}"
+
+    received = {}
+
+    def fake_urlopen(request, timeout):
+        received["authorization"] = request.get_header("Authorization")
+        received["timeout"] = timeout
+        return Response()
+
+    transport = BearerSTACTransport()
+    transport.set_authorization("offline-test-token")
+    with patch("kvarken_eo.cdse.urlopen", fake_urlopen):
+        await transport.request("GET", "https://cdse.invalid/search", None, 3.0)
+
+    assert received == {"authorization": "Bearer offline-test-token", "timeout": 3.0}
 
 
 @pytest.mark.asyncio

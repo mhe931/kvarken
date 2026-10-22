@@ -14,10 +14,10 @@ and quality-shape contracts, irrespective of its source.
 \item[Transport decoupling] HTTP, OAuth2, fixture, and test transports implement injectable
 boundaries. Search, transformation, catalog, and report code do not depend on a particular
 network client or provider SDK.
-\item[Bounded concurrency] The number of active ingestion workers is explicit and enforced by an
+\item[Bounded active concurrency] The number of active ingestion workers is explicit and enforced by an
 \texttt{asyncio.Semaphore}. If the configured limit is \(k\), the invariant
 \(0\leq A(t)\leq k\) holds at every instant \(t\), protecting both provider rate limits and local
-resources.
+resources. The current batch API still schedules one coroutine per supplied item.
 \item[Append-only provenance] Raw payloads are content-addressed and manifest records are appended
 rather than rewritten. An observation can therefore be audited without trusting mutable catalog
 metadata.
@@ -27,7 +27,7 @@ regional inclusion results.
 \end{description}
 
 These invariants form a chain: validation makes persistence safe, transport decoupling makes
-validation testable, bounded concurrency makes provider interaction predictable, provenance makes
+validation testable, bounded active concurrency makes provider interaction predictable, provenance makes
 the result explainable, and deterministic spatial evaluation makes regional claims reproducible.
 Breaking one invariant weakens the interpretation of all downstream metrics.
 
@@ -40,7 +40,8 @@ The architecture separates six responsibilities:
 translate transient transport failures into bounded retry decisions.
 \item \textbf{Boundary models} validate and normalize STAC Items into typed \texttt{EOScene}
 records with a stable shape independent of provider-specific JSON extensions.
-\item \textbf{Orchestration} schedules transformations and persistence under a worker limit while
+\item \textbf{Orchestration} schedules transformations and persistence with bounded active
+concurrency while
 collecting elapsed time, payload, retry, and failure metrics.
 \item \textbf{Evidence storage} writes raw canonical payloads and JSON Lines provenance, then stores
 queryable scene metadata in the SQLite \texttt{SpatialCatalog}.
@@ -51,39 +52,49 @@ deterministic JSON/Markdown reports, including additive dated live-provider arti
 \end{enumerate}
 
 The layers are connected by typed values and narrow protocols rather than shared global state.
-Consequently, an offline fixture can exercise the same transformation and persistence path as a
-live CDSE response.
+Consequently, an offline fixture exercises the same validation and persistence interfaces used
+by the CDSE adapter without proving a successful live CDSE request.
 
 \section{End-to-end data transformation}
 
-The principal flow is shown below. The arrows denote ownership boundaries, not merely function
-calls.
+The metadata flow and subsystem boundaries are shown in Figure~\ref{fig:architecture}.
+The arrows indicate the direction of the metadata path; the case-study pixel path is
+separate from CDSE metadata access.
 
-\begin{verbatim}
- STAC/CDSE endpoint or offline fixture
-              |
-              v
- injectable transport -- OAuth2 / RetryPolicy / pagination
-              |
-              v
- validated STACItem -- schema boundary
-              |
-              v
- transform_stac_to_scene --> typed EOScene
-              |                         |
-              |                         +--> quality profile
-              v
- SHA-256 raw payload + JSONL manifest
-              |
-              v
- ConcurrentEOIngestor -- bounded tasks --> SQLite SpatialCatalog
-                                              |             |
-                                              v             v
-                                      ROI/quality queries  reports
-                                                            |
-                                                            v
-                                                    educational HTTP API
-\end{verbatim}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  stage/.style={
+    draw=blue!55!black,
+    fill=blue!5,
+    rounded corners,
+    text width=0.78\textwidth,
+    minimum width=0.82\textwidth,
+    align=center,
+    inner sep=5pt,
+    font=\small
+  },
+  flow/.style={-{Stealth[length=2mm]}, thick, draw=gray!70},
+  node distance=3mm
+]
+\node[stage] (provider) {\textbf{Provider metadata}\\STAC collections, CDSE metadata interface, or offline fixtures};
+\node[stage, below=of provider] (transport) {\textbf{Transport and validation}\\Injectable HTTP/OAuth2 transport, retries, pagination, and schema validation};
+\node[stage, below=of transport] (scene) {\textbf{Transport-neutral domain}\\Validated \texttt{STACItem} transformed to typed \texttt{EOScene}};
+\node[stage, below=of scene] (storage) {\textbf{Provenance and catalog}\\SHA-256 raw payloads, append-only manifest, and SQLite \texttt{SpatialCatalog}};
+\node[stage, below=of storage] (queries) {\textbf{Queries, API, and reports}\\Regional/quality filters, read-only educational API, and reproducible reports};
+\node[stage, below=of queries] (application) {\textbf{Scientific application}\\Local Sentinel raster analysis from Planetary Computer COG assets; CSC replay covers metadata only};
+\draw[flow] (provider) -- (transport);
+\draw[flow] (transport) -- (scene);
+\draw[flow] (scene) -- (storage);
+\draw[flow] (storage) -- (queries);
+\draw[flow] (queries) -- (application);
+\end{tikzpicture}
+\caption{Provider-to-application architecture and subsystem boundaries. The metadata path is
+distinct from the case-study raster path: Planetary Computer COG assets supplied pixels for
+local analysis, while CDSE pixel downloads were not validated. CSC execution covered the
+five-scene metadata, provenance, catalog and loopback-API workflow only.}
+\label{fig:architecture}
+\end{figure}
 
 At the provider boundary, a search response is paginated and each Item is validated independently.
 The transformation preserves the identifier, acquisition time, platform, geometry, bounding box,
@@ -101,8 +112,16 @@ is protected by an asynchronous lock. Invalid schemas are permanent errors and a
 Timeouts and rate limits use a bounded exponential policy, optionally honoring a provider
 \texttt{Retry-After} value.
 
+The CDSE adapter exposes authenticated STAC metadata search. Its automated tests use fake
+token and STAC transports and an \texttt{.invalid} endpoint; no confirmed successful live
+metadata request is recorded. The raster asset range helper is a separate generic HTTP slice
+and has not been integrated with authenticated CDSE pixel access.
+
 \texttt{ConcurrentEOIngestor} owns task scheduling, not provider policy. It acquires its semaphore
-before expensive work and releases it in a \texttt{finally} path. Blocking filesystem and SQLite
+before active transformation and persistence work and releases it on completion. The batch
+implementation creates one coroutine for every supplied item before awaiting
+\texttt{asyncio.gather}; therefore, only active concurrency is bounded, not the number of
+scheduled coroutines or memory for a large materialized batch. Blocking filesystem and SQLite
 operations are delegated to worker threads, while provenance appends are serialized by an
 asynchronous lock. This division prevents an individual slow write from blocking unrelated
 network tasks without allowing writes to race on the manifest.

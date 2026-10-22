@@ -1,5 +1,31 @@
 # Project status
 
+## 2026-10-22 - Professor-review revisions in progress
+
+- Revised the canonical abstract, objectives, architecture, methodology, implementation,
+  evaluation, analysis, discussion, conclusion and reproducibility appendix to reflect the
+  supplied review brief.
+- Added Chapter 9 on in-house EO research and teaching; Chapter 10 is the conclusion.
+- Replaced the architecture text block with a source-controlled TikZ vector diagram.
+- Explicitly separated CDSE metadata interfaces and offline mock tests from the Planetary
+  Computer/CATALYST RTC raster case study; no live CDSE success is claimed.
+- Preserved the existing five-scene CSC evidence and all frozen benchmark artifacts.
+- Corrected the recovery-ratio interpretation and stated the limit of the semaphore:
+  active concurrency is bounded; the batch still schedules one coroutine per item.
+- Updated the clean-checkout command appendix from the actual CLI help. Large raster inputs
+  remain absent from Git.
+- The shared Google Doc could not be accessed: its URL redirected to Google sign-in. It was
+  not edited or replaced. Current-source GitHub Actions run 67 compiled a 69-page review PDF.
+  The TOC, figure/table lists, cross-reference markers, Figure 4.1, scientific figures and
+  Appendix B were inspected. This CI build uses Carlito; official-template Word export,
+  PDF/A and accessibility validation remain open.
+- Local verification passed: 91 tests, Ruff lint and formatting, offline `verify-health`,
+  both documented CLI help commands, and a source-level citation/reference-label check.
+  The thesis-build workflow passed; general Python GitHub CI requires a pull request, which
+  could not be created because GitHub required sign-in.
+- No satellite acquisition, CSC deployment, email, Turnitin upload or Osuva submission was
+  performed during this revision.
+
 ## 2026-10-19 - Actual-data application; external acceptance gates open
 
 - Recovered the nine-chapter manuscript from existing PR #22 without discarding its work.

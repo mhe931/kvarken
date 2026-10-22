@@ -21,15 +21,16 @@ cannot improve its schema.
 \section{Bounded asynchronous ingestion}
 
 \texttt{ConcurrentEOIngestor} combines asynchronous provider work with synchronous persistence.
-The caller supplies an iterable of items, a transformation function, a provenance sink, and a
-maximum worker count \(k\). A semaphore with capacity \(k\) is acquired immediately before
-provider/transform work and released in a \texttt{finally} block. Thus, for active tasks
+The caller supplies an iterable of items, a provenance sink, and a maximum worker count \(k\).
+A semaphore with capacity \(k\) is acquired before transformation and persistence work. Thus,
+for active tasks
 \(A(t)\),
 \[
 0\leq A(t)\leq k\qquad\forall t.
 \]
-This invariant prevents a large provider response from creating an unbounded number of network
-tasks or file operations.
+This is a bound on active concurrency. The current implementation still creates one coroutine
+per supplied item and awaits them together with \texttt{asyncio.gather}; it does not bound the
+number of scheduled coroutines or the scheduling memory required for a very large batch.
 
 The scheduling pattern is summarized below.
 
@@ -53,7 +54,8 @@ The real implementation records counts, elapsed time, payload bytes, retries, an
 \texttt{IngestionMetrics}. \texttt{asyncio.to\_thread} keeps blocking filesystem and SQLite calls
 off the event loop, while an asynchronous lock serializes append operations to the shared
 provenance manifest. A worker-limit stress test observes the peak active count and verifies that
-all valid scenes are eventually persisted.
+all valid scenes are eventually persisted. Bounded streaming scheduling remains future work
+and was not introduced in this evaluation.
 
 \section{Provenance and content addressing}
 
@@ -182,10 +184,10 @@ for attempt in range(policy.max_attempts):
         await asyncio.sleep(policy.delay(attempt, error.retry_after))
 \end{verbatim}
 
-An expired cached token is discarded before the next request. If a provider returns an
-authentication failure after caching, the client invalidates the token and performs one bounded
-refresh path. Tests cover expiry, 429 responses, timeouts, exhausted retries, and malformed token
-payloads so that recovery behavior is observable rather than inferred from a successful path.
+An expired cached token is discarded before the next request. The adapter does not implement a
+separate 401-triggered token invalidation-and-retry path. Tests cover expiry, 429 responses,
+timeouts, exhausted retries, malformed token payloads and the outgoing bearer-header shape using
+offline transports; they do not establish live CDSE authentication success.
 
 \section{Reports and live experiment operations}
 
@@ -197,10 +199,9 @@ fixture transport. Each live run writes a date-stamped JSON/Markdown pair and re
 overwrite. A dry-run-by-default maintenance command prunes only dated live pairs older than the
 retention threshold.
 
-This separation gives the implementation two operational modes: a reproducible, credential-free
-mode for CI and teaching, and an authenticated mode for empirical provider measurements. Both
-produce the same report schema, allowing live latency and response distributions to be compared
-with the frozen baseline without mutating it.
+This separation gives the implementation a reproducible, credential-free mode for CI and
+teaching, plus an authenticated metadata interface whose live-provider behavior remains
+unverified. The 20260915 artifact is explicitly an offline fallback, not a live CDSE report.
 
 \section{Real-data sea-ice application}
 \label{sec:seaice-method}
@@ -220,6 +221,14 @@ The original product stem is
 The application reads its Catalyst radiometrically terrain-corrected derivative from the
 Microsoft Planetary Computer \texttt{sentinel-1-rtc} collection \citep{pc-s1-rtc}.
 This is genuine observed raster data, not the earlier fixture or a rendered preview.
+This source was selected because its accessible analysis-ready gamma-zero assets are
+Cloud-Optimized GeoTIFFs (COGs) that support spatial-window reads, and the upstream product
+already includes radiometric terrain correction. Using it separates upstream radar processing
+from the thesis-specific reprojection, masking, optical-proxy construction, classification,
+evaluation and plotting. The collection is hosted and distributed by Microsoft Planetary
+Computer; the Sentinel observation is from ESA and the RTC processing is attributed to
+CATALYST. The selected records provide a spatially overlapping example for this single
+case study; they were not sampled to represent typical seasonal conditions.
 
 The independent optical sensor is Sentinel-2A Level-2A, acquired on 31 March 2021 at
 10:00:21 UTC, orbit R122, tiles T34VER, T34VEQ, T34VDR and T34VDQ.
@@ -232,7 +241,8 @@ factor 10,000; this rule must not be applied unchanged to later processing basel
 with radiometric offsets.
 
 ESA WorldCover 2021 v200 class 80 supplies a static water mask from four three-degree
-tiles around the rectangle \citep{worldcover2021}. It is a land-exclusion aid, not an ice
+tiles around the rectangle \citep{worldcover2021}. It is an annual, retrospective land-cover
+product used for land exclusion, not a contemporaneous March 2021 ice observation or an ice
 reference. Native categorical pixels are converted to binary class indicators before
 area averaging; a target water cell requires a water fraction of at least 0.999999.
 The largest eight-connected pure-water component approximates the main marine domain and

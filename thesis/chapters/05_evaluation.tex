@@ -5,7 +5,7 @@
 The frozen evaluation uses the repository's offline benchmark path with 256 synthetic scenes,
 concurrency eight, the checked-in STAC fixture as a metadata template, temporary SQLite storage,
 and temporary provenance storage. It exercises the actual validation, transformation,
-bounded-ingestion, catalog, quality, and report code rather than a separate mock benchmark
+bounded active concurrency, catalog, quality, and report code rather than a separate mock benchmark
 implementation. No external provider, credential, charting package, or GIS dependency is
 required. The resulting JSON and Markdown artifacts are checked in under
 \texttt{docs/experiments/} and form the comparison point for later live runs.
@@ -37,7 +37,7 @@ Usable scene ratio & 1.000000 \\
 Mean cloud cover & 4.200000 \\
 Asset completeness ratio & 1.000000 \\
 Spatial query latency (ms) & 9.117000 \\
-Failure recovery ratio & 1.000000 \\
+Legacy failure-recovery ratio & 1.000000 (not measured) \\
 Payload megabytes & 0.106130 \\
 \bottomrule
 \end{tabular}
@@ -58,9 +58,10 @@ throughput.
 
 The catalog count equals the ingestion count (256), and failures and retries are both zero.
 That equality indicates that the benchmark completed without a lost valid scene or a retry-induced
-duplicate. The recovery ratio is also 1.000000, consistent with the fixture path having no
-unrecoverable failures. These values demonstrate baseline correctness, not resilience under a
-real provider outage; fault injection is evaluated separately by the test suite.
+duplicate. The frozen report's legacy recovery-ratio value of 1.000000 is a reporting convention
+for a run with no failures. Recovery is not measured (N/A) by this benchmark; the ratio provides
+no empirical evidence of recovery. Fault-injection tests, rather than this zero-failure run,
+provide the recovery evidence.
 
 \section{Quality, payload, and storage footprint}
 
@@ -95,7 +96,7 @@ The historical release baseline recorded 53 passing offline tests. The suite cov
 timeouts, HTTP 429 recovery, OAuth2 expiry and invalid token payloads, provenance integrity,
 bounded worker limits, quality filters, raster ranges and NDVI, HTTP queries, artifact retention,
 multi-threaded SQLite contention, WAL durability after reopening, and deterministic reports.
-The worker stress tests observe the maximum active task count rather than merely checking the
+The worker stress tests observe the maximum number of active workers rather than merely checking the
 final row count. The catalog tests accept only committed intermediate snapshots during contention
 and verify that committed state survives a reopen.
 
@@ -147,8 +148,16 @@ variance or substitute for long-running production observation.
 \section{Real satellite application: inputs and outputs}
 \label{sec:seaice-results}
 
-The reviewed application uses observed radar pixels from 30 March 2021 and optical pixels
-from 31 March 2021, with the method in Section~\ref{sec:seaice-method}. The input rectangle
+The case uses the recorded Sentinel-1 observation of 30 March 2021 and the spatially
+overlapping Sentinel-2 observation of 31 March 2021, with the method in
+Section~\ref{sec:seaice-method}. This pair was selected to exercise the end-to-end pipeline
+using accessible raster assets, not through systematic temporal sampling or an attempt to
+select representative ice conditions. The 17.90-hour acquisition mismatch makes the optical
+image a temporally offset proxy. ESA WorldCover 2021 v200 supplies an annual retrospective
+land-cover mask; it is not a contemporaneous ice observation or validation reference. This
+is one case study and cannot establish seasonal or regional generalization.
+
+The input rectangle
 contains 1,117,183 cell centres. Native class-purity screening, the connected water domain
 and the coastal buffer leave 595,279 cells with both radar polarisations, equivalent to
 5,952.79~km$^2$ of projected-grid support. This is the analysed support, not the complete
@@ -163,50 +172,54 @@ optically unsupported cells, and the candidate map extrapolates beyond those lab
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.95\textwidth]{../docs/research/20261019/sar_vv.png}
-\caption[Sentinel-1 radar input]{Actual Sentinel-1A VV terrain-corrected gamma-zero input, 30 March 2021.
-The analysis also uses VH. Sources: ESA, Catalyst and Microsoft Planetary Computer.
-Plotting code was AI-assisted; representative prompt: produce genuine satellite input
-maps with units, coordinates and source information.}
+\caption[Sentinel-1 radar input]{Sentinel-1A VV gamma-zero input from the 30 March 2021
+ESA observation. CATALYST produced the upstream RTC product, hosted and distributed as COG
+assets by Microsoft Planetary Computer; the analysis also uses VH. Item identity and
+processing parameters are listed in Appendix~\ref{app:repro}.}
 \label{fig:sar-input}
 \end{figure}
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.95\textwidth]{../docs/research/20261019/optical_input.png}
-\caption[Independent Sentinel-2 optical input]{Independent Sentinel-2A false-colour input, 31 March 2021, approximately
-17.90 hours after the radar observation. Grey denotes missing optical coverage.
-Source: ESA/Microsoft Planetary Computer. AI-assisted plotting code used the map
-requirements disclosed in Appendix~A; no pixels were synthesised by an image model.}
+\caption[Independent Sentinel-2 optical input]{Sentinel-2A Level-2A false-colour observation
+from 31 March 2021, 17.90 hours after the radar acquisition. ESA/Copernicus observations
+were hosted and distributed through Microsoft Planetary Computer; tile identities are
+listed in Appendix~\ref{app:repro}. Grey denotes missing optical coverage.}
 \label{fig:optical-input}
 \end{figure}
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.95\textwidth]{../docs/research/20261019/reference.png}
-\caption[Selective optical proxy reference]{Selective optical proxy reference: dark water and bright snow-covered ice.
-Grey water remains unlabelled; white is outside the analysed domain or excluded by
-land/coastal screening. Sources: Sentinel-2 and WorldCover 2021. AI-assisted plotting
-code follows the prompt and verification described in Appendix~A.}
+\caption[Selective optical proxy reference]{Selective Sentinel-2 optical proxy labels for
+dark water and bright snow-covered ice, screened with the ESA WorldCover 2021 v200
+retrospective land mask. WorldCover is an annual land-cover product, not a contemporaneous
+ice observation. Grey water remains unlabelled; white is outside the domain or excluded by
+land/coastal screening. Product identities appear in Appendix~\ref{app:repro}.}
 \label{fig:reference}
 \end{figure}
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.95\textwidth]{../docs/research/20261019/candidate.png}
-\caption[SAR candidate classes]{Scene-specific SAR candidate classes, not validated total sea-ice extent.
-The conspicuous southern and near-coastal candidate regions require caution.
-Sources: Sentinel-1 RTC, optical-trained discriminant and WorldCover mask.
-AI-assisted processing and plotting code is disclosed in Appendix~A.}
+\caption[SAR candidate classes]{Scene-specific SAR candidate classes derived from ESA
+Sentinel-1 observations in the upstream CATALYST RTC product hosted by Microsoft Planetary
+Computer, screened with ESA WorldCover 2021 v200 and classified by the thesis-specific
+VV/VH discriminant. Candidate ice is not validated sea-ice extent; 795.91~km$^2$ lacks an
+optical reference label. Product identities appear in Appendix~\ref{app:repro}.}
 \label{fig:candidate}
 \end{figure}
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.95\textwidth]{../docs/research/20261019/agreement.png}
-\caption[Held-out optical-reference agreement]{Held-out optical-reference agreement in separated checkerboard interiors.
-Red is disagreement with a selective proxy, not necessarily a field-confirmed error.
-Grey has no held-out comparison. Sources: actual Sentinel-1 and Sentinel-2 inputs.
-AI-assisted evaluation and plotting code is disclosed in Appendix~A.}
+\caption[Held-out optical-reference agreement]{Held-out agreement between thesis-derived
+Sentinel-1 RTC candidates and the selective Sentinel-2 optical proxy in spatially separated
+checkerboard interiors. Red indicates proxy disagreement, not a field-confirmed error;
+grey has no comparison. ESA supplied the observations, CATALYST produced the upstream RTC
+product, and Microsoft Planetary Computer hosted and distributed the assets. Item identities
+and processing parameters appear in Appendix~\ref{app:repro}.}
 \label{fig:agreement}
 \end{figure}
 
@@ -265,6 +278,7 @@ are unstable. Spatially concentrated disagreements remain visible in Figure~\ref
 \section{Area, sensitivity and unsupported extrapolation}
 
 The model predicts 1,219.28~km$^2$ of candidate ice across the analysed radar-water support.
+This is a modelled candidate area, not a validated sea-ice extent.
 Of this, 795.91~km$^2$ (65.28\%) has no optical proxy label at all. This area cannot be
 validated by the reported held-out metrics. The selected optical ice support totals
 111.99~km$^2$, but its different coverage prevents treating its difference from the full
@@ -292,7 +306,7 @@ metadata replay, but excludes source acquisition and native-mask retrieval. Timi
 single local observation, not a CPU/GPU or local/cloud benchmark. Additional publication
 layout exports can change the full command's duration without changing the numerical result.
 
-Five actual scene records pass through bounded ingestion, provenance checks, SQLite
+Five actual scene records pass through bounded-active-concurrency ingestion, provenance checks, SQLite
 reopening and loopback API scene/health checks. The saved run identifies Windows,
 Python 3.12.15 and exact library/GDAL versions; executed Python sources and all retained
 inputs/outputs have SHA-256 identities. The Git record correctly reports a dirty working
@@ -325,12 +339,12 @@ benchmark or additional validation of the sea-ice candidate map.
 
 \section{Interpretation}
 
-The evidence supports the thesis claim that a dependency-free, typed, bounded, provenance-aware
-metadata pipeline can provide a reproducible regional EO baseline suitable for research and
-education. The result is deliberately narrower than a production-scale data platform: its value
-lies in explicit contracts and an auditable starting point. Live CDSE measurements, representative
-raster analyses, and comparative deployments are the appropriate next experiments, with the
-256-scene artifact retained as a stable regression reference.
+The evidence supports a dependency-free, typed metadata pipeline with bounded active concurrency,
+provenance, and a reproducible regional baseline for research and teaching exercises. The result
+is narrower than a production-scale platform: its demonstrated capabilities are explicit
+contracts, inspectable evidence and a verified first remote metadata workflow. Live CDSE
+measurements, representative raster analyses, streaming scheduling and educational evaluation
+remain future work; the frozen 256-scene artifact remains unchanged as a regression reference.
 
 \section{Live spectral-window telemetry}
 

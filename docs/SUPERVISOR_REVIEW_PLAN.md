@@ -1,4 +1,24 @@
-# Supervisor review plan: 19 October 2026
+# Supervisor review plan: 22 October 2026
+
+## Current review checkpoint
+
+On 22 October, the user supplied a detailed revision brief attributed to Professor Ali Nadir
+Arslan's latest comments. The original email or annotated manuscript was not present in the
+repository, so this plan records the supplied brief without inventing an email date or
+quoting unseen comments. The canonical LaTeX manuscript has been revised; see the
+[review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md).
+
+GitHub Actions run 67 compiled the current source with XeLaTeX/Biber and uploaded a 69-page
+CI review PDF. The contents/list pages, numbering, cross-reference markers, Figure 4.1, the
+five scientific figures and Appendix B were inspected. The CI build uses Carlito as a font
+fallback; it is not the official-template Word/PDF export and has not undergone PDF/A or
+accessibility validation. The same shared Google Doc remains the required review copy, but
+the browser redirected to Google sign-in on 22 October. No replacement Doc was created and
+no remote change is claimed.
+
+The existing CSC demonstration remains the verified five-record metadata/provenance/catalog/
+regional-query/loopback-API prototype. Raster processing remains local. No new acquisition,
+CSC deployment, Turnitin submission, Osuva submission or email was made during this checkpoint.
 
 ## Received requirements and present status
 
@@ -32,12 +52,9 @@ See [the evidence](research/20261019/README.md) and
    exit zero; output/source hashes and local/remote validation match.
    Review the [recorded demonstration](CSC_DEMONSTRATION.md) and
    [evidence](research/20261019/csc_execution_evidence.json). Temporary VMs/IP were released.
-3. The existing Google Doc reopened successfully in authenticated editing mode. Its read-only
-   text export lacks the current 23.53% precision and 95.99% baseline values, so it is not verified
-   as current. The CSC-integrated export is now available. Native editor automation did not
-   reliably operate; a human-assisted formatted transfer into the same Doc was requested.
-   Synchronize from the canonical source,
-   preserving its ID, sharing and history. Verify the remote content by reopening it.
+3. The existing Google Doc was not accessible to this session on 22 October; the browser
+   redirected to sign-in. Preserve the same document ID and permissions when synchronization
+   is possible, and verify saved content by reopening it.
 4. Email the revised DOCX/PDF to **Dear Professor Arslan,**, signed **Däniel**, explicitly
    identifying the scientific limits and whether CSC execution has actually been completed.
    The report contains a draft only; no email was sent and no meeting is requested.
@@ -61,7 +78,7 @@ do not record drafted correspondence as sent.
 ## Canonical document
 
 Repository source: [the modular manuscript](../thesis/main.tex).
-Existing shared native Google Doc (not yet updated by this session):
+Existing shared native Google Doc (not synchronized or verified on 22 October):
 https://docs.google.com/document/d/1oq5FtrWh4Yb3yd2NBtUS0OgNO2jtuDUMqzVz0085lEE/edit
 
 Do not create a replacement Doc or change supervisor permissions.

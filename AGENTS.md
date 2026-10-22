@@ -39,7 +39,9 @@ python -m kvarken_eo --demo
 - Keep I/O async and injectable. Production adapters must implement the same protocol as test fakes.
 - Keep provider-specific parsing in adapters; pass validated, transport-neutral records to sinks and transforms.
 - Store raw payloads with a SHA-256 checksum and append-only provenance metadata.
-- Bound concurrent provider work with `ConcurrentEOIngestor(max_workers=...)`; never create unbounded tasks.
+- Bound active provider work with `ConcurrentEOIngestor(max_workers=...)`. The current batch
+  implementation schedules one coroutine per item; keep batches bounded and do not claim
+  constant scheduling memory. Add and test streaming scheduling before supporting unbounded input.
 - Use `FileProvenanceSink.store_async()` for async pipelines so manifest appends are serialized and filesystem I/O leaves the event loop.
 - Keep retries explicit and bounded. Never retry malformed payloads; retry only transient timeout and rate-limit failures.
 - Keep geospatial transforms deterministic and separate from transport concerns.
@@ -61,8 +63,11 @@ python -m kvarken_eo --demo
 
 ## Async and rate-limit safety
 
-- Use bounded concurrency; do not create unbounded tasks from provider responses.
+- Use bounded active concurrency; do not create unbounded batches from provider responses
+  until streaming scheduling is implemented and tested.
 - Apply exponential backoff with a cap and honor a provider's retry delay when available.
+- The current `asyncio.gather` batch schedules one coroutine per item; avoid unbounded batches
+  until a streaming scheduler is implemented and tested.
 - Set explicit network timeouts and propagate terminal errors with context.
 - Do not mutate shared state from concurrent tasks without an explicit ownership boundary.
 - Treat HTTP 429 and timeouts as transient; treat corrupted payloads and schema failures as permanent input errors.

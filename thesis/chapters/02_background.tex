@@ -64,7 +64,12 @@ becoming catalog state.
 The Copernicus Data Space Ecosystem (CDSE) exposes Copernicus data products and services through
 provider-facing APIs \cite{cdse}. In this project, CDSE is an external boundary rather than a
 dependency of the domain model. The asynchronous STAC client consumes search responses, while the
-OAuth2 adapter obtains an access token and injects it into subsequent requests.
+OAuth2 adapter obtains an access token and supplies it to subsequent metadata requests.
+The implemented \texttt{CDSEClient} and token-provider interfaces have been exercised with
+injected offline transports only. The tests do not contact CDSE, and the repository contains no
+confirmed successful live CDSE metadata search. A previously recorded unauthenticated raster
+request returned HTTP 401; no CDSE pixel download is confirmed. The raster asset code does not
+implement or test an authenticated CDSE pixel-download workflow.
 
 The client-credentials flow is appropriate for a non-interactive service account. Let \(c\) be the
 client identifier, \(s\) the client secret, and \(u_t\) the token endpoint. The provider receives a
