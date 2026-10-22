@@ -62,11 +62,12 @@ async def test_bearer_transport_sends_access_token_in_authorization_header():
         return Response()
 
     transport = BearerSTACTransport()
-    transport.set_authorization("offline-test-token")
+    token = "offline-test-token"
+    transport.set_authorization(token)
     with patch("kvarken_eo.cdse.urlopen", fake_urlopen):
         await transport.request("GET", "https://cdse.invalid/search", None, 3.0)
 
-    assert received == {"authorization": "Bearer offline-test-token", "timeout": 3.0}
+    assert received == {"authorization": f"Bearer {token}", "timeout": 3.0}
 
 
 @pytest.mark.asyncio

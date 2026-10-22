@@ -26,30 +26,33 @@ validated before transformation into a transport-neutral scene model. The implem
 combines bounded active concurrency, content-addressed payload storage, append-only provenance,
 an embedded spatial catalog, metadata quality filters and a read-only educational interface.
 Students can use offline metadata fixtures, source validation, provenance inspection, spatial
-queries, the read-only API and local real-data processing. A five-scene CSC execution verifies
-the first remote metadata workflow. These are implemented exercises; learning outcomes were
-not evaluated.
+queries, the read-only API and local real-data processing. These are implemented exercises;
+learning outcomes were not evaluated.
 
 The practical application examines sea-ice candidate mapping in eastern Kvarken using actual
 Sentinel-1 radar observations and upstream CATALYST radiometric terrain-correction products
 hosted by Microsoft Planetary Computer. Sentinel-2 observations provide conservative optical
 proxy labels for snow-covered ice and dark water; ESA WorldCover 2021 v200 supplies an annual
-retrospective land mask, not a March 2021 ice observation. A scene-specific linear discriminant
-uses both radar polarisations. Spatially separated training and evaluation blocks avoid direct
-sample overlap. Outputs include georeferenced maps, quantitative reports and checksummed
-acquisition records. A separate five-scene CSC replay covers metadata, provenance, catalog
-queries and the loopback API; raster classification ran locally.
+retrospective land mask, not a March 2021 ice observation. The overlapping records define a
+single case rather than representative seasonal sampling. The optical scene followed the radar
+acquisition, so proxy labels are not a contemporaneous reference. A scene-specific linear
+discriminant uses both radar polarisations. Spatially separated training and evaluation blocks
+avoid direct sample overlap. Outputs include georeferenced maps, quantitative reports and
+checksummed acquisition records.
 
 The engineering evaluation combines automated failure-oriented tests with a preserved
-synthetic benchmark. The scientific application exposes a substantial limitation: ice
-precision is 23.53%, and ordinary agreement is 88.00%, below the 95.99% always-water baseline.
-The full candidate ice area is 1,219.28 km$^2$, of which 795.91 km$^2$ lacks optical reference
-labels. This area is not validated sea-ice extent. The 17.90-hour acquisition mismatch,
-incomplete optical coverage, wind-sensitive radar backscatter and unverified upstream noise
-treatment limit interpretation. The experiment provides evidence of application integration
-and diagnostic evaluation, not an operational ice-monitoring algorithm.
+synthetic benchmark. The scientific application exposes a substantial limitation: positive
+ice precision is low, and ordinary agreement is below an always-water baseline. Many candidate
+cells have no optical reference labels, so the full candidate area is not validated sea-ice
+extent. The acquisition gap, incomplete optical coverage, wind-sensitive radar backscatter,
+unverified upstream noise treatment and untested illumination-angle effects limit
+interpretation. The selected labelled cells support a diagnostic comparison only, not a
+complete estimate of sea-ice conditions across the candidate area. Georeferenced maps and
+acquisition records let the reader trace the relationship between the input observations and
+the analysis. The experiment provides evidence of application integration, not an operational
+ice-monitoring algorithm.
 
-Raster analysis ran locally. A separate five-scene CSC cPouta replay verified scene identities,
+Raster analysis ran locally. A five-scene CSC cPouta replay verified scene identities,
 persistent provenance, regional queries and the loopback API. This demonstrates a first-stage
 remote research and teaching workflow, not image classification, distributed processing,
 improved classifier accuracy or cloud scalability. Further independent observations and
