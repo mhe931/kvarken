@@ -50,3 +50,14 @@
 6. Obtain Professor Arslan's review and approval before Turnitin. Submit the same approved file to Turnitin, then Osuva and Education Services as required by the university. No submission or professor authorization is asserted here.
 
 **Disposition: audit documentation for human review. Do not represent this file or the Google Doc as a verified final thesis.**
+
+
+## Follow-up: current Google Docs PDF and full slide render inspection (22 October)
+
+- Added 11 new abbreviation definitions to the original Google Doc (AWS, CSC, DEA, ESA, NASA, OData, ODC, REST, S3, SAS, SQL), verified 35 entries in the alphabetic abbreviation list. The source document itself is editable and no source manuscript numerical conclusions were changed.
+- Exported the **current Google Doc** to an **88-page PDF** from Google Drive, not the older DOCX 77-page render or the unavailable official-template Word v16 **94-page** PDF. Structurally scanned all 88 pages: no blank pages and no detected off-canvas text blocks. Generated eight contact sheets and visually inspected pages 1-88 in order, plus enlarged platform and Chapter 9 evidence-table pages.
+- Critical current Google Docs layout gap: the four-column source-platform comparison continues across several portrait pages (roughly PDF pp. 11-15) and is very dense, with the table header not repeated on continuation pages. The Chapter 9 evidence table continues across pp. 71-72. Mathematical expressions, page breaks, running references and the graphically simplified Figure 9.1 remain subject to final expert editorial review. The Contents is deliberately without stale page references rather than a validated auto-generated index.
+- Current Google Docs PDF reports tagged PDF, PDF version 1.4, no visible PDF/A identifier, and **zero raw /Alt entries** for figures in the PDF object streams (low-level indicator only; not a substitute for full accessibility audit). This PDF is **not** independently PDF/A validated and must not be submitted as a conformant file.
+- Obtained PDF exports of both revised native decks; **visually inspected all 12 progress slides and all 14 defense slides** as contact sheets. Layout is legible and none of the rendered titles or bodies visibly clips. Both decks underwent a structural check with zero page elements outside the actual 16:9 canvas after 52 shape transform repairs. Updated inaccurate progress slide 8 and slide 12 (PR #30 was merged); re-exported and inspected slide 12 at full resolution. This does not certify presentation academic approval.
+- No independent veraPDF validator exists in this runtime, and neither the **exact official-template Word v16 94-page PDF** nor the full original supervisor annotations were accessible. Formal conformance and those reviews **remain blockers**.
+
