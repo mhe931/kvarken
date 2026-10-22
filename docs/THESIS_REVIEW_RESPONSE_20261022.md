@@ -45,5 +45,8 @@ not unseen verbatim comments.
   recent author edit attribution. After refresh, the content area rendered blank. No text or
   graphics were synchronized or verified, and the supervisor's access was not confirmed.
   The document identity was not changed.
-- The platform-comparison, CSC workflow, and abbreviation edits now in the branch have not
-  passed tests, a fresh build, pagination review, or current PDF/A/accessibility validation.
+- The expanded source passed PR CI on Python 3.11 and 3.12 (83 passed and 3 skipped in each
+  base test job), Ruff lint/format, health checks, optional science/document jobs, and
+  XeLaTeX/Biber compilation. The CI PDF reports 82 pages; it has not been visually inspected,
+  so exact current pagination remains pending. Official-template export and current
+  PDF/A/accessibility validation also remain incomplete.

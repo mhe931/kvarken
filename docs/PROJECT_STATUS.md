@@ -15,11 +15,14 @@
 - A fresh source audit also verified 63 unique, alphabetized abbreviations, 60 resolved
   bibliography keys, 18 resolved cross-references, the 442-word abstract, and the completed
   bearer-header example. `git diff --check` passed.
-- The current edits have not yet passed Python tests, Ruff, or a LaTeX build: Python and the
-  TeX toolchain are unavailable in this workspace. The local `python` command resolves to a
-  Microsoft Store stub, so `python -m pytest` could not start. GitHub Actions run 67 produced
-  a 69-page PDF for the earlier 22 October source; its page count and visual review do not
-  apply to these new edits.
+- Current-source PR CI passed on Python 3.11 and 3.12: each base test job reported 83 passed
+  and 3 skipped; Ruff lint and format checks, offline health checks, and both optional
+  science/document jobs passed. XeLaTeX/Biber compilation also passed and reported an
+  82-page CI PDF. That artifact has not been visually inspected and is not an
+  official-template export or PDF/A/accessibility validation.
+- Local tests and builds remain unavailable: `python` resolves to a Microsoft Store stub,
+  and the local TeX/PDF toolchain is absent. GitHub Actions run 67 produced a 69-page PDF
+  for an earlier source revision and is not evidence for this branch.
 - Edge Personal opened the existing Google Doc and displayed a saved-to-Drive status and
   recent author edit attribution. After refresh, its content area rendered blank. No text
   or graphics were edited, and revised content or professor access has not been verified.
@@ -27,8 +30,8 @@
 - Current-source official-template DOCX, PDF/A validation, accessibility review, final page
   counts, and a current supervisor-response pagination pass remain open.
 - No new satellite acquisition, CSC deployment, email, Turnitin upload, or Osuva submission
-  was performed. A pull request for this expanded source revision is open; CI status is being
-  checked and addressed separately from the unfinished document-export and Google Drive work.
+  was performed. A pull request for this expanded source revision is open, and its current
+  CI checks pass; merge, document export, and Google Drive synchronization remain outstanding.
 
 ### Previous source checkpoint
 
