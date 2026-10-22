@@ -149,10 +149,10 @@ be new and absent before the command runs. The large raster windows are not in G
 is necessary on a clean checkout.
 
 \begin{verbatim}
-$config = "docs\research\20261019\case_config.json"
-$inputs = "data\seaice_reproduction"
-$output = "outputs\seaice_fresh_20261022"
-python -m kvarken_eo.case_study --config $config --inputs-dir $inputs --output-dir $output
+$cfg = "docs\research\20261019\case_config.json"
+$src = "data\seaice_reproduction"
+$dst = "outputs\seaice_fresh_20261022"
+python -m kvarken_eo.case_study --config $cfg --inputs-dir $src --output-dir $dst
 \end{verbatim}
 
 The expected success indicator is exit status zero and a populated output directory including
@@ -173,9 +173,9 @@ reacquire pixels; it creates a new scientific report and figures in a distinct o
 that does not yet exist:
 
 \begin{verbatim}
-$inputs = "data\seaice_reproduction"
-$output = "outputs\seaice_reused_20261022"
-python -m kvarken_eo.case_study --inputs-dir $inputs --output-dir $output --reuse-inputs
+$src = "data\seaice_reproduction"
+$dst = "outputs\seaice_reused_20261022"
+python -m kvarken_eo.case_study --inputs-dir $src --output-dir $dst --reuse-inputs
 \end{verbatim}
 
 This command validates cached hashes, processes the captured data and writes a new
