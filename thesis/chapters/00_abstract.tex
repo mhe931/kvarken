@@ -41,15 +41,15 @@ followed radar acquisition, so labels are not contemporaneous. A scene-specific 
 discriminant uses both radar polarisations with spatially separated training and evaluation
 blocks.
 
-Automated failure-oriented tests and a preserved synthetic benchmark evaluate engineering
-behavior. The scientific application exposes a limitation: positive ice precision is low, and
-ordinary agreement is below an always-water baseline. Many candidate cells have no optical
-reference labels, so the full candidate area is not validated sea-ice extent. Acquisition
-timing, incomplete optical coverage, wind-sensitive radar backscatter, unverified upstream
-noise treatment, and untested illumination-angle effects limit interpretation. Selected
-labelled cells support diagnostic comparison only, not a complete estimate of sea-ice
-conditions across the candidate area. The experiment demonstrates application integration, not
-an operational ice-monitoring algorithm.
+Automated failure-oriented tests cover malformed payloads, timeouts and rate-limit responses;
+a preserved synthetic benchmark evaluates engineering behavior under controlled conditions.
+The scientific case study demonstrates the infrastructure's integration with a real Earth
+Observation application, but does not establish operational ice-monitoring performance. Its
+evaluation is limited to selected optical-proxy cells and retains uncertainty about upstream
+noise treatment and illumination-angle effects. Because the labels represent snow-covered ice
+and dark water rather than field observations, agreement is interpreted as a diagnostic
+comparison within that selected domain. The model is scene-specific and has not been validated
+across independent dates or locations.
 
 Raster analysis ran locally. A five-scene metadata replay on cPouta, a cloud service of the
 Finnish IT Center for Science (CSC), verified scene identities, persistent provenance, regional

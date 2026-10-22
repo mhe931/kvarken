@@ -88,6 +88,50 @@ def _prefix(paragraph, text: str) -> None:
     paragraph._p.insert(1 if paragraph._p.pPr is not None else 0, run._r)
 
 
+def _remove_repeated_workflow_table_header(document: Document) -> None:
+    table = None
+    for caption in document.paragraphs:
+        if not caption.text.startswith(
+            "Table 9.1. Evidence status for the proposed student workflow"
+        ):
+            continue
+        element = caption._p.getnext()
+        while (
+            element is not None
+            and element.tag == qn("w:p")
+            and not Paragraph(element, document).text.strip()
+        ):
+            element = element.getnext()
+        if element is not None and element.tag == qn("w:tbl"):
+            table = next((table for table in document.tables if table._tbl is element), None)
+            if table is not None:
+                break
+    if table is None or len(table.rows) < 2:
+        return
+    expected_header = ("Workflow stage", "Status", "Evidence and boundary")
+    first_row = tuple(cell.text.strip() for cell in table.rows[0].cells)
+    second_row = tuple(cell.text.strip() for cell in table.rows[1].cells)
+    if first_row == second_row == expected_header:
+        table._tbl.remove(table.rows[1]._tr)
+
+
+def _correct_appendix_cross_references(document: Document) -> None:
+    for element in document.element.xpath(".//w:p"):
+        paragraph = Paragraph(element, document)
+        if not re.search(r"Appendix\s+12\b", paragraph.text):
+            continue
+        preceding_text = ""
+        for child in paragraph._p:
+            if child.tag == qn("w:hyperlink"):
+                text_nodes = list(child.iter(qn("w:t")))
+                if "".join(node.text or "" for node in text_nodes) == "12" and re.search(
+                    r"Appendix\s*$", preceding_text
+                ):
+                    text_nodes[-1].text = "B"
+                    break
+            preceding_text += "".join(node.text or "" for node in child.iter(qn("w:t")))
+
+
 def format_document(path: Path) -> dict:
     document = Document(path)
     document.core_properties.title = (
@@ -331,6 +375,8 @@ def format_document(path: Path) -> dict:
     update = OxmlElement("w:updateFields")
     update.set(qn("w:val"), "true")
     document.settings.element.append(update)
+    _correct_appendix_cross_references(document)
+    _remove_repeated_workflow_table_header(document)
     document.save(path)
     return {"figures": len(figure_entries), "tables": len(table_entries)}
 
