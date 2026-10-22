@@ -5,10 +5,10 @@ pending.** Earlier page numbers below refer to the 69-page GitHub XeLaTeX/Biber 
 (Carlito fallback font) or the 82-page Word-rendered review PDF. The revised source has since
 been exported to an official-template DOCX candidate. Contents and page-reference fields were
 updated in the earlier v9 candidate, but that render split the Chapter 9 workflow figure. The
-v10 DOCX moves that figure to a new page; it has not yet been rendered and checked in Word.
-Therefore none of the page numbers below should be used as final references. No current-source
-PDF/A conformance or accessibility validation is claimed, and this is not an authorized
-submission candidate.
+v11 DOCX moves that figure to a new page and registers all six manuscript-table captions; it
+has not yet been rendered and checked in Word. Therefore none of the page numbers below should
+be used as final references. No current-source PDF/A conformance or accessibility validation
+is claimed, and this is not an authorized submission candidate.
 
 The current source changes add detail to the platform-review and education rows below. A
 fresh build is required before recording exact chapter/page references. The original email
@@ -45,8 +45,9 @@ not unseen verbatim comments.
 - A later official-template DOCX candidate was structurally inspected. Its section numbering
   starts at 1, and its Figure 9.1 diagram table has a page break before its first stage. The
   v9 PDF (93 physical pages) showed the abstract on physical and labelled page 2 and numeric
-  contents references, but Figure 9.1 split across pages. The v10 candidate addresses that
-  split in its DOCX structure; it has not been rendered or independently checked as PDF/A.
+  contents references, but Figure 9.1 split across pages. The v11 candidate addresses that
+  split in its DOCX structure and includes all six table captions in the generated Tables
+  list; it has not been rendered or independently checked as PDF/A.
 - Independent current-source PDF/A/accessibility validation remains incomplete.
 - Edge Personal opened the existing shared Google Doc and showed a saved-to-Drive status and a
   recent author edit attribution. After refresh, the content area rendered blank. No text or

@@ -48,10 +48,12 @@ FIGURE_DESCRIPTIONS = (
     "unlabelled or excluded. Ice precision is 23.53 percent against this proxy.",
 )
 TABLES = (
-    "Research questions, primary evidence,",
-    "Frozen 256-scene synthetic experiment baseline.",
-    "Held-out confusion matrix.",
-    "Held-out proxy agreement.",
+    ("Comparison of EO platforms, standards, and software ecosystems", "2.1"),
+    ("Research questions, primary evidence,", "3.1"),
+    ("Frozen 256-scene synthetic experiment baseline.", "6.1"),
+    ("Held-out confusion matrix.", "6.2"),
+    ("Held-out proxy agreement.", "6.3"),
+    ("Evidence status for the proposed student workflow", "9.1"),
 )
 WORKFLOW_STAGES = (
     "Student onboarding",
@@ -262,20 +264,22 @@ def format_document(path: Path) -> dict:
         architecture_caption = text.startswith(("Figure 4.1. " + FIGURES[0], FIGURES[0]))
         workflow_caption = text.startswith(WORKFLOW_FIGURE)
         figure_caption = architecture_caption or workflow_caption or text.startswith(FIGURES[1:])
-        kind = "Figure" if figure_caption else "Table" if text.startswith(TABLES) else None
+        table_number = next((number for prefix, number in TABLES if text.startswith(prefix)), None)
+        kind = "Figure" if figure_caption else "Table" if table_number is not None else None
         if kind:
             entries = figure_entries if kind == "Figure" else table_entries
-            number = (
-                (
+            if kind == "Figure":
+                number = (
                     "4.1"
                     if architecture_caption
                     else "9.1"
                     if workflow_caption
                     else f"6.{figure_number + 1}"
                 )
-                if kind == "Figure"
-                else ("3.1" if not entries else f"6.{len(entries)}")
-            )
+            elif table_number is not None:
+                number = table_number
+            else:
+                raise RuntimeError("recognized table caption has no assigned number")
             if kind == "Figure" and not architecture_caption and not workflow_caption:
                 figure_number += 1
             if not text.startswith(f"{kind} {number}."):
@@ -490,7 +494,7 @@ def main() -> None:
     )
     counts = format_document(output)
     _insert_tikz_diagrams(output)
-    if counts != {"figures": 7, "tables": 4}:
+    if counts != {"figures": 7, "tables": 6}:
         raise ValueError(f"canonical caption inventory changed: {counts}; review export numbering")
     print(output)
 

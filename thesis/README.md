@@ -63,19 +63,20 @@ This reads the canonical LaTeX, uses official Word styles/page geometry, formats
 and abstract, numbers headings/captions, places references before appendices and creates
 native TOC/page fields for chapters and sections. Pandoc does not render the TikZ architecture
 or student-workflow figures into DOCX, so the exporter replaces both empty placeholders with
-editable, styled flow diagrams and descriptive table metadata. The caption inventory includes
-both diagrams and the five scientific figures. It does not update the remote Google Doc or
-render Word by itself.
+editable, styled flow diagrams and descriptive table metadata. The caption inventory covers
+both diagrams, the five scientific figures and all six numbered manuscript tables. It does
+not update the remote Google Doc or render Word by itself.
 
 An earlier 22 October DOCX was generated and structurally checked, including heading styles,
 caption numbering, the architecture flow diagram, figure descriptions and document metadata.
 Word updated its contents, figure/table lists and page-reference fields, then rendered an
 82-page review PDF. That historical PDF was visually inspected, but it predates subsequent
 source and export corrections and is not a current deliverable. A newer DOCX candidate has
-been generated with continuous page numbering and both diagrams; its final Word pagination
-and PDF rendering have not been verified. The 19 October Word/PDF candidate's historical
-PDF/A validation is not evidence for the revised source. PDF/A conformance and current
-accessibility still need independent validation; a requested export option is not a validator.
+been generated with continuous page numbering, both diagrams, and all six numbered table
+captions; its final Word pagination and PDF rendering have not been verified. The 19 October
+Word/PDF candidate's historical PDF/A validation is not evidence for the revised source.
+PDF/A conformance and current accessibility still need independent validation; a requested
+export option is not a validator.
 
 Do not edit an export as a second canonical manuscript. Reapply substantive corrections to
 the modular source. The existing shared native Google Doc must retain its ID and permissions; synchronization

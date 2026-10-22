@@ -56,8 +56,12 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
         "Intended student workflow for using the EO infrastructure with CSC. "
         "This is a teaching design, not a claim that every step was executed on CSC."
     )
+    document.add_paragraph("Comparison of EO platforms, standards, and software ecosystems")
     document.add_paragraph("Research questions, primary evidence, and claim boundaries.")
+    document.add_paragraph("Frozen 256-scene synthetic experiment baseline.")
     document.add_paragraph("Held-out confusion matrix. Details.")
+    document.add_paragraph("Held-out proxy agreement.")
+    document.add_paragraph("Evidence status for the proposed student workflow")
     document.add_heading("Disclosure of AI-Assisted Work", 1)
     document.add_paragraph("AI disclosure.")
     document.styles.add_style("Bibliography", 1)
@@ -71,7 +75,8 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     empty_figure_table.append(docx.oxml.OxmlElement("w:tblGrid"))
     document._element.body.append(empty_figure_table)
     document.save(path)
-    format_document(path)
+    counts = format_document(path)
+    assert counts == {"figures": 6, "tables": 6}
     saved = docx.Document(path)
     assert saved.core_properties.title == (
         "Design and Implementation of a Hybrid Earth Observation Data Infrastructure"
@@ -108,6 +113,15 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
         p.text.startswith("Figure 9.1. Intended student workflow") and "PAGEREF" in p._p.xml
         for p in saved.paragraphs
     )
+    assert any(
+        p.text.startswith("Table 2.1. Comparison of EO platforms") and "PAGEREF" in p._p.xml
+        for p in saved.paragraphs
+    )
+    assert any(
+        p.text.startswith("Table 9.1. Evidence status for the proposed student workflow")
+        and "PAGEREF" in p._p.xml
+        for p in saved.paragraphs
+    )
     assert not any(p.text.startswith("Figure 4.1. Figure 4.1.") for p in saved.paragraphs)
     assert (
         text.index("References")
@@ -130,7 +144,7 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     assert next(
         p
         for p in saved.paragraphs
-        if p.text.startswith("Table 6.1. Held-out confusion") and "PAGEREF" not in p._p.xml
+        if p.text.startswith("Table 6.2. Held-out confusion") and "PAGEREF" not in p._p.xml
     ).paragraph_format.keep_with_next
     assert not saved.tables[1].rows[0]._tr.xpath("./w:trPr/w:tblHeader")
     assert saved.tables[1].cell(1, 1).paragraphs[0].paragraph_format.line_spacing == 1
