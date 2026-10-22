@@ -143,13 +143,16 @@ python -m kvarken_eo verify-health
 
 \subsection{Acquire fresh source data}
 
-The following command performs fresh source acquisition and scientific analysis. It requires
-network access to Microsoft Planetary Computer. Both the input and output directory paths must
+The following PowerShell commands perform fresh source acquisition and scientific analysis.
+They require network access to Microsoft Planetary Computer. Both the input and output directory paths must
 be new and absent before the command runs. The large raster windows are not in Git; this step
 is necessary on a clean checkout.
 
 \begin{verbatim}
-python -m kvarken_eo.case_study --config docs\research\20261019\case_config.json --inputs-dir data\seaice_reproduction --output-dir outputs\seaice_fresh_20261022
+$cfg = "docs\research\20261019\case_config.json"
+$src = "data\seaice_reproduction"
+$dst = "outputs\seaice_fresh_20261022"
+python -m kvarken_eo.case_study --config $cfg --inputs-dir $src --output-dir $dst
 \end{verbatim}
 
 The expected success indicator is exit status zero and a populated output directory including
@@ -170,7 +173,9 @@ reacquire pixels; it creates a new scientific report and figures in a distinct o
 that does not yet exist:
 
 \begin{verbatim}
-python -m kvarken_eo.case_study --inputs-dir data\seaice_reproduction --output-dir outputs\seaice_reused_20261022 --reuse-inputs
+$src = "data\seaice_reproduction"
+$dst = "outputs\seaice_reused_20261022"
+python -m kvarken_eo.case_study --inputs-dir $src --output-dir $dst --reuse-inputs
 \end{verbatim}
 
 This command validates cached hashes, processes the captured data and writes a new

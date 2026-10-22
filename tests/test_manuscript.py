@@ -157,6 +157,86 @@ def test_document_formatting_rejects_a_missing_abstract(tmp_path):
         format_document(path)
 
 
+def test_document_formatting_removes_repeated_longtable_header(tmp_path):
+    path = tmp_path / "repeated-header.docx"
+    document = docx.Document()
+    document.add_paragraph("Däniel Ebrahimzadeh Esfahani")
+    document.add_paragraph("Vaasa 2026")
+    document.add_paragraph("UNIVERSITY OF VAASA")
+    document.add_paragraph("Abstract")
+    document.add_paragraph("Abstract text.")
+    document.add_paragraph("Keywords: Earth Observation")
+    document.add_heading("Acknowledgements", 1)
+    caption = document.add_paragraph("Evidence status for the proposed student workflow")
+    table = document.add_table(rows=3, cols=3)
+    headers = ("Workflow stage", "Status", "Evidence and boundary")
+    for row_index in (0, 1):
+        for column_index, value in enumerate(headers):
+            table.cell(row_index, column_index).text = value
+    table.cell(2, 0).text = "Student onboarding"
+    table.cell(2, 1).text = "Proposed"
+    table.cell(2, 2).text = "No student cohort was evaluated."
+    caption._p.addnext(table._tbl)
+    document.add_heading("Disclosure of AI-Assisted Work", 1)
+    document.save(path)
+
+    format_document(path)
+
+    saved = docx.Document(path)
+    evidence_table = next(
+        table for table in saved.tables if table.cell(0, 0).text == "Workflow stage"
+    )
+    assert len(evidence_table.rows) == 2
+    assert tuple(cell.text for cell in evidence_table.rows[0].cells) == headers
+
+
+def test_document_formatting_uses_appendix_letter_for_cross_references(tmp_path):
+    path = tmp_path / "appendix-reference.docx"
+    document = docx.Document()
+    document.add_paragraph("Däniel Ebrahimzadeh Esfahani")
+    document.add_paragraph("Vaasa 2026")
+    document.add_paragraph("UNIVERSITY OF VAASA")
+    document.add_paragraph("Abstract")
+    document.add_paragraph("Abstract text.")
+    document.add_paragraph("Keywords: Earth Observation")
+    document.add_heading("Acknowledgements", 1)
+    paragraph = document.add_paragraph("See Appendix\u00a0")
+    cell_paragraph = document.add_table(rows=1, cols=1).cell(0, 0).paragraphs[0]
+    cell_paragraph.add_run("See Appendix\u00a0")
+    for bookmark_id, reference_paragraph in enumerate((paragraph, cell_paragraph), start=1):
+        bookmark_start = docx.oxml.OxmlElement("w:bookmarkStart")
+        bookmark_start.set(docx.oxml.ns.qn("w:id"), str(bookmark_id))
+        bookmark_start.set(docx.oxml.ns.qn("w:name"), f"caption-{bookmark_id}")
+        reference_paragraph._p.insert(
+            1 if reference_paragraph._p.pPr is not None else 0, bookmark_start
+        )
+        hyperlink = docx.oxml.OxmlElement("w:hyperlink")
+        hyperlink.set(docx.oxml.ns.qn("w:anchor"), "appendix-repro")
+        run = docx.oxml.OxmlElement("w:r")
+        text = docx.oxml.OxmlElement("w:t")
+        text.text = "12"
+        run.append(text)
+        hyperlink.append(run)
+        reference_paragraph._p.append(hyperlink)
+        bookmark_end = docx.oxml.OxmlElement("w:bookmarkEnd")
+        bookmark_end.set(docx.oxml.ns.qn("w:id"), str(bookmark_id))
+        reference_paragraph._p.append(bookmark_end)
+    document.add_heading("Disclosure of AI-Assisted Work", 1)
+    document.save(path)
+
+    format_document(path)
+
+    saved = docx.Document(path)
+    paragraph_reference = next(p for p in saved.paragraphs if p.text.startswith("See Appendix"))
+    cell_reference = saved.tables[0].cell(0, 0).paragraphs[0]
+    assert paragraph_reference.text == "See Appendix\u00a0B"
+    assert cell_reference.text == "See Appendix\u00a0B"
+    assert (
+        paragraph_reference._p.xpath(".//w:hyperlink")[0].get(docx.oxml.ns.qn("w:anchor"))
+        == "appendix-repro"
+    )
+
+
 def test_document_describes_the_cover_logo(tmp_path):
     path = tmp_path / "cover.docx"
     document = docx.Document()
