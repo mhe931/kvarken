@@ -6,7 +6,8 @@ The frozen evaluation uses the repository's offline benchmark path with 256 synt
 concurrency eight, the checked-in STAC fixture as a metadata template, temporary SQLite storage,
 and temporary provenance storage. It exercises the actual validation, transformation,
 bounded active concurrency, catalog, quality, and report code rather than a separate mock benchmark
-implementation. No external provider, credential, charting package, or GIS dependency is
+implementation. No external provider, credential, charting package, or geographic information
+system (GIS) dependency is
 required. The resulting JSON and Markdown artifacts are checked in under
 \texttt{docs/experiments/} and form the comparison point for later live runs.
 
@@ -324,7 +325,7 @@ installation, raster acquisition or scientific classification.
 All five catalog scene identities, all five regional query identities, all five API
 identities, the health response and five provenance records matched the corresponding
 local validation exactly. The Linux input bytes matched the reviewed Git blob under
-SHA-256. The Windows checkout uses CRLF rather than LF line endings, so raw input-file
+SHA-256. The Windows and Linux checkouts use different line-ending conventions, so raw input-file
 checksums differ across those checkouts while parsed metadata and validation results
 are identical. Timestamp-bearing provenance and SQLite files are not claimed to be
 byte-identical across hosts.

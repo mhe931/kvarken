@@ -1,30 +1,44 @@
 # Project status
 
-## 2026-10-22 - Professor-review revisions in progress
+## 2026-10-22 - Expanded thesis revision and PR in progress
 
-- Revised the canonical abstract, objectives, architecture, methodology, implementation,
-  evaluation, analysis, discussion, conclusion and reproducibility appendix to reflect the
-  supplied review brief.
-- Added Chapter 9 on in-house EO research and teaching; Chapter 10 is the conclusion.
-- Replaced the architecture text block with a source-controlled TikZ vector diagram.
-- Explicitly separated CDSE metadata interfaces and offline mock tests from the Planetary
-  Computer/CATALYST RTC raster case study; no live CDSE success is claimed.
-- Preserved the existing five-scene CSC evidence and all frozen benchmark artifacts.
-- Corrected the recovery-ratio interpretation and stated the limit of the semaphore:
-  active concurrency is bounded; the batch still schedules one coroutine per item.
-- Updated the clean-checkout command appendix from the actual CLI help. Large raster inputs
-  remain absent from Git.
-- The shared Google Doc could not be accessed: its URL redirected to Google sign-in. It was
-  not edited or replaced. Current-source GitHub Actions run 67 compiled a 69-page review PDF.
-  The TOC, figure/table lists, cross-reference markers, Figure 4.1, scientific figures and
-  Appendix B were inspected. This CI build uses Carlito; official-template Word export,
-  PDF/A and accessibility validation remain open.
-- Local verification passed: 91 tests, Ruff lint and formatting, offline `verify-health`,
-  both documented CLI help commands, and a source-level citation/reference-label check.
-  The thesis-build workflow passed; general Python GitHub CI requires a pull request, which
-  could not be created because GitHub required sign-in.
-- No satellite acquisition, CSC deployment, email, Turnitin upload or Osuva submission was
-  performed during this revision.
+- Added a referenced comparison of CDSE, Google Earth Engine, Microsoft Planetary Computer,
+  CREODIAS, openEO, Pangeo and Open Data Cube, with brief positioning of the additional
+  services requested in the revision brief.
+- Added a nine-stage CSC student workflow diagram and evidence table. The table distinguishes
+  the one demonstrated five-record metadata replay from offline/local tests and steps that
+  remain proposed or not tested; it does not claim CSC raster processing or student outcomes.
+- Expanded the alphabetical abbreviation list and checked first use in the manuscript. The
+  abstract is 442 words and contains no specific numeric research results.
+- Static source checks passed for the requested platform coverage, workflow stages, four-layer
+  methodology, abbreviation entries, and citation/reference-key consistency.
+- A fresh source audit also verified 63 unique, alphabetized abbreviations, 60 resolved
+  bibliography keys, 18 resolved cross-references, the 442-word abstract, and the completed
+  bearer-header example. `git diff --check` passed.
+- Current-source PR CI passed on Python 3.11 and 3.12: each base test job reported 83 passed
+  and 3 skipped; Ruff lint and format checks, offline health checks, and both optional
+  science/document jobs passed. XeLaTeX/Biber compilation also passed and reported an
+  82-page CI PDF. That artifact has not been visually inspected and is not an
+  official-template export or PDF/A/accessibility validation.
+- Local tests and builds remain unavailable: `python` resolves to a Microsoft Store stub,
+  and the local TeX/PDF toolchain is absent. GitHub Actions run 67 produced a 69-page PDF
+  for an earlier source revision and is not evidence for this branch.
+- Edge Personal opened the existing Google Doc and displayed a saved-to-Drive status and
+  recent author edit attribution. After refresh, its content area rendered blank. No text
+  or graphics were edited, and revised content or professor access has not been verified.
+  The Google Slides presentations were not updated or verified.
+- Current-source official-template DOCX, PDF/A validation, accessibility review, final page
+  counts, and a current supervisor-response pagination pass remain open.
+- No new satellite acquisition, CSC deployment, email, Turnitin upload, or Osuva submission
+  was performed. A pull request for this expanded source revision is open, and its current
+  CI checks pass; merge, document export, and Google Drive synchronization remain outstanding.
+
+### Previous source checkpoint
+
+The earlier 22 October source checkpoint passed 91 tests, Ruff lint and formatting, offline
+`verify-health`, both documented CLI help commands, a source-level citation/reference-label
+check, and the thesis-build workflow. Those results predate the platform-comparison and
+student-workflow edits above and are not current-source verification.
 
 ## 2026-10-19 - Actual-data application; external acceptance gates open
 

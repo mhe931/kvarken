@@ -59,13 +59,15 @@ and was not introduced in this evaluation.
 
 \section{Provenance and content addressing}
 
-Before hashing, a payload is serialized as canonical UTF-8 JSON with deterministic key ordering and
+Before hashing, a payload is serialized as canonical 8-bit Unicode Transformation Format
+(UTF-8) JSON with deterministic key ordering and
 compact separators. For byte sequence \(x\), the content address is
 \[
-h=\operatorname{SHA256}(x),
+h=\operatorname{SHA-256}(x),
 \]
 represented as a lowercase hexadecimal digest. The raw payload is stored below a digest-derived
-path, while an append-only JSON Lines record stores the digest, source URI, provider identifier,
+path, while an append-only JSON Lines record stores the digest, source Uniform Resource
+Identifier (URI), provider identifier,
 timestamp, and retry metadata. Since identical canonical payloads have identical \(h\), repeated
 observations can be detected without trusting a mutable filename.
 
@@ -134,7 +136,7 @@ the samples, avoiding artificial darkening and preserving the input dynamic rang
 B08, preserving their spatial correspondence and relative calibration. The benchmark helper
 records input/output pixel counts, monotonic elapsed time, pixels per second, and Python peak
 allocation measured with \texttt{tracemalloc}. It is a reproducible memory/throughput indicator,
-not a measurement of native raster-library memory or disk I/O.
+not a measurement of native raster-library memory or disk input/output (I/O).
 
 \texttt{AffineGridTransform} supplies the corresponding numerical alignment contract. Given
 EPSG:4326 bounding box \((\lambda_{\min},\phi_{\min},\lambda_{\max},\phi_{\max})\) and dimensions
@@ -146,13 +148,15 @@ EPSG:4326 bounding box \((\lambda_{\min},\phi_{\min},\lambda_{\max},\phi_{\max})
 \]
 with the algebraic inverse mapping coordinates back to fractional pixel positions. This utility
 supports deterministic local-grid alignment for synthetic scenes; it does not claim datum-aware
-UTM reprojection. Datum-aware raster reprojection and GeoTIFF decoding are instead supplied
+Universal Transverse Mercator (UTM) reprojection. Datum-aware raster reprojection and GeoTIFF decoding are instead supplied
 by the optional processing layer in Section~\ref{sec:seaice-method}.
 
 \section{OAuth2 recovery workflow}
 
 \texttt{CDSETokenProvider} obtains client-credentials tokens through an injectable transport.
-Environment variables provide the token URL, client ID, client secret, and STAC URL. The provider
+Environment variables provide the token uniform resource locator (URL), client identifier,
+client secret,
+and STAC URL. The provider
 stores the token acquisition instant and refreshes with a skew \(\delta\) before expiry. With
 provider lifetime \(L\), a cached token is valid iff
 \[
@@ -214,8 +218,11 @@ not the entire transboundary Kvarken strait. A common EPSG:32634 (UTM zone 34N) 
 100~m cells. The rectangle is transformed with densified edges, and cell centres outside
 the study polygon are excluded.
 
-The radar input is Sentinel-1A IW GRDH dual-polarisation VV/VH, absolute orbit 37230,
-relative orbit 58, ascending, acquired on 30 March 2021 at approximately 16:06 UTC.
+The radar input is Sentinel-1A Interferometric Wide (IW) swath, Ground Range Detected
+High Resolution (GRDH) data with vertically transmitted and vertically received (VV) and
+vertically transmitted and horizontally received (VH) polarisations, absolute orbit 37230,
+relative orbit 58, ascending, acquired on 30 March 2021 at approximately 16:06 Coordinated
+Universal Time (UTC).
 The original product stem is
 \nolinkurl{S1A_IW_GRDH_1SDV_20210330T160559_20210330T160624_037230_046288}.
 The application reads its Catalyst radiometrically terrain-corrected derivative from the
@@ -253,7 +260,7 @@ The mask conservatively removes coastal water and narrow channels as well as lan
 \subsection{Acquisition, preprocessing and provenance}
 
 Public STAC item endpoints identify each input and its unsigned asset URL. The observed
-Planetary Computer signing service issued temporary read-only SAS URLs without account
+Planetary Computer signing service issued temporary read-only Shared Access Signature (SAS) URLs without account
 credentials during this run. Tokens remain in memory, are reused per container until near
 expiry, and are not written to reports. Availability is an observation on 19 October 2026,
 not a guarantee of future access. Requests are sequential, have explicit timeouts, and
@@ -261,7 +268,8 @@ retry throttling or timeouts at most three times.
 
 The provider's RTC methodology describes radiometric calibration, gamma correction,
 terrain correction using PlanetDEM, and orthorectification \citep{pc-s1-rtc,small2011}.
-These steps are supplied upstream; the thesis does not claim to have run SNAP or to
+These steps are supplied upstream; the thesis does not claim to have run the Sentinel
+Application Platform (SNAP) or to
 have independently verified the processor version and thermal/border-noise treatment.
 The analysis averages positive linear gamma-zero power onto the common grid before
 conversion to decibels:
@@ -277,7 +285,8 @@ resolution and grid dimensions.
 
 Each retrieved window is retained as a GeoTIFF together with the original unsigned STAC
 metadata, configuration and SHA-256 manifest. The retained windows have already undergone
-reprojection/resampling: their checksums do not identify full original SAFE products.
+reprojection/resampling: their checksums do not identify full original Standard Archive Format
+for Europe (SAFE) products.
 The source URLs and item identifiers permit fresh retrieval. Interrupted valid downloads
 are preserved and reused only with the same configuration and grid.
 
@@ -294,6 +303,8 @@ Cloud cover defaulted by the baseline scene model is not interpreted as a SAR ob
 
 The optical reference deliberately abstains on ambiguous observations. Snow-covered ice
 requires SCL 11, green reflectance above 0.15, near-infrared reflectance above 0.10, and
+the Normalized Difference Snow Index (NDSI), calculated from green and short-wave infrared
+(SWIR) reflectance, above 0.4:
 \[
   \mathrm{NDSI}=\frac{\rho_{\mathrm{green}}-\rho_{\mathrm{SWIR}}}
                     {\rho_{\mathrm{green}}+\rho_{\mathrm{SWIR}}}>0.4.
@@ -322,16 +333,19 @@ reference; no universal SAR backscatter threshold is assumed.
 Ten-kilometre checkerboard blocks separate training and testing. One kilometre is excluded
 on each side of every block edge, leaving a two-kilometre separation between adjacent
 retained training and test interiors. Confusion counts, reference support, precision,
-recall and F1 are reported on held-out labelled cells only. Pixel counts are not treated
+recall and the F1 score (the harmonic mean of precision and recall) are reported on
+held-out labelled cells only. Pixel counts are not treated
 as independent field samples. Candidate areas use the projected 0.01~km$^2$ cell area.
 Changing the discriminant offset by plus or minus one gives a sensitivity analysis,
 not a statistical confidence interval or an estimate of total ice-extent uncertainty.
 
 \section{Local and CSC execution environments}
 
-The recorded application ran on the local Windows CPU with Python 3.12.15, NumPy,
-Rasterio/GDAL and Matplotlib, isolated in the optional \texttt{science} environment.
-The NVIDIA T550 Laptop GPU has 4~GiB VRAM; driver 596.52 advertises CUDA API compatibility
+The recorded application ran on the local Windows central processing unit (CPU) with
+Python 3.12.15, NumPy, Rasterio and the Geospatial Data Abstraction Library (GDAL), plus
+Matplotlib, isolated in the optional \texttt{science} environment. The NVIDIA T550 Laptop
+graphics processing unit (GPU) has 4~GiB of video random-access memory (VRAM); driver
+596.52 advertises Compute Unified Device Architecture (CUDA) API compatibility
 13.2. No CUDA runtime or GPU-accelerated processing was required or benchmarked.
 The workload consists of range I/O, raster alignment and a small linear model, not neural
 network training.
@@ -340,12 +354,13 @@ A separate infrastructure replay executed on CSC cPouta under thesis project 202
 Project service access and the actual instance quota were verified through MyCSC and
 the authenticated OpenStack Horizon dashboard, rather than inferred from an account
 \citep{csc-access,csc-pouta}. The instance used the \texttt{standard.tiny} flavour
-(one vCPU, 1,000~MB RAM and 80~GB ephemeral disk), Ubuntu 24.04.5 LTS and Python 3.12.3.
+(one virtual CPU, 1,000~MB of memory and 80~GB ephemeral disk), Ubuntu 24.04.5 Long-Term
+Support and Python 3.12.3.
 The source was checked out at revision
 \nolinkurl{0a009885e07f1bf25f2e1960ceb3f9ce3e4ac5c1} with a clean working tree.
 
-Two restricted SSH connection attempts timed out despite an active VM. Instead of
-broadening ingress, a second temporary VM executed the existing runner through the
+Two restricted Secure Shell (SSH) connection attempts timed out despite an active
+virtual machine (VM). Instead of broadening ingress, a second temporary VM executed the existing runner through the
 supported cloud-init customization script. It installed the dependency-free package
 in an isolated Python environment and replayed the five captured actual scene records.
 The workload checked canonical payload provenance, closed and reopened SQLite, performed
@@ -358,6 +373,7 @@ retrieved through the authenticated instance console log and independently hash-
 locally. Twenty source files were checked against the exact Git blobs; eight recorded
 output files were rehashed. The generic runner's provider field remains
 \texttt{not-verified}; separate authenticated control-plane evidence establishes CSC
-ownership of the identified instance. Both temporary VMs and the floating IP were
+ownership of the identified instance. Both temporary VMs and the floating Internet Protocol
+(IP) address were
 released after retrieval, and the temporary SSH ingress rule was removed. Allas and
 Roihu were not used.

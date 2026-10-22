@@ -124,7 +124,8 @@ python -m pip install -e ".[dev,science]"
 \end{verbatim}
 
 The optional Word exporter also requires the \texttt{documents} extra, Pandoc, the official
-University of Vaasa DOTX template, and the APA CSL file. Those external files are not included
+University of Vaasa \texttt{.dotx} template, and the American Psychological Association (APA) Citation
+Style Language (CSL) file. Those external files are not included
 in Git; their official sources and the export command are documented in
 \texttt{thesis/README.md}.
 
@@ -174,10 +175,13 @@ python -m kvarken_eo.case_study --inputs-dir data\seaice_reproduction --output-d
 
 This command validates cached hashes, processes the captured data and writes a new
 \texttt{results.json} and figures. It does not overwrite the frozen benchmark, the 20260915
-offline-fallback artifact, or the recorded 20261019 actual-data evidence. The CLI requires
+offline-fallback artifact, or the recorded 20261019 actual-data evidence. The command-line
+interface (CLI) requires
 both \texttt{--inputs-dir} and \texttt{--output-dir}; the correct option spelling is
 \texttt{--output-dir}. A reuse run is successful only when its input checks pass and its
-reported source/configuration identities match the intended cache.
+reported source/configuration identities match the intended cache. The archival subset of the
+Portable Document Format (PDF) standard, designated PDF/A, is not considered conformant solely
+because an export succeeds.
 
 \subsection{Build the LaTeX manuscript}
 

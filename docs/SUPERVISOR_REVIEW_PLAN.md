@@ -5,16 +5,22 @@
 On 22 October, the user supplied a detailed revision brief attributed to Professor Ali Nadir
 Arslan's latest comments. The original email or annotated manuscript was not present in the
 repository, so this plan records the supplied brief without inventing an email date or
-quoting unseen comments. The canonical LaTeX manuscript has been revised; see the
-[review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md).
+quoting unseen comments. The [review-response matrix](THESIS_REVIEW_RESPONSE_20261022.md)
+maps that brief to the source; its page references are historical until the current source
+has been rebuilt.
 
-GitHub Actions run 67 compiled the current source with XeLaTeX/Biber and uploaded a 69-page
-CI review PDF. The contents/list pages, numbering, cross-reference markers, Figure 4.1, the
-five scientific figures and Appendix B were inspected. The CI build uses Carlito as a font
-fallback; it is not the official-template Word/PDF export and has not undergone PDF/A or
-accessibility validation. The same shared Google Doc remains the required review copy, but
-the browser redirected to Google sign-in on 22 October. No replacement Doc was created and
-no remote change is claimed.
+GitHub Actions run 67 compiled an earlier 22 October source revision with XeLaTeX/Biber and
+uploaded a 69-page CI review PDF. The contents/list pages, numbering, cross-reference markers,
+Figure 4.1, the five scientific figures and Appendix B were inspected for that revision.
+Since then, the branch has added the comparative platform review, a CSC student-workflow
+diagram and evidence table, and abbreviation updates. These changes have not yet been compiled
+or paginated. Python and the TeX toolchain are unavailable in the current workspace; static
+source checks pass, but they do not replace the test suite or a fresh build.
+
+Edge Personal opened the existing Google Doc and displayed a saved-to-Drive status and a
+recent author edit attribution. After refresh, the content area rendered blank. No text or
+graphics were edited or verified, no replacement Doc was created, and the supervisor's
+access has not been confirmed.
 
 The existing CSC demonstration remains the verified five-record metadata/provenance/catalog/
 regional-query/loopback-API prototype. Raster processing remains local. No new acquisition,
@@ -52,9 +58,9 @@ See [the evidence](research/20261019/README.md) and
    exit zero; output/source hashes and local/remote validation match.
    Review the [recorded demonstration](CSC_DEMONSTRATION.md) and
    [evidence](research/20261019/csc_execution_evidence.json). Temporary VMs/IP were released.
-3. The existing Google Doc was not accessible to this session on 22 October; the browser
-   redirected to sign-in. Preserve the same document ID and permissions when synchronization
-   is possible, and verify saved content by reopening it.
+3. The existing Google Doc opened under Edge Personal but rendered blank after refresh on
+   22 October. Preserve the same document ID and permissions when synchronization is possible,
+   and verify saved content by reopening it.
 4. Email the revised DOCX/PDF to **Dear Professor Arslan,**, signed **Däniel**, explicitly
    identifying the scientific limits and whether CSC execution has actually been completed.
    The report contains a draft only; no email was sent and no meeting is requested.

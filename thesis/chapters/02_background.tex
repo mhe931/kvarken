@@ -2,7 +2,7 @@
 
 \section{Radar sea ice and independent optical evidence}
 
-SAR observations support sea-ice monitoring, but a radar return is a measurement of
+Synthetic Aperture Radar (SAR) observations support sea-ice monitoring, but a radar return is a measurement of
 scattering properties rather than a direct semantic ice label. Ice-type classification,
 motion retrieval and melt detection are distinct tasks; combining active and passive
 sensors can provide complementary evidence \citep{dierking2013}. This thesis uses
@@ -27,6 +27,182 @@ multispectral instrument provides bands suitable for land-cover and vegetation a
 \cite{drusch2012sentinel}. The architectural problem is not only downloading imagery; it is
 maintaining a verifiable chain from a provider record to a queryable, quality-assessed research
 scene.
+
+\section{Comparative EO access and processing environments}
+
+Several established services already provide EO discovery, data access, and processing. This
+thesis does not treat the absence of a global platform as a research gap. Its narrower question
+is how a small University of Vaasa research and teaching project can keep provider access,
+validation, provenance, local queries, and offline reproduction inspectable while using external
+data and compute services where they are useful. Table~\ref{tab:eo-platforms} compares the
+principal alternatives by service model, data and processing access, portability, and likely
+fit for a CSC-hosted student workflow. The educational and CSC assessments are design analysis;
+they are not comparative usability tests.
+
+An application programming interface (API) is a contract exposed by a service, not necessarily
+a data archive or a compute environment. Cloud Optimized GeoTIFF (COG) is a file layout that
+supports range-based access; it does not itself provide catalogue search or processing.
+Consequently, a platform name can describe a catalogue, hosted compute, a standard, or a
+software ecosystem. These categories should not be conflated when evaluating portability or
+onboarding.
+
+\small
+\begin{longtable}{p{0.15\textwidth}p{0.27\textwidth}p{0.29\textwidth}p{0.20\textwidth}}
+\caption{Comparison of EO platforms, standards, and software ecosystems}
+\label{tab:eo-platforms}\\
+\toprule
+\textbf{Service or ecosystem} &
+\textbf{Data access and processing} &
+\textbf{Standards, provenance, access, and ownership} &
+\textbf{Research, education, and CSC fit} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\tablename\ \thetable{} -- continued from previous page}\\
+\toprule
+\textbf{Service or ecosystem} &
+\textbf{Data access and processing} &
+\textbf{Standards, provenance, access, and ownership} &
+\textbf{Research, education, and CSC fit} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+
+\textbf{Copernicus Data Space Ecosystem (CDSE)} &
+Provides Copernicus mission data through services including STAC, the Open Data Protocol
+(OData), Simple Storage Service (S3)-compatible object access, openEO, and
+Sentinel Hub APIs. Processing can be remote through supported services; users can also retrieve
+assets for external compute \citep{cdse,cdse-quotas,kovacs2026cdse}. &
+European Commission/Copernicus infrastructure with account-based services and documented
+quota controls. STAC and openEO provide standard interfaces, but processing support and limits
+depend on the selected service. Provenance must retain item identifiers, process parameters,
+and service-specific context. &
+Strong public-data option for European EO exercises. CSC can call external APIs or host
+downstream analysis, subject to account access, network policy, and quota. This thesis tests
+CDSE adapters offline only; it does not verify a live CDSE request. \\
+
+\textbf{Google Earth Engine} &
+Offers a large curated multi-mission catalogue and server-side geospatial analysis through its
+Code Editor, client libraries, and Representational State Transfer (REST) API. It removes much local data preparation for many
+workflows, but users work within the hosted service's supported data and processing model
+\citep{gee-paper,gee-access}. &
+Google-owned service requiring a Google Cloud project with the Earth Engine API enabled,
+registration for commercial or noncommercial use, and appropriate permissions. Scripts and
+asset identifiers support traceability, but the hosted runtime and catalogue are not a
+portable local execution environment. Terms and limits vary with account use. &
+The interactive editor can lower the first barrier to exploratory teaching. Project
+registration, usage terms, and service dependence add onboarding steps. A CSC workflow could
+use the API, but it would still depend on Google authentication and remote execution; no such
+integration was tested here. \\
+
+\textbf{Microsoft Planetary Computer} &
+Combines a STAC catalogue with cloud-hosted open datasets and asset access patterns suitable
+for partial reads, including COGs. Processing can use client-side tools and external or
+cloud-hosted compute; the catalogue and signed asset access should not be mistaken for a
+guaranteed general-purpose compute allocation \citep{pc-about,pc-s1-rtc}. &
+Microsoft-hosted data services expose open metadata and file formats, while access signing
+and service availability remain provider-controlled. The documentation identified the public
+service as a preview at the time checked, so feature status and terms must be rechecked.
+Reproduction should record collection, item, asset, processing version, and access date. &
+Useful for a reproducible case study because item metadata and COG assets can be inspected
+and selected windows can be read without a full local download. The thesis used it to obtain
+the case-study pixels for local analysis, not as evidence of CSC raster processing or
+provider-independent compute. \\
+
+\textbf{CREODIAS} &
+Combines an EO product repository and data-exploration tools with CloudFerro cloud storage
+and computing. Its documented services include S3-based remote data transfer and product
+generation as a service; collection coverage and service features depend on the current
+catalogue and product \citep{creodias-overview}. &
+The infrastructure is operated as a commercial cloud service with user accounts and
+service-specific terms. Published pricing can support cost estimation, but storage, compute,
+and transfer costs depend on configuration. APIs and data formats should be checked for each
+service rather than assumed to be interchangeable with CDSE or CSC. &
+Potentially suitable for end-to-end EO labs where an integrated archive and processing
+environment are important. It requires a separate provider account and cost controls.
+Porting a containerized workflow to CSC is plausible, but data locality, quotas, and
+performance were not evaluated in this thesis. \\
+
+\textbf{openEO API and hosted backends} &
+The openEO API specifies client-to-backend operations for data cubes and process graphs; it
+is an interface standard, not a single archive or hosted platform. Multiple providers list
+their own backends, collections, supported processes, and compute environments
+\citep{openeo-paper,openeo-docs,openeo-backends}. &
+R, Python, and JavaScript clients can express workflows against a common API. Authentication,
+resource limits, job handling, data availability, and provenance details remain backend
+specific. Process graphs help communicate intent, but equivalent results still depend on
+collection versions, process support, parameters, and backend behavior. &
+The shared client model is useful for teaching the distinction between workflow intent and
+provider execution. It can reduce service-specific client code, but does not remove account
+setup or backend limits. No openEO client or backend was exercised on CSC for this thesis. \\
+
+\textbf{Pangeo} &
+Pangeo is a community and software ecosystem for open, reproducible, scalable geoscience,
+including tools such as xarray, Dask, and Zarr. It is not an EO archive. Users connect those
+tools to separately hosted collections and compute \citep{pangeo-paper,pangeo-home}. &
+Open-source software supports inspectable environments and cloud-native data access, but
+there is no single Pangeo identity, quota, catalogue, or provenance service. Deployment,
+authentication, storage ownership, and cost are set by the institution or cloud operator. &
+Flexible for research and advanced data-engineering education, but students need environment
+management and compute support. CSC could host compatible software, subject to service
+configuration and allocations. This is a possible deployment route, not an implemented
+dependency of the Kvarken prototype. \\
+
+\textbf{Open Data Cube (ODC)} &
+ODC is open-source software for indexing and analysing EO data; it is not itself a global
+archive. A deployment ingests or indexes selected datasets and can use distributed processing.
+Digital Earth Australia is an example of an operational national service using a related
+data-cube approach \citep{odc-home,dea-home}. &
+The open software permits local control over schemas and processing, while the operator owns
+the catalogue, storage, authentication, backup, and compute lifecycle. Standards-based data
+formats can help exchange, but deployment-specific metadata and ingestion conventions still
+need to be recorded. &
+Suitable where a group needs persistent, domain-curated datasets and can maintain the
+service. It has more operational setup than the embedded SQLite catalogue used here. A CSC
+deployment could be studied, but this thesis did not install or benchmark ODC. \\
+\end{longtable}
+\normalsize
+
+The comparison shows what an in-house system should reuse. Public catalogues and standards
+already solve much of data discovery and access; hosted platforms also supply scaled processing.
+The prototype therefore reuses STAC metadata, OGC interfaces, OAuth2, open raster formats,
+the provider's CATALYST RTC product, and Planetary Computer-hosted assets. It implements
+project-specific schema checks, transport-neutral scene records, bounded active concurrency,
+explicit retry classification, content-addressed source storage, append-only provenance, a
+local SQLite spatial catalogue, offline reports, and a read-only educational API. It does not
+reimplement a global catalogue, remote raster service, or cloud scheduler.
+
+Several related services occupy distinct positions. The National Aeronautics and Space
+Administration (NASA) Earthdata system provides access to NASA mission holdings and
+authentication through Earthdata Login \citep{nasa-earthdata}. Digital Earth Australia (DEA)
+is a curated national data service built around Australian satellite observations and
+analysis-ready products \citep{dea-home,odc-home}. The European Space Agency (ESA)
+EarthCODE programme focuses on discoverable and citable Earth-science experiments and
+workflows, rather than acting as a general replacement for mission archives
+\citep{esa-earthcode}. The Amazon Web Services (AWS) Open Data Registry lists datasets
+hosted on AWS; its presence does not make AWS the data owner or remove the need to assess
+compute and transfer costs \citep{aws-registry}. UP42 provides a commercial marketplace and
+workflow services across multiple data providers \citep{up42-home}.
+
+The name Sentinel Hub requires particular care. CDSE exposes Sentinel Hub APIs within its
+Copernicus service portfolio. Planet separately markets Sentinel Hub capabilities as part of
+its commercial Planet Insights Platform after acquiring the Sentinel Hub business. Shared
+service history does not make CDSE access terms and Planet commercial terms interchangeable
+\citep{cdse-sentinelhub,planet-insights}. Neither Sentinel Hub service is the source of the
+Sentinel-1 raster assets in this thesis.
+
+For the University and Kvarken Space Center, the in-house contribution is the explicit path
+from offline exercises to a first remote metadata prototype, not superiority over these
+platforms. The five-scene CSC cPouta run stored authentic captured metadata with provenance,
+queried the SQLite catalogue, and exercised a loopback API. CSC did not perform live catalogue
+discovery, fetch the raster windows, or run the scientific classifier. A student workflow can
+teach validation and traceability with the existing exercises, while live provider use,
+CSC raster work, multi-user operations, cost comparison, and learning outcomes remain outside
+the demonstrated scope. The next section specifies the STAC records and asset relationships
+that the prototype consumes.
 
 \section{STAC's hierarchical catalog model}
 
@@ -80,7 +256,7 @@ form request equivalent to
 \]
 The token is then sent as an HTTP bearer credential:
 \[
-\texttt{Authorization: Bearer } access\_token.
+\texttt{Authorization: Bearer <access\_token>}
 \]
 Secrets are resolved from environment variables and never placed in source code, reports, or
 provenance manifests. A missing or incomplete configuration selects the offline fixture transport,
@@ -98,7 +274,8 @@ JSON, an absent token, or a non-positive lifetime are permanent protocol errors.
 
 \section{Geospatial filtering and indexing}
 
-The Kvarken region is first approximated by an axis-aligned WGS 84 bounding box
+The Kvarken region is first approximated in the World Geodetic System 1984 (WGS 84)
+coordinate reference system (CRS) by an axis-aligned bounding box
 \[
 B_R=[\lambda_{\min},\lambda_{\max}]\times[\phi_{\min},\phi_{\max}]
 =[20.5,22.5]\times[62.8,63.8].
@@ -111,7 +288,7 @@ necessary intersection predicate is
 \phi^-_S\leq\phi^+_R \land
 \phi^+_S\geq\phi^-_R.
 \]
-This inexpensive predicate is suitable for indexed SQL columns. It is a pre-filter, not a complete
+This inexpensive predicate is suitable for indexed Structured Query Language (SQL) columns. It is a pre-filter, not a complete
 topological test: two bounding boxes can overlap even when their polygons do not.
 
 The exact second-stage test uses polygon intersection. For point-in-polygon classification, the
@@ -145,7 +322,8 @@ starts a new transaction. Consequently, concurrent readers can see different val
 write burst, but no reader should observe a half-written row. Checkpointing eventually transfers
 committed pages back to the main database.
 
-The durability contract follows ACID:
+The durability contract follows the Atomicity, Consistency, Isolation, and Durability (ACID)
+properties:
 \begin{description}
 \item[Atomicity] A scene upsert commits as one transaction; an error rolls back the complete
 transaction rather than exposing a partial record.
