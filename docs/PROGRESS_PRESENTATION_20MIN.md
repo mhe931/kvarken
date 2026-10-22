@@ -1,47 +1,57 @@
 # 20-minute thesis progress presentation
 
-> Historical September outline. Page/word counts and scientific scope below are not the
-> current actual-data draft. No remote Slides update was performed; see the
-> [current delivery report](THESIS_DELIVERY_REPORT_20261019.md).
+> Working local outline for the current thesis source. The linked Google Slides file has
+> not been updated or verified in this revision. Do not use prior page counts as current.
 
 Native Google Slides: https://docs.google.com/presentation/d/1QTyciM7cg8vAszsHBpBuoQxTkVx4bKWPY6q5YFdzl4k/edit
 
-## Historical 12-slide narrative
+## Current 12-slide narrative
 
-1. 20-minute thesis progress update
-2. Thesis state now
-3. What changed after the audit
-4. Research design is now explicit
-5. Completed implementation map
-6. Frozen experiment evidence
-7. Live-experiment harness status
-8. Manuscript status
-9. Remaining University-compliance steps
-10. Current risks and limitations
-11. Decisions needed from supervisor
-12. Progress conclusion
+1. Thesis title, University context, and scope
+2. Research purpose, gap, and questions
+3. Comparative EO platform landscape: CDSE, Earth Engine, Planetary Computer, CREODIAS,
+   openEO, Pangeo, and Open Data Cube
+4. Hybrid architecture and what the prototype reuses or implements
+5. Provider boundaries: offline CDSE tests versus Planetary Computer raster access
+6. Student workflow: onboarding through independent reproduction, with evidence status
+7. Sentinel-1/Sentinel-2 case selection, WorldCover role, and provenance
+8. Validation design and optical-proxy label limits
+9. Results and interpretation: 88.00% ordinary agreement, 23.53% ice precision, and
+   95.99% always-water agreement on selected labelled cells
+10. Education and research capabilities demonstrated versus future proposals
+11. Threats to validity, reproducibility, and remaining tests
+12. Current status, open supervisor/institutional gates, and next steps
 
-## Manuscript status and artifact-specific pagination
+## Evidence to keep visible
 
-The September outline recorded approximately 39 rendered pages and 9,480 words for
-the historical DOCX candidate, not the LaTeX PDF. That DOCX count has not been
-revalidated here; PR #22's original 44-page LaTeX claim also predates the current revision.
-Neither is the current manuscript count. The verified 19 October review exports have
-**71 Word-rendered pages** and **64 LaTeX pages**, respectively. Different pagination
-does not establish remote synchronization or final acceptance.
+- The 256-scene benchmark is synthetic and uses the offline baseline.
+- The 20260915 report is an offline fallback, not evidence of authenticated CDSE success.
+- The CSC demonstration replayed five captured metadata records through provenance, catalog
+  queries and a loopback API; raster classification ran locally.
+- The optical-proxy metrics describe selected labelled cells, not all candidate pixels or
+  field-validated ice extent.
+- The in-house prototype reuses established standards and hosted services; it is not a
+  replacement for global EO platforms.
+- Student learning outcomes, cost savings, multi-user operation, remote CSC raster processing
+  and live CDSE pixel access have not been demonstrated.
 
-The manuscript's structural improvements include:
+## Manuscript and export status
 
-- explicit research gap;
-- design-and-evaluation methodology;
-- RQ-to-evidence mapping;
-- separate Evaluation (Chapter 6), Analysis, and Discussion chapters;
-- explicit validity boundaries;
-- accurate AI-assisted work disclosure;
-- explicit synthetic/fallback/live evidence separation.
+The previous source revision produced a 69-page CI PDF and an 82-page Word-rendered review
+PDF. The platform-comparison, workflow and abbreviation changes in the current branch have
+not yet been compiled or paginated. Those previous counts are historical and must not be
+presented as current. The current branch has not passed Python/Ruff checks, official-template
+DOCX export, PDF/A validation or accessibility review.
 
-## Submission sequence shown in the deck
+The abstract is 442 words and does not include the specific numeric study results. Current
+page numbers and the contents/list pages remain subject to a new build.
 
-Supervisor pre-review -> corrections -> supervisor permission -> Turnitin -> freeze identical final version -> accessible PDF/A -> Osuva -> send same version to supervisor and Education Services.
+## Submission sequence
 
-The exact defense/seminar duration remains a supervisor/programme decision rather than a claimed University-wide rule.
+Author review -> current-source build and correction -> supervisor review -> written
+permission for Turnitin -> review of the similarity report -> final accessible and validated
+file -> Osuva submission under the programme's instructions. This sequence is a plan; no
+email, Turnitin submission, Osuva submission or supervisor approval is claimed.
+
+The exact defence/seminar duration and individual submission deadline require confirmation
+from the supervisor or programme.

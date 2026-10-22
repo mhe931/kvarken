@@ -13,7 +13,7 @@ persistence. Every stored scene therefore satisfies the same identity, temporal,
 and quality-shape contracts, irrespective of its source.
 \item[Transport decoupling] HTTP, OAuth2, fixture, and test transports implement injectable
 boundaries. Search, transformation, catalog, and report code do not depend on a particular
-network client or provider SDK.
+network client or provider software development kit (SDK).
 \item[Bounded active concurrency] The number of active ingestion workers is explicit and enforced by an
 \texttt{asyncio.Semaphore}. If the configured limit is \(k\), the invariant
 \(0\leq A(t)\leq k\) holds at every instant \(t\), protecting both provider rate limits and local

@@ -19,7 +19,7 @@ This framing is important because the central research object is an infrastructu
 RQ1 & Boundary validation, \texttt{EOScene} transformation, provenance records, schema tests & Provider-neutral normalization with traceable source evidence & Universal compatibility with all EO providers or schemas \\
 RQ2 & Semaphore-limited ingestor, timeout/429/token tests, explicit error classes & Controlled recovery and bounded active concurrency & Production CDSE reliability or bounded scheduling memory \\
 RQ3 & SQLite/WAL catalog, query tests, contention coverage, frozen latency value & Functional regional, temporal, quality, and platform queries in the local baseline & Distributed scalability or general latency guarantees \\
-RQ4 & Frozen reports, dated artifacts, CI, checked-in fixtures, release baseline & Repeatable offline baseline and inspectable evidence lineage & Perfect reproducibility across all hardware and provider conditions \\
+RQ4 & Frozen reports, dated artifacts, CI, checked-in fixtures, release baseline, CSC metadata replay & Repeatable offline baseline and a first-stage remote metadata workflow & Independent student reproduction, remote raster portability, or perfect reproducibility across hardware and provider conditions \\
 RQ5 & Real SAR/optical pixels, spatially held-out comparison, maps and checksums & Executed application and agreement with optical proxy labels & Field accuracy, validated total extent or a transferable ice classifier \\
 \bottomrule
 \end{tabular}
@@ -27,7 +27,7 @@ RQ5 & Real SAR/optical pixels, spatially held-out comparison, maps and checksums
 
 \section{Study context and system boundaries}
 
-The regional study context is represented by the bounding box longitude 20.5 to 22.5 and latitude 62.8 to 63.8 in EPSG:4326. This rectangle is a deterministic experimental region, not a claim that it exactly reproduces an ecological, administrative, or operational boundary of Kvarken. Boundary-touching scenes are counted as intersecting. Scenes with unsupported coordinate-reference information are rejected instead of silently reprojected.
+The regional study context is represented by the bounding box longitude 20.5 to 22.5 and latitude 62.8 to 63.8 in WGS 84 (EPSG:4326). This rectangle is a deterministic experimental region, not a claim that it exactly reproduces an ecological, administrative, or operational boundary of Kvarken. Boundary-touching scenes are counted as intersecting. Scenes with unsupported coordinate-reference information are rejected instead of silently reprojected.
 
 The evaluated release baseline is version 0.1.0. The core runtime declares no third-party Python dependencies and requires Python 3.11 or later. Continuous integration is configured for Python 3.11 and 3.12 and executes linting, formatting checks, the offline test suite, and an offline health verification.
 
@@ -46,7 +46,7 @@ Failure handling follows an explicit classification. Timeouts and HTTP 429 respo
 
 \section{Evaluation strategy}
 
-Evaluation has three layers. First, automated tests exercise malformed payload rejection, pagination, timeout and rate-limit
+Evaluation has four layers. First, automated tests exercise malformed payload rejection, pagination, timeout and rate-limit
 recovery, OAuth2 expiry and token errors, provenance integrity, bounded active-worker limits,
 quality filters, raster range behavior, NDVI calculation, HTTP queries, artifact retention,
 SQLite contention, WAL durability, and deterministic reports. CDSE token and STAC behavior is
@@ -73,7 +73,7 @@ Because the run observed zero failures and zero retries, this value is a reporti
 not a measured recovery rate; the scientific interpretation is not measured (N/A). Controlled
 fault-injection tests provide the recovery evidence.
 
-\section{Research integrity, validity, and AI-assisted work}
+\section{Research integrity, validity, and Artificial Intelligence (AI)-assisted work}
 
 Quantitative claims are tied to versioned repository artifacts. Synthetic and fallback evidence are labeled explicitly. Missing authenticated-provider results are not replaced by estimates. Threats to internal, construct, external, and reproducibility validity are discussed separately.
 

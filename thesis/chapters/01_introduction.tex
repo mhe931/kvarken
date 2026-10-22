@@ -17,7 +17,15 @@ institutional service performance; neither was evaluated.
 
 \section{Problem statement and research gap}
 
-Standards and public platforms address important parts of EO access. STAC provides a common JSON-based description of spatiotemporal assets, OGC standards support interoperable geospatial interfaces, and the Copernicus Data Space Ecosystem (CDSE) provides access to Copernicus data and cloud-oriented processing services \citep{ogc-api-features,stac-spec,cdse,kovacs2026cdse}. These facilities reduce fragmentation at the provider boundary, but they do not by themselves define how a small research project should validate incoming metadata, preserve raw evidence, bound concurrent work, separate transient from permanent failures, maintain a local spatial catalog, or freeze empirical artifacts for later comparison.
+Standards and public platforms address important parts of EO access. The SpatioTemporal Asset
+Catalog (STAC) provides a common JavaScript Object Notation (JSON)-based description of spatiotemporal assets, the Open
+Geospatial Consortium (OGC) develops interoperable geospatial standards, and the Copernicus
+Data Space Ecosystem (CDSE) provides access to Copernicus data and cloud-oriented processing
+services \citep{ogc-api-features,stac-spec,cdse,kovacs2026cdse}. These facilities reduce
+fragmentation at the provider boundary, but they do not by themselves define how a small
+research project should validate incoming metadata, preserve raw evidence, bound concurrent
+work, separate transient from permanent failures, maintain a local spatial catalog, or freeze
+empirical artifacts for later comparison.
 
 Within the scope of this thesis, the research gap is operational and architectural rather than a claim that equivalent technologies do not exist. The question is how standards-based provider access can be assembled into a small, reproducible, and inspectable research and teaching infrastructure with explicit contracts. The system must be usable with deterministic offline fixtures and support bounded active concurrency, explicit retry behavior, stated coordinate assumptions and immutable experiment evidence. The current batch implementation schedules one coroutine per item; it does not claim constant scheduling memory for an unbounded input stream.
 
@@ -29,9 +37,10 @@ external standards-based metadata access with local reproducible storage and pro
 this thesis, \emph{hybrid} refers to that combination and its offline execution path based on
 checked-in fixtures.
 
-The implemented scope includes STAC/CDSE access concepts, typed validation, a provider-neutral \texttt{EOScene} model, OAuth2 token handling, bounded asynchronous ingestion, SHA-256 content addressing, append-only provenance, a SQLite/WAL spatial catalog, metadata quality profiling, a range-based raster/NDVI slice, deterministic experiment reports, and a read-only educational HTTP interface.
+The implemented scope includes STAC/CDSE access concepts, typed validation, a provider-neutral \texttt{EOScene} model, OAuth 2.0 (OAuth2) token handling, bounded asynchronous ingestion, Secure Hash Algorithm with a 256-bit digest (SHA-256) content addressing, append-only provenance, a SQLite catalog using Write-Ahead Logging (WAL), metadata quality profiling, a range-based raster and Normalized Difference Vegetation Index (NDVI) slice, deterministic experiment reports, and a read-only educational Hypertext Transfer Protocol (HTTP) interface.
 
-The evaluation includes local processing of Sentinel-1 RTC pixels and comparison with a
+The evaluation includes local processing of Sentinel-1 radiometrically terrain-corrected
+(RTC) pixels and comparison with a
 selective Sentinel-2 optical proxy. A separate five-scene metadata, provenance, catalog and
 loopback-API replay executed on CSC cPouta. This is a verified first-stage remote prototype,
 not remote raster classification. Neither experiment establishes field-validated sea-ice
@@ -40,11 +49,14 @@ outcomes.
 
 \section{Research questions}
 
+A research question (RQ) label is used below to identify the questions in the evidence
+tables and later analysis.
+
 \begin{enumerate}
   \item How can heterogeneous STAC and CDSE metadata be validated and transformed into a transport-neutral EO scene model while preserving provenance?
   \item How can asynchronous ingestion bound active concurrency and recover from transient timeouts, OAuth2 expiration, and HTTP 429 responses without retrying malformed payloads?
   \item How effectively can a dependency-free SQLite catalog support regional, temporal, quality, and platform queries under concurrent reader/writer contention?
-  \item Which empirical measurements and artifacts are sufficient to make an offline EO pipeline baseline reproducible for research and education?
+  \item Which repository artifacts and execution steps support reproduction of the offline baseline and a first-stage CSC metadata workflow?
   \item Can the infrastructure support a traceable real-data sea-ice application, and what does comparison with independent optical evidence reveal about its scientific limitations?
 \end{enumerate}
 
@@ -55,10 +67,14 @@ which provider-specific behavior is isolated from a typed domain model. Second, 
 an in-house research and teaching prototype that combines bounded active concurrency,
 provenance, embedded spatial persistence, quality filtering, lightweight raster analysis,
 offline exercises and a read-only educational interface. Third, it defines a reproducibility
-protocol based on frozen fixtures, deterministic reports, versioned source, CI and dated
+protocol based on frozen fixtures, deterministic reports, versioned source, continuous
+integration (CI) and dated
 additive experiment artifacts. Fourth, it connects local scientific processing to a verified
 five-scene CSC metadata workflow while stating the limits of both technical and scientific
 evidence. No educational benefit or learning outcome is claimed without evaluation.
+
+The implementation and frozen research artifacts are available in the versioned thesis
+repository \citep{kvarken-repo}.
 
 The contribution is architectural and methodological rather than a new remote-sensing algorithm. The application also tests an important boundary: an infrastructure can run correctly while its scientific classifier remains unsuitable for operational extent estimation. Reporting both outcomes is more informative than treating a successful processing command as scientific validation.
 

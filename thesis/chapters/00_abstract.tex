@@ -26,14 +26,14 @@ validated before transformation into a transport-neutral scene model. The implem
 combines bounded active concurrency, content-addressed payload storage, append-only provenance,
 an embedded spatial catalog, metadata quality filters and a read-only educational interface.
 Students can use offline metadata fixtures, source validation, provenance inspection, spatial
-queries, the read-only API and local real-data processing. These are implemented exercises;
+queries, the read-only Application Programming Interface (API) and local real-data processing. These are implemented exercises;
 learning outcomes were not evaluated.
 
 The practical application examines sea-ice candidate mapping in eastern Kvarken using actual
 Sentinel-1 radar observations and upstream CATALYST radiometric terrain-correction products
 hosted by Microsoft Planetary Computer. Sentinel-2 observations provide conservative optical
-proxy labels for snow-covered ice and dark water; ESA WorldCover 2021 v200 supplies an annual
-retrospective land mask, not a March 2021 ice observation. The overlapping records define a
+proxy labels for snow-covered ice and dark water; European Space Agency (ESA) WorldCover 2021
+v200 supplies an annual retrospective land mask, not a March 2021 ice observation. The overlapping records define a
 single case rather than representative seasonal sampling. The optical scene followed the radar
 acquisition, so proxy labels are not a contemporaneous reference. A scene-specific linear
 discriminant uses both radar polarisations. Spatially separated training and evaluation blocks
@@ -52,12 +52,13 @@ acquisition records let the reader trace the relationship between the input obse
 the analysis. The experiment provides evidence of application integration, not an operational
 ice-monitoring algorithm.
 
-Raster analysis ran locally. A five-scene CSC cPouta replay verified scene identities,
+Raster analysis ran locally. A five-scene metadata replay on cPouta, a cloud service of the
+Finnish IT Center for Science (CSC), verified scene identities,
 persistent provenance, regional queries and the loopback API. This demonstrates a first-stage
 remote research and teaching workflow, not image classification, distributed processing,
 improved classifier accuracy or cloud scalability. Further independent observations and
 educational evaluation remain future work.
 
-\par\medskip\noindent\textbf{Keywords:} Earth Observation; Sentinel-1; sea ice; STAC;
+\par\medskip\noindent\textbf{Keywords:} Earth Observation; Sentinel-1; sea ice; SpatioTemporal Asset Catalog;
 provenance; spatial catalog; reproducibility; Kvarken
 \endgroup

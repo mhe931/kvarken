@@ -9,6 +9,90 @@ through assumed educational outcomes. The objective is to support research and t
 within Kvarken Space Center and the University of Vaasa with a modest, reproducible
 prototype that can run locally and expose its evidence and limits.
 
+\section{Student workflow and implementation evidence}
+
+A student workflow can be described as a sequence from onboarding to independent
+reproduction. Figure~\ref{fig:csc-student-workflow} shows the intended order. The labels
+below the figure separate steps demonstrated in the thesis work from steps that were
+tested only in local or offline environments, and from steps that remain proposed.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  workflow/.style={
+    draw=blue!55!black,
+    fill=blue!5,
+    rounded corners,
+    text width=0.82\textwidth,
+    minimum width=0.86\textwidth,
+    align=center,
+    inner sep=4pt,
+    font=\small
+  },
+  flow/.style={-{Stealth[length=2mm]}, thick, draw=gray!70},
+  node distance=2mm
+]
+\node[workflow] (onboarding) {\textbf{Student onboarding}};
+\node[workflow, below=of onboarding] (access) {\textbf{CSC environment and access setup}};
+\node[workflow, below=of access] (discovery) {\textbf{EO Catalogue discovery}};
+\node[workflow, below=of discovery] (selection) {\textbf{Dataset selection}};
+\node[workflow, below=of selection] (retrieval) {\textbf{Data retrieval or remote access}};
+\node[workflow, below=of retrieval] (analysis) {\textbf{Processing and analysis}};
+\node[workflow, below=of analysis] (provenance) {\textbf{Provenance recording}};
+\node[workflow, below=of provenance] (storage) {\textbf{Result storage}};
+\node[workflow, below=of storage] (reproduction) {\textbf{Reproduction by another student}};
+\draw[flow] (onboarding) -- (access);
+\draw[flow] (access) -- (discovery);
+\draw[flow] (discovery) -- (selection);
+\draw[flow] (selection) -- (retrieval);
+\draw[flow] (retrieval) -- (analysis);
+\draw[flow] (analysis) -- (provenance);
+\draw[flow] (provenance) -- (storage);
+\draw[flow] (storage) -- (reproduction);
+\end{tikzpicture}
+\caption{Intended student workflow for using the EO infrastructure with CSC. The sequence
+is a teaching design, not a claim that every step was executed on CSC.}
+\label{fig:csc-student-workflow}
+\end{figure}
+
+\begin{longtable}{p{0.23\textwidth}p{0.19\textwidth}p{0.48\textwidth}}
+\caption{Evidence status for the proposed student workflow}
+\label{tab:csc-student-workflow}\\
+\toprule
+\textbf{Workflow stage} & \textbf{Status} & \textbf{Evidence and boundary} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Workflow stage} & \textbf{Status} & \textbf{Evidence and boundary} \\
+\midrule
+\endhead
+Student onboarding & Proposed & No student onboarding session or student cohort was observed or evaluated. \\
+CSC environment and access setup & Demonstrated once & The thesis project's CSC service access and instance quota were checked, and a small cPouta instance ran the metadata replay. This was not a multi-student setup exercise. \\
+EO catalogue discovery & Tested offline & STAC and CDSE-shaped metadata paths are covered by fixtures and injected transports. Live CDSE discovery, including on CSC, was not tested. \\
+Dataset selection & Demonstrated for captured records & Five actual scene-metadata records were replayed and their identities checked. Students did not select items through a live catalogue. \\
+Data retrieval or remote access & Local case only & The Sentinel rasters were retrieved from Microsoft Planetary Computer and processed locally. CSC raster retrieval and authenticated CDSE pixel access were not tested. \\
+Processing and analysis & Local case only & Raster processing and the optical-proxy comparison ran locally. The CSC replay did not process or classify raster pixels. \\
+Provenance recording & Demonstrated for metadata & The CSC replay checked payload provenance and persisted the five scene records in the spatial catalog. It did not record provenance for a remote raster-processing run. \\
+Result storage & Partly demonstrated & Metadata and catalog state were stored during the CSC replay; scientific raster outputs and figures were produced locally. A student-managed result-storage workflow was not tested. \\
+Reproduction by another student & Not tested & Commands and configuration requirements are documented in Appendix~\ref{app:repro}, but no independent student reproduction was observed. \\
+\bottomrule
+\end{longtable}
+
+The demonstrated CSC workflow required access to the thesis project and a configured
+instance. Project access and the instance quota were checked through MyCSC and the
+authenticated OpenStack dashboard. Restricted SSH access timed out, so the recorded
+replay used the project's existing cloud-init route rather than changing ingress rules.
+This experience does not establish a general onboarding procedure or a minimum resource
+profile for student workloads.
+
+The core package requires Python 3.11 or later and has no third-party runtime dependencies.
+The local raster case requires the optional scientific dependencies, the retained input
+windows or a fresh acquisition, network access to the selected provider, and sufficient
+local storage and memory. The offline metadata exercises do not require provider
+credentials. The exact clean-checkout and cache-reuse commands are provided in
+Appendix~\ref{app:repro}; reuse validates the recorded inputs and writes outputs to a new
+directory.
+
 \section{Capabilities available for student use}
 
 The current codebase supports a sequence of practical exercises:

@@ -4,6 +4,10 @@ The canonical content is [main.tex](main.tex), the modular chapters and [referen
 Exports are **review drafts**, not supervisor approval or university acceptance.
 See [the delivery report](../docs/THESIS_DELIVERY_REPORT_20261019.md).
 
+The platform-comparison, CSC student-workflow and abbreviation changes in the current branch
+have not yet been built. Export and page-count details below describe earlier source revisions
+and must not be treated as verification of the current manuscript.
+
 ## PDF source build
 
 The manuscript uses Calibri when installed and Carlito otherwise. Local authoritative review
@@ -12,7 +16,7 @@ official-font compliance. Margins are 3 cm, body 12 pt/1.5 spacing, abstract 11 
 Arabic numbering is continuous from counted/unprinted cover 1 to abstract 2.
 The bibliography uses BibLaTeX APA and Biber.
 
-The 22 October source revision compiled successfully in
+An earlier 22 October source revision compiled successfully in
 [GitHub Actions run 67](https://github.com/mhe931/kvarken/actions/runs/39684054300). The
 69-page artifact was inspected for contents/list pagination, figure/table numbering,
 cross-references and figure rendering. CI uses Carlito as a fallback font. This is a review
@@ -59,7 +63,7 @@ native TOC/page fields for chapters and sections. Pandoc does not render the Tik
 figure into DOCX, so the exporter replaces its empty placeholder with an editable, styled
 six-stage flow diagram. It does not update the remote Google Doc or render Word by itself.
 
-The current 22 October DOCX was generated and structurally checked, including heading styles,
+An earlier 22 October DOCX was generated and structurally checked, including heading styles,
 caption numbering, the architecture flow diagram, figure descriptions and document metadata.
 Word updated its contents, figure/table lists and page-reference fields, then rendered an
 82-page review PDF. The diagram was visually verified at its Chapter 4 caption (page 29);
