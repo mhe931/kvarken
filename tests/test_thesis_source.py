@@ -61,12 +61,7 @@ def test_platform_review_covers_requested_services_and_ecosystems():
 
 
 def test_csc_student_workflow_labels_demonstrated_and_proposed_stages():
-    source = (
-        Path(__file__).parents[1]
-        / "thesis"
-        / "chapters"
-        / "09_education_innovation.tex"
-    )
+    source = Path(__file__).parents[1] / "thesis" / "chapters" / "09_education_innovation.tex"
     manuscript = source.read_text(encoding="utf-8")
 
     for stage in (
@@ -114,9 +109,7 @@ def test_abbreviations_include_used_terms_and_omit_unused_entries():
         assert f"{acronym} &" in manuscript
     for unused in ("JSONL", "LDA", "ROI"):
         assert f"{unused} &" not in manuscript
-    abbreviations = re.findall(
-        r"(?m)^([A-Za-z0-9/-]+|WGS 84)\s*&", manuscript
-    )
+    abbreviations = re.findall(r"(?m)^([A-Za-z0-9/-]+|WGS 84)\s*&", manuscript)
     assert abbreviations == sorted(abbreviations, key=str.casefold)
     assert len(abbreviations) == len(set(abbreviations))
 

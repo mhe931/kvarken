@@ -27,7 +27,8 @@
 - Current-source official-template DOCX, PDF/A validation, accessibility review, final page
   counts, and a current supervisor-response pagination pass remain open.
 - No new satellite acquisition, CSC deployment, email, Turnitin upload, or Osuva submission
-  was performed. The pull request for this expanded source revision has not yet been created.
+  was performed. A pull request for this expanded source revision is open; CI status is being
+  checked and addressed separately from the unfinished document-export and Google Drive work.
 
 ### Previous source checkpoint
 
