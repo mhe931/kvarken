@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pytest
@@ -5,7 +6,7 @@ import pytest
 docx = pytest.importorskip("docx")
 
 from thesis.export_documents import (  # noqa: E402
-    _insert_architecture_diagram,
+    _insert_tikz_diagrams,
     format_document,
 )
 
@@ -51,6 +52,10 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
             str(Path(__file__).parents[1] / "thesis" / "assets" / "uwasa-logo.jpg")
         )
         document.add_paragraph(caption)
+    document.add_paragraph(
+        "Intended student workflow for using the EO infrastructure with CSC. "
+        "This is a teaching design, not a claim that every step was executed on CSC."
+    )
     document.add_paragraph("Research questions, primary evidence, and claim boundaries.")
     document.add_paragraph("Held-out confusion matrix. Details.")
     document.add_heading("Disclosure of AI-Assisted Work", 1)
@@ -82,12 +87,28 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     assert "white areas are excluded" in descriptions[2]
     assert "Green cells agree and red cells disagree" in descriptions[3]
     text = [paragraph.text for paragraph in saved.paragraphs]
+    abstract_start = text.index("UNIVERSITY OF VAASA")
+    abstract_end = next(i for i, value in enumerate(text) if value.startswith("Keywords:"))
+    assert all(
+        paragraph.paragraph_format.space_after.pt == 0
+        and paragraph.paragraph_format.line_spacing == 1
+        for paragraph in saved.paragraphs[abstract_start : abstract_end + 1]
+    )
     assert "1  Introduction" in text
     assert "1.1  Motivation" in text
     assert any(
         p.text.startswith("Figure 4.1. Provider-to-application architecture")
         for p in saved.paragraphs
     )
+    assert any(
+        p.text.startswith("Figure 9.1. Intended student workflow for using the EO infrastructure")
+        for p in saved.paragraphs
+    )
+    assert any(
+        p.text.startswith("Figure 9.1. Intended student workflow") and "PAGEREF" in p._p.xml
+        for p in saved.paragraphs
+    )
+    assert not any(p.text.startswith("Figure 4.1. Figure 4.1.") for p in saved.paragraphs)
     assert (
         text.index("References")
         < text.index("Verified source.")
@@ -95,6 +116,9 @@ def test_document_has_continuous_pages_numbered_chapters_and_references_before_a
     )
     assert not any(p.text == "Abstract" and p.style.name == "Heading 1" for p in saved.paragraphs)
     assert saved.sections[0].different_first_page_header_footer
+    page_numbering = saved.sections[0]._sectPr.find(docx.oxml.ns.qn("w:pgNumType"))
+    assert page_numbering is not None
+    assert page_numbering.get(docx.oxml.ns.qn("w:start")) == "1"
     assert "PAGE" in saved.sections[0].header._element.xml
     assert saved.styles["Normal"].font.name == "Calibri"
     assert saved.styles["Normal"].font.size.pt == 12
@@ -135,20 +159,36 @@ def test_document_describes_the_cover_logo(tmp_path):
     assert saved.inline_shapes[0]._inline.docPr.get("descr") == "University of Vaasa logo"
 
 
-def test_architecture_diagram_replaces_the_empty_pandoc_placeholder(tmp_path):
+def test_canonical_abstract_stays_within_one_page_word_count_target():
+    source = (Path(__file__).parents[1] / "thesis" / "chapters" / "00_abstract.tex").read_text(
+        encoding="utf-8"
+    )
+    abstract = source.split(r"\textbf{Abstract}\par", maxsplit=1)[1].split(
+        r"\textbf{Keywords:}", maxsplit=1
+    )[0]
+    plain_text = re.sub(r"\\[a-zA-Z]+|[{}]", " ", abstract)
+    word_count = len(re.findall(r"\b[\w’'-]+\b", plain_text))
+    assert 400 <= word_count <= 450
+
+
+def test_tikz_diagrams_replace_the_empty_pandoc_placeholders(tmp_path):
     path = tmp_path / "architecture.docx"
     document = docx.Document()
     document.add_paragraph("The architecture is shown in Figure 4.1.")
-    document.add_paragraph("Figure 4.1. Provider-to-application architecture\tUpdate field")
+    placeholder = document.add_table(rows=1, cols=1)
+    placeholder._tbl.remove(placeholder.rows[0]._tr)
     document.add_paragraph(
         "Figure 4.1. Provider-to-application architecture and subsystem boundaries."
     )
-    placeholder = document.add_table(rows=1, cols=1)
-    placeholder._tbl.remove(placeholder.rows[0]._tr)
+    workflow_placeholder = document.add_table(rows=1, cols=1)
+    workflow_placeholder._tbl.remove(workflow_placeholder.rows[0]._tr)
+    document.add_paragraph(
+        "Figure 9.1. Intended student workflow for using the EO infrastructure with CSC."
+    )
     document.add_paragraph("Appendix content follows.")
     document.save(path)
 
-    _insert_architecture_diagram(path)
+    _insert_tikz_diagrams(path)
 
     saved = docx.Document(path)
     diagram = next(table for table in saved.tables if len(table.rows) == 11)
@@ -170,3 +210,16 @@ def test_architecture_diagram_replaces_the_empty_pandoc_placeholder(tmp_path):
     assert body.index(diagram._tbl) < body.index(
         next(p._p for p in saved.paragraphs if p.text == "Appendix content follows.")
     )
+    workflow = next(table for table in saved.tables if len(table.rows) == 17)
+    workflow_text = [row.cells[0].text for row in workflow.rows]
+    assert workflow_text[0] == "Student onboarding"
+    assert workflow.cell(0, 0).paragraphs[0].paragraph_format.page_break_before
+    assert workflow_text[2] == "CSC environment and access setup"
+    assert workflow_text[1] == "↓"
+    assert workflow_text[16] == "Reproduction by another student"
+    assert not any(not table.rows for table in saved.tables)
+    assert workflow._tbl.tblPr.find(docx.oxml.ns.qn("w:tblDescription")) is not None
+    workflow_caption = next(
+        p for p in saved.paragraphs if p.text.startswith("Figure 9.1. Intended student workflow")
+    )
+    assert body.index(workflow._tbl) < body.index(workflow_caption._p)

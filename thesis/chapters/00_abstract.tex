@@ -13,52 +13,50 @@ Year & 2026\\
 \end{tabular}
 \par\medskip\noindent\textbf{Abstract}\par
 
-Earth Observation research depends on more than downloading satellite images. A usable
-infrastructure must validate metadata, preserve the origin of observations, control external
-requests, support spatial queries, and connect these operations to a scientific application.
-This thesis designs and evaluates an in-house hybrid Earth Observation infrastructure to
-support research and teaching within Kvarken Space Center and the University of Vaasa.
-Here, hybrid means external standards-based data access combined with local persistence,
-processing and an offline-safe engineering baseline.
+Earth Observation research requires more than image downloads: an infrastructure must validate
+metadata, preserve the origin of observations, control external requests, support spatial
+queries, and connect these operations to scientific applications. This thesis designs and
+evaluates an in-house hybrid Earth Observation infrastructure for research and teaching within
+Kvarken Space Center and the University of Vaasa. Hybrid here means standards-based external
+data access combined with local persistence, processing, and an offline-safe engineering
+baseline.
+
+Platform suitability is assessed through documentary analysis rather than comparative user testing.
 
 The work follows an engineering design-and-evaluation approach. Provider responses are
-validated before transformation into a transport-neutral scene model. The implementation
-combines bounded active concurrency, content-addressed payload storage, append-only provenance,
-an embedded spatial catalog, metadata quality filters and a read-only educational interface.
+validated before transformation into a transport-neutral scene model. The prototype combines
+bounded active concurrency, content-addressed payload storage, append-only provenance, an
+embedded spatial catalog, metadata quality filters, and a read-only educational interface.
 Students can use offline metadata fixtures, source validation, provenance inspection, spatial
-queries, the read-only Application Programming Interface (API) and local real-data processing. These are implemented exercises;
-learning outcomes were not evaluated.
+queries, the read-only Application Programming Interface (API), and local real-data processing.
+These are implemented exercises; learning outcomes were not evaluated.
 
 The practical application examines sea-ice candidate mapping in eastern Kvarken using actual
 Sentinel-1 radar observations and upstream CATALYST radiometric terrain-correction products
 hosted by Microsoft Planetary Computer. Sentinel-2 observations provide conservative optical
 proxy labels for snow-covered ice and dark water; European Space Agency (ESA) WorldCover 2021
-v200 supplies an annual retrospective land mask, not a March 2021 ice observation. The overlapping records define a
-single case rather than representative seasonal sampling. The optical scene followed the radar
-acquisition, so proxy labels are not a contemporaneous reference. A scene-specific linear
-discriminant uses both radar polarisations. Spatially separated training and evaluation blocks
-avoid direct sample overlap. Outputs include georeferenced maps, quantitative reports and
-checksummed acquisition records.
+v200 supplies an annual retrospective land mask, not a March 2021 ice observation. The
+overlapping records define one case, not representative seasonal sampling. The optical scene
+followed radar acquisition, so labels are not contemporaneous. A scene-specific linear
+discriminant uses both radar polarisations with spatially separated training and evaluation
+blocks.
 
-The engineering evaluation combines automated failure-oriented tests with a preserved
-synthetic benchmark. The scientific application exposes a substantial limitation: positive
-ice precision is low, and ordinary agreement is below an always-water baseline. Many candidate
-cells have no optical reference labels, so the full candidate area is not validated sea-ice
-extent. The acquisition gap, incomplete optical coverage, wind-sensitive radar backscatter,
-unverified upstream noise treatment and untested illumination-angle effects limit
-interpretation. The selected labelled cells support a diagnostic comparison only, not a
-complete estimate of sea-ice conditions across the candidate area. Georeferenced maps and
-acquisition records let the reader trace the relationship between the input observations and
-the analysis. The experiment provides evidence of application integration, not an operational
-ice-monitoring algorithm.
+Automated failure-oriented tests and a preserved synthetic benchmark evaluate engineering
+behavior. The scientific application exposes a limitation: positive ice precision is low, and
+ordinary agreement is below an always-water baseline. Many candidate cells have no optical
+reference labels, so the full candidate area is not validated sea-ice extent. Acquisition
+timing, incomplete optical coverage, wind-sensitive radar backscatter, unverified upstream
+noise treatment, and untested illumination-angle effects limit interpretation. Selected
+labelled cells support diagnostic comparison only, not a complete estimate of sea-ice
+conditions across the candidate area. The experiment demonstrates application integration, not
+an operational ice-monitoring algorithm.
 
 Raster analysis ran locally. A five-scene metadata replay on cPouta, a cloud service of the
-Finnish IT Center for Science (CSC), verified scene identities,
-persistent provenance, regional queries and the loopback API. This demonstrates a first-stage
-remote research and teaching workflow, not image classification, distributed processing,
-improved classifier accuracy or cloud scalability. Further independent observations and
-educational evaluation remain future work.
+Finnish IT Center for Science (CSC), verified scene identities, persistent provenance, regional
+queries, and the loopback API. This demonstrates a first-stage remote research and teaching
+workflow, not image classification, distributed processing, improved classifier accuracy, or
+cloud scalability. Further independent observations and educational evaluation remain future
+work.
 
-\par\medskip\noindent\textbf{Keywords:} Earth Observation; Sentinel-1; sea ice; SpatioTemporal Asset Catalog;
-provenance; spatial catalog; reproducibility; Kvarken
+\par\medskip\noindent\textbf{Keywords:} Earth Observation; Sentinel-1; sea ice; provenance; reproducibility
 \endgroup

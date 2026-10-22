@@ -12,7 +12,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
+from docx.text.paragraph import Paragraph
 
+WORKFLOW_FIGURE = "Intended student workflow for using the EO infrastructure with CSC"
 FIGURES = (
     "Provider-to-application architecture",
     "Sentinel-1A VV gamma-zero input",
@@ -50,6 +52,17 @@ TABLES = (
     "Frozen 256-scene synthetic experiment baseline.",
     "Held-out confusion matrix.",
     "Held-out proxy agreement.",
+)
+WORKFLOW_STAGES = (
+    "Student onboarding",
+    "CSC environment and access setup",
+    "EO Catalogue discovery",
+    "Dataset selection",
+    "Data retrieval or remote access",
+    "Processing and analysis",
+    "Provenance recording",
+    "Result storage",
+    "Reproduction by another student",
 )
 
 
@@ -131,6 +144,15 @@ def format_document(path: Path) -> dict:
         section.left_margin = section.right_margin = Cm(3)
         section.header_distance = Cm(1.5)
         section.different_first_page_header_footer = True
+        page_numbering = section._sectPr.find(qn("w:pgNumType"))
+        if page_numbering is None:
+            page_numbering = OxmlElement("w:pgNumType")
+            columns = section._sectPr.find(qn("w:cols"))
+            if columns is None:
+                section._sectPr.append(page_numbering)
+            else:
+                section._sectPr.insert(section._sectPr.index(columns), page_numbering)
+        page_numbering.set(qn("w:start"), "1")
         header = section.header.paragraphs[0]
         header.clear()
         header.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -173,7 +195,7 @@ def format_document(path: Path) -> dict:
                 else WD_ALIGN_PARAGRAPH.JUSTIFY
             )
             paragraph.paragraph_format.line_spacing = 1
-            paragraph.paragraph_format.space_after = Pt(2)
+            paragraph.paragraph_format.space_after = Pt(0)
             for run in paragraph.runs:
                 run.font.name, run.font.size = "Calibri", Pt(11)
     paragraphs[abstract_start].paragraph_format.page_break_before = True
@@ -238,18 +260,25 @@ def format_document(path: Path) -> dict:
             subsection += 1
             _prefix(paragraph, f"{appendix_letter or chapter}.{section}.{subsection}  ")
         architecture_caption = text.startswith(("Figure 4.1. " + FIGURES[0], FIGURES[0]))
-        figure_caption = architecture_caption or text.startswith(FIGURES[1:])
+        workflow_caption = text.startswith(WORKFLOW_FIGURE)
+        figure_caption = architecture_caption or workflow_caption or text.startswith(FIGURES[1:])
         kind = "Figure" if figure_caption else "Table" if text.startswith(TABLES) else None
         if kind:
             entries = figure_entries if kind == "Figure" else table_entries
             number = (
-                ("4.1" if architecture_caption else f"6.{figure_number + 1}")
+                (
+                    "4.1"
+                    if architecture_caption
+                    else "9.1"
+                    if workflow_caption
+                    else f"6.{figure_number + 1}"
+                )
                 if kind == "Figure"
                 else ("3.1" if not entries else f"6.{len(entries)}")
             )
-            if kind == "Figure" and not architecture_caption:
+            if kind == "Figure" and not architecture_caption and not workflow_caption:
                 figure_number += 1
-            if not text.startswith("Figure 4.1. "):
+            if not text.startswith(f"{kind} {number}."):
                 _prefix(paragraph, f"{kind} {number}. ")
             paragraph.paragraph_format.line_spacing = 1
             paragraph.paragraph_format.keep_together = True
@@ -264,7 +293,11 @@ def format_document(path: Path) -> dict:
             end.set(qn("w:id"), str(bookmark_id))
             paragraph._p.insert(1 if paragraph._p.pPr is not None else 0, start)
             paragraph._p.append(end)
-            short_caption = re.split(r"\.(?:\s|$)", text, maxsplit=1)[0]
+            caption_text = text
+            numbered_prefix = f"{kind} {number}."
+            if caption_text.startswith(numbered_prefix):
+                caption_text = caption_text[len(numbered_prefix) :].lstrip()
+            short_caption = re.split(r"\.(?:\s|$)", caption_text, maxsplit=1)[0]
             entries.append((f"{kind} {number}. {short_caption}", bookmark))
             bookmark_id += 1
     appendix_start = next(
@@ -298,50 +331,23 @@ def format_document(path: Path) -> dict:
     return {"figures": len(figure_entries), "tables": len(table_entries)}
 
 
-def _insert_architecture_diagram(path: Path) -> None:
-    document = Document(path)
-    placeholders = [table for table in document.tables if not table.rows]
-    if len(placeholders) != 1:
-        raise ValueError(
-            f"expected one empty Pandoc architecture placeholder, found {len(placeholders)}"
-        )
-    captions = [
-        paragraph
-        for paragraph in document.paragraphs
-        if paragraph.text.startswith("Figure 4.1. " + FIGURES[0])
-        and "\tUpdate field" not in paragraph.text
-    ]
-    if len(captions) != 1:
-        raise ValueError(f"expected one Figure 4.1 caption, found {len(captions)}")
-    placeholder = placeholders[0]
-    diagram = document.add_table(rows=11, cols=1)
-    diagram.style = "Table Grid"
-    diagram.autofit = False
-    stages = (
-        ("Provider", "STAC collections, CDSE metadata interface, or offline fixtures"),
-        (
-            "Transport and validation",
-            "Injectable HTTP/OAuth2 transport, retries, pagination, and schema validation",
-        ),
-        ("EOScene", "Validated provider item transformed to a typed, transport-neutral record"),
-        (
-            "Provenance and catalog",
-            "SHA-256 raw payloads, append-only manifest, and SQLite SpatialCatalog",
-        ),
-        (
-            "Queries, API, and reports",
-            "Regional/quality filters, read-only educational API, and reproducible reports",
-        ),
-        (
-            "Scientific application",
-            "Local Planetary Computer COG raster analysis; CSC replay covers metadata only",
-        ),
-    )
-    for index, row in enumerate(diagram.rows):
+def _flow_diagram_table(
+    document: Document,
+    stages: tuple[str | tuple[str, str], ...],
+    caption: str,
+    description: str,
+):
+    table = document.add_table(rows=2 * len(stages) - 1, cols=1)
+    table.style = "Table Grid"
+    table.autofit = False
+    table.columns[0].width = Cm(15)
+    for index, row in enumerate(table.rows):
         cell = row.cells[0]
         cell.width = Cm(15)
         cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
         paragraph = cell.paragraphs[0]
+        if index == 0 and caption.startswith(f"Figure 9.1. {WORKFLOW_FIGURE}"):
+            paragraph.paragraph_format.page_break_before = True
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         paragraph.paragraph_format.space_after = Pt(2)
         paragraph.paragraph_format.space_before = Pt(2)
@@ -349,17 +355,97 @@ def _insert_architecture_diagram(path: Path) -> None:
             run = paragraph.add_run("↓")
             run.font.size = Pt(12)
             continue
-        title, detail = stages[index // 2]
+        stage = stages[index // 2]
+        title, detail = stage if isinstance(stage, tuple) else (stage, "")
         shading = OxmlElement("w:shd")
         shading.set(qn("w:fill"), "DDEBF7")
         cell._tc.get_or_add_tcPr().append(shading)
-        title_run = paragraph.add_run(title + "\n")
+        title_run = paragraph.add_run(title)
         title_run.bold = True
         title_run.font.size = Pt(10)
-        detail_run = paragraph.add_run(detail)
-        detail_run.font.size = Pt(10)
-    captions[0]._p.addprevious(diagram._tbl)
-    placeholder._tbl.getparent().remove(placeholder._tbl)
+        if detail:
+            title_run.add_break()
+            detail_run = paragraph.add_run(detail)
+            detail_run.font.size = Pt(10)
+    caption_property = OxmlElement("w:tblCaption")
+    caption_property.set(qn("w:val"), caption)
+    description_property = OxmlElement("w:tblDescription")
+    description_property.set(qn("w:val"), description)
+    table._tbl.tblPr.append(caption_property)
+    table._tbl.tblPr.append(description_property)
+    return table
+
+
+def _insert_tikz_diagrams(path: Path) -> None:
+    document = Document(path)
+    placeholders = [table for table in document.tables if not table.rows]
+    if len(placeholders) != 2:
+        raise ValueError(f"expected two empty Pandoc TikZ placeholders, found {len(placeholders)}")
+    definitions = {
+        f"Figure 4.1. {FIGURES[0]}": (
+            (
+                ("Provider", "STAC collections, CDSE metadata interface, or offline fixtures"),
+                (
+                    "Transport and validation",
+                    "Injectable HTTP/OAuth2 transport, retries, pagination, and schema validation",
+                ),
+                (
+                    "EOScene",
+                    "Validated provider item transformed to a typed, transport-neutral record",
+                ),
+                (
+                    "Provenance and catalog",
+                    "SHA-256 raw payloads, append-only manifest, and SQLite SpatialCatalog",
+                ),
+                (
+                    "Queries, API, and reports",
+                    "Regional/quality filters, read-only educational API, and reproducible reports",
+                ),
+                (
+                    "Scientific application",
+                    "Local Planetary Computer COG raster analysis; CSC replay covers metadata only",
+                ),
+            ),
+            "Provider metadata flows through validation, typed records, provenance, catalog, "
+            "queries and reports to the scientific application. The raster case used local "
+            "Planetary Computer assets; the CSC replay covered metadata only.",
+        ),
+        f"Figure 9.1. {WORKFLOW_FIGURE}": (
+            WORKFLOW_STAGES,
+            "Intended sequence from student onboarding through CSC access, catalogue discovery, "
+            "dataset selection, retrieval, analysis, provenance, storage and reproduction. "
+            "This is a teaching design, not a claim that every step ran on CSC.",
+        ),
+    }
+    body = list(document.element.body)
+    replacements = []
+    for placeholder in placeholders:
+        placeholder_index = body.index(placeholder._tbl)
+        caption = next(
+            (
+                Paragraph(element, document)
+                for element in body[placeholder_index + 1 :]
+                if element.tag == qn("w:p") and Paragraph(element, document).text.strip()
+            ),
+            None,
+        )
+        definition_key = next(
+            (key for key in definitions if caption is not None and caption.text.startswith(key)),
+            None,
+        )
+        if caption is None or definition_key is None:
+            raise ValueError(
+                f"empty Pandoc TikZ placeholder is not followed by a recognized figure caption: "
+                f"{'' if caption is None else caption.text}"
+            )
+        stages, description = definitions[definition_key]
+        replacements.append((placeholder, caption, stages, description, definition_key))
+    if {item[4] for item in replacements} != set(definitions):
+        raise ValueError("each supported TikZ diagram must have exactly one placeholder")
+    for placeholder, caption, stages, description, _ in replacements:
+        diagram = _flow_diagram_table(document, stages, caption.text, description)
+        caption._p.addprevious(diagram._tbl)
+        placeholder._tbl.getparent().remove(placeholder._tbl)
     document.save(path)
 
 
@@ -403,8 +489,8 @@ def main() -> None:
         check=True,
     )
     counts = format_document(output)
-    _insert_architecture_diagram(output)
-    if counts != {"figures": 6, "tables": 4}:
+    _insert_tikz_diagrams(output)
+    if counts != {"figures": 7, "tables": 4}:
         raise ValueError(f"canonical caption inventory changed: {counts}; review export numbering")
     print(output)
 
