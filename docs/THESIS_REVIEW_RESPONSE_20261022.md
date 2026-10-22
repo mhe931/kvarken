@@ -1,8 +1,9 @@
 # Supervisor review-response matrix
 
 **Status: response matrix for the supplied 22 October 2026 brief; final pagination is
-pending.** The most recent completed GitHub Actions XeLaTeX/Biber build is 82 pages, but it
-predates the current local edits. The earlier v13 official-template DOCX was rendered in Word
+pending.** The latest completed GitHub Actions XeLaTeX/Biber build compiled the thesis source
+at commit `0b81951` and produced an 82-page PDF. Later changes affect the response matrix and
+merge ancestry, not the compiled thesis source. The earlier v13 official-template DOCX was rendered in Word
 to a 94-page review PDF. Its 429-word abstract is on page 2; the Contents (pages 3–6), figure
 and table lists (pages 7–8), Figure 4.1 (page 36), and Figure/Table 9.1 (pages 73–74) show
 populated page fields. Text extraction found no stale “Update field” or “Appendix 12” labels,
