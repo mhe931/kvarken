@@ -55,8 +55,8 @@ Docs deliverables must be added after their final pagination is verified.
   official-template DOCX was generated, opened in Word, and saved; Word reported 94 pages. Its
   PDF export and final page-level visual review remain pending.
 - Current local checks for this follow-up: 104 Python tests passed; Ruff lint and format checks,
-  `git diff --check`, `verify-health`, and the offline demo passed. Pull-request CI has not yet
-  run for these local edits.
+  `git diff --check`, `verify-health`, and the offline demo passed. Pull-request CI is tracked in
+  [#30](https://github.com/mhe931/kvarken/pull/30).
 - Independent current-source PDF/A/accessibility validation remains incomplete.
 - Edge Personal opened the existing shared Google Doc and showed a saved-to-Drive status and a
   recent author edit attribution. After refresh, the content area rendered blank. No text or
