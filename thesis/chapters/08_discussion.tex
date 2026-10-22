@@ -61,8 +61,11 @@ has no optical label, and reference selection limits extrapolation. The largest 
 water component is an approximation, not an official marine boundary. Coastal erosion
 removes potentially important coastal ice as well as contamination.
 
-WorldCover is an annual 2021 retrospective mask, partly informed by Sentinel-1 and Sentinel-2.
-It can include information acquired after March and is not independent ice validation.
+WorldCover 2021 v200 is an annual retrospective land-cover mask, not a March-date ice
+observation. It is used for land exclusion and does not provide independent ice validation.
+The retained Sentinel-2 tile metadata reports mean solar-zenith angles from
+$58.6^\circ$ to $59.7^\circ$ (Appendix~\ref{app:repro}). This illumination geometry may affect
+reflectance and shadowing, but no angle-sensitivity analysis was performed.
 One selected eastern-Kvarken case does not establish performance across seasons, sensors,
 or the whole Kvarken strait. No students or educational learning outcomes were evaluated.
 
