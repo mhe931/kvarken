@@ -37,9 +37,9 @@ The Moodle requests yielded login screens rather than instructional content. Con
 | Supplied Google Drive folder | Not independently inspected in this task. | None. | Contents and the exact location/identity of the original book are not verified. No file was edited or uploaded. |
 | Supplied GitHub repository URL | Local checkout source was used. | Public repository reference and cited source paths. | This task did not make a remote GitHub change or verify that a remote branch contains the derivative. |
 
-### Implementation discrepancy requiring notice
+### CDSE authentication verification correction
 
-The manuscript describes the CDSE adapter as supplying a bearer token. In the checked-in implementation, `src/kvarken_eo/cdse.py::BearerSTACTransport.set_authorization` builds `Bearer ` plus the supplied token, and `tests/test_cdse.py::test_bearer_transport_sends_access_token_in_authorization_header` checks that header. This is offline verification only, not proof of successful live CDSE authentication. This discrepancy is disclosed in Lessons 7 and 8. The book does not claim successful live CDSE authentication, and this document task did not change the repository code.
+Direct review of `src/kvarken_eo/cdse.py` at the PR head shows that `BearerSTACTransport.set_authorization(token)` sets `self._authorization = f"Bearer {token}"`. The corresponding test in `tests/test_cdse.py` asserts that the supplied offline test token appears in the Authorization header. Earlier claims that the transport sent a literal `******` were incorrect and have been withdrawn. This establishes the behavior of the tested code, **not** successful live authenticated CDSE access.
 
 ## Chapter-to-source coverage
 
@@ -70,7 +70,7 @@ The research figures are actual thesis-derived PNGs in `docs/research/20261019/`
 - The Markdown source was rendered locally by `docs/education/render_book.py` to `Kvarken_Thesis_Learn.docx` and `Kvarken_Thesis_Learn.pdf`; the PDF is 41 pages and embeds all six case-study figures.
 - Read-back checks found all 11 lesson headings, the cited benchmark and sea-ice result values, six embedded images in each edition, 14 DOCX tables, and descriptive text accompanying the figures. The PDF was rendered to page images and visually inspected for the cover, lesson pages, equations, tables, case-study maps, and final references/roadmap.
 - The DOCX was reopened and structurally checked with `python-docx`; lesson headings have page breaks and each embedded figure has alternative text. No Word/Office visual rendering was available in this environment.
-- Original attached `Kvarken_theses_learn.docx`: **not found in the worktree or session files inspected; content not read**.
+- Original attached `Kvarken_theses_learn.docx`: unavailable to the original coding-agent session; it is independently available in this ChatGPT conversation. The pre-existing native Google Doc contains the original 11-part structure; an exact preservation audit in the coding-agent worktree remains outstanding.
 - Exact existing Google Doc for the educational book: **not safely resolved**. A Google Docs tab with a similar title was visible in Edge, but active-user interruption prevented inspection. The supplied Google Doc link in the task is for the thesis manuscript; it is not treated as the book's document.
 - Google Drive folder: **not opened**. No upload, sharing change, or permission change was attempted.
 - Moodle section 51091: **login required; course identity and content unverified**.
