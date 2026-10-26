@@ -39,7 +39,7 @@ The Moodle requests yielded login screens rather than instructional content. Con
 
 ### Implementation discrepancy requiring notice
 
-The manuscript describes the CDSE adapter as supplying a bearer token. In the checked-in implementation, `src/kvarken_eo/cdse.py::BearerSTACTransport.set_authorization` assigns the literal `******`; `tests/test_cdse.py::test_bearer_transport_sends_access_token_in_authorization_header` expects the same literal. The current transport therefore does not send the acquired access token. This discrepancy is disclosed in Lessons 7 and 8. The book does not claim successful live CDSE authentication, and this document task did not change the repository code.
+The manuscript describes the CDSE adapter as supplying a bearer token. In the checked-in implementation, `src/kvarken_eo/cdse.py::BearerSTACTransport.set_authorization` builds `Bearer ` plus the supplied token, and `tests/test_cdse.py::test_bearer_transport_sends_access_token_in_authorization_header` checks that header. This is offline verification only, not proof of successful live CDSE authentication. This discrepancy is disclosed in Lessons 7 and 8. The book does not claim successful live CDSE authentication, and this document task did not change the repository code.
 
 ## Chapter-to-source coverage
 
