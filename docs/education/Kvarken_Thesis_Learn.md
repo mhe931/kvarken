@@ -668,7 +668,7 @@ The project has two related but distinct paths:
 
 CDSE OAuth2 and STAC adapters are implemented and tested with offline transports, but repository evidence does not show a successful live CDSE search. **[THESIS FACT]** The real sea-ice raster analysis ran locally using Planetary Computer assets. The five-scene CSC execution replayed captured metadata; it did not retrieve or classify raster pixels.
 
-The manuscript describes a bearer-token transport, but source inspection reveals a discrepancy: `src/kvarken_eo/cdse.py` sets the outgoing authorization value to the literal `******`, and `tests/test_cdse.py` expects that literal. Therefore the current checked-in transport does not transmit the acquired token. Do not present the adapter as verified live authentication, and do not place a real credential in a teaching example. Correcting code is outside this book task.
+The manuscript describes a bearer-token transport, but source inspection reveals a discrepancy: `src/kvarken_eo/cdse.py` constructs an Authorization header using `Bearer ` plus the acquired token; the offline unit test checks this token-based header. A successful live CDSE request has not been verified. Do not present the adapter as verified live authentication, and do not place a real credential in a teaching example. Correcting code is outside this book task.
 
 ### 7.4 Raster formats and systems
 
@@ -737,7 +737,7 @@ The scientific raster path joins the research story, but is not the same runtime
 | Component | Input → output | Why it exists | How to test it | Limit |
 |---|---|---|---|---|
 | `STACClient` (`stac.py`) | HTTP search response → `STACItem` records | Handles search, pagination, response structure, and transient failures. | Inject a fake transport with pages, 429, timeout, and malformed response. | Does not prove live service availability or every provider extension. |
-| `CDSETokenProvider` / `CDSEClient` (`cdse.py`) | OAuth2 token response and STAC calls → authenticated client path | Isolates provider authentication and token refresh. | Use injected fake token and STAC transports. | Current bearer transport sends `******`, not the token; live authentication is not established. |
+| `CDSETokenProvider` / `CDSEClient` (`cdse.py`) | OAuth2 token response and STAC calls → authenticated client path | Isolates provider authentication and token refresh. | Use injected fake token and STAC transports. | Current bearer transport builds a `Bearer` header containing the token; live authenticated CDSE access is not established. |
 | `transform_stac_to_scene` / `EOScene` | Provider item → typed, frozen scene | Gives downstream code one stable record shape. | Test required fields, dates, geometry, assets, and invalid payloads. | Optional cloud cover defaults to `0.0`; this means “not supplied” is not preserved as unknown in the current model. |
 | `ConcurrentEOIngestor` (`concurrent.py`) | STAC items → transformed scenes plus provenance and optional catalog rows | Separates batch orchestration from transport and bounds active work. | Instrument active-worker count and inject failures. | One coroutine per item is still scheduled; memory is not bounded for arbitrary batches. |
 | `FileProvenanceSink` (`provenance.py`) | Canonical JSON payload → digest-named JSON and JSONL record | Retains source evidence and ingestion context. | Recompute SHA-256; parse manifest; inject filesystem failures. | Manifest and SQLite are separate stores, not one cross-store transaction. |
