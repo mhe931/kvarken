@@ -555,7 +555,7 @@ The example is not an actual source item. A real adapter must validate field typ
 
 A **database** stores structured information. A relational table uses rows and columns; a primary key identifies a row. SQL expresses queries and updates. SQLite is an embedded database: the application uses a file-backed database engine without operating a separate database server.
 
-This query uses columns found in the repository's `scenes` table. A box overlap is a fast pre-filter; the actual code subsequently checks polygon geometry.
+This query uses columns found in the repository's `scenes` table. A box overlap is a fast pre-filter. The current code calls a geometry helper afterward, but that helper accepts overlapping scene bounding boxes immediately, so it does not remove every polygon false positive.
 
 ```sql
 SELECT scene_id, platform, acquired_at
@@ -741,7 +741,7 @@ The scientific raster path joins the research story, but is not the same runtime
 | `transform_stac_to_scene` / `EOScene` | Provider item → typed, frozen scene | Gives downstream code one stable record shape. | Test required fields, dates, geometry, assets, and invalid payloads. | Optional cloud cover defaults to `0.0`; this means “not supplied” is not preserved as unknown in the current model. |
 | `ConcurrentEOIngestor` (`concurrent.py`) | STAC items → transformed scenes plus provenance and optional catalog rows | Separates batch orchestration from transport and bounds active work. | Instrument active-worker count and inject failures. | One coroutine per item is still scheduled; memory is not bounded for arbitrary batches. |
 | `FileProvenanceSink` (`provenance.py`) | Canonical JSON payload → digest-named JSON and JSONL record | Retains source evidence and ingestion context. | Recompute SHA-256; parse manifest; inject filesystem failures. | Manifest and SQLite are separate stores, not one cross-store transaction. |
-| `SpatialCatalog` (`catalog.py`) | `EOScene` → SQLite row; query filters → scene records | Provides local, durable metadata search. | Test upsert, query, exact geometry, concurrent snapshots, reopen and integrity. | One embedded database is not distributed scale. |
+| `SpatialCatalog` (`catalog.py`) | `EOScene` → SQLite row; query filters → scene records | Provides local, durable metadata search. | Test upsert, bbox-filtered query behavior, concurrent snapshots, reopen and integrity. | Overlapping bounding boxes can retain polygon false positives; one embedded database is not distributed scale. |
 | Read-only API (`api.py`) | HTTP GET query → JSON health/scenes | Makes the catalog inspectable in a browser or teaching script. | Probe `/api/health`; query valid and invalid parameters on loopback. | Default host is `127.0.0.1`; not a public, authenticated multi-user service. |
 | `case_study.py` and `sea_ice.py` | Raster windows → masks, model, maps, metrics | Applies metadata infrastructure context to an EO question. | Reuse checksummed inputs and compare results/artifacts. | Optional scientific dependencies and large input windows are not part of the core metadata package. |
 
@@ -767,9 +767,9 @@ If a manifest says a record was fetched from a particular provider, the digest h
 
 The sink writes raw payloads before appending a manifest record. The SQLite catalog separately stores normalized metadata. Because those writes are not a single cross-store transaction, an error between them can leave a provenance object without a catalog row or vice versa. Health checks and reconciliation tests reduce the chance of silently missing state but do not turn two storage systems into one transaction.
 
-### 8.5 Spatial catalog and exact queries
+### 8.5 Spatial catalog and region queries
 
-The catalog stores IDs, platform, time, cloud cover, bounding box, CRS code, geometry, and assets. Indexed filters narrow the candidate set. A bounding-box overlap is a necessary quick check; polygon intersection then removes false positives. A region query in this project uses the configured WGS 84 rectangle `(20.5, 62.8, 22.5, 63.8)`.
+The catalog stores IDs, platform, time, cloud cover, bounding box, CRS code, geometry, and assets. Indexed filters narrow the candidate set. In the current implementation, SQL selects scenes whose bounding boxes overlap the requested WGS 84 rectangle `(20.5, 62.8, 22.5, 63.8)`. The spatial helper immediately accepts an overlapping scene bounding box; it checks polygon intersection only when the scene bounding box does not overlap or is absent. Consequently, a polygon that lies outside the rectangle but has an overlapping bounding box can remain in the results. The query is a useful regional pre-filter, not a guarantee of exact polygon intersection.
 
 SQLite uses Write-Ahead Logging. A transaction commits a complete update; readers see committed snapshots. Tests exercise concurrent local access and reopen the database to check durability. These tests support the local catalog contract, not distributed writes across hosts.
 
@@ -832,7 +832,7 @@ L = t_{\mathrm{end}} - t_{\mathrm{start}}
 - **Worked example [THESIS FACT]:** The frozen report records a spatial query latency of 9.117 ms, equivalent to 0.009117 s.
 - **Physical meaning:** This is the recorded duration of that query measurement on that local workload and environment.
 - **Common mistakes:** A single latency value is not a percentile, not a tail-latency guarantee, and not end-user network latency.
-- **Thesis connection:** The catalog uses bbox pre-filtering and exact geometry checks; 9.117 ms is a local regression point, not a service-level objective.
+- **Thesis connection:** The catalog uses bbox pre-filtering and a geometry helper, but overlapping scene bounding boxes are accepted without exact polygon rejection; 9.117 ms is a local regression point, not a service-level objective.
 
 **[THESIS FACT]** The frozen 256-scene benchmark used generated scene IDs based on a fixture template, concurrency eight, temporary provenance and SQLite storage, and recorded 106,130 payload bytes, zero failures, zero retries, 256 catalog records, and a 9.117 ms spatial query. The 20260915 dated report is explicitly an offline fixture fallback, not a live CDSE experiment. The five-record CSC metadata demonstration is a third, separate evidence set.
 
@@ -1082,15 +1082,16 @@ Exercises progress from no prerequisites to research critique. Use a copy of the
 1. Use the SQL query in Lesson 6 with ROI bounds.
 2. Add a platform or time condition.
 3. Explain why bbox overlap is not exact polygon intersection.
-4. Write a test case that checks both a scene within the ROI and a polygon outside it whose bounding box overlaps.
+4. Write a test showing that the current catalog may return an outside polygon whose bounding box overlaps the ROI.
+5. As an additional implementation step, add exact polygon intersection filtering after the bbox pre-filter, then test that the false positive is removed.
 
-**Expected result:** The SQL returns candidate records; an exact geometry step removes a false positive.
+**Expected result:** The existing query returns bbox candidates and may retain a polygon false positive. The proposed additional geometry filter removes it.
 
-**Troubleshooting:** If the query returns a candidate outside the polygon, do not call the SQL wrong: the bounding-box stage is intentionally a pre-filter.
+**Troubleshooting:** If the existing query returns a polygon outside the ROI, that is a known limitation of the bbox shortcut, not proof of exact intersection. Confirm the additional polygon filter with a regression test.
 
-**Worked solution:** SQL filters by `max_x >= roi_min_x`, `min_x <= roi_max_x`, `max_y >= roi_min_y`, and `min_y <= roi_max_y`. A polygon can have a bounding box overlapping the region while its actual polygon does not.
+**Worked solution:** SQL filters by `max_x >= roi_min_x`, `min_x <= roi_max_x`, `max_y >= roi_min_y`, and `min_y <= roi_max_y`. A polygon can have a bounding box overlapping the region while its actual polygon does not. The current helper returns true immediately for that bbox overlap; an exact polygon-versus-rectangle test must be added after candidate selection if false positives must be excluded.
 
-**Connection to thesis:** `SpatialCatalog.query_scenes` uses bbox SQL conditions followed by exact ROI checks in Python.
+**Connection to thesis:** `SpatialCatalog.query_scenes` uses bbox SQL conditions followed by `scene_intersects_roi`; that helper accepts bbox overlap immediately, so the current behavior is pre-filtering rather than exact polygon exclusion.
 
 #### Level 5 — Reproduce and critique research evidence
 

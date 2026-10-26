@@ -44,15 +44,18 @@ GREEK = {
     r"\mu": "μ",
     r"\Sigma": "Σ",
     r"\Delta": "Δ",
+    r"\gamma": "γ",
     r"\mathbf": "",
     r"\boldsymbol": "",
     r"\mathrm": "",
     r"\text": "",
     r"\log": "log",
     r"\sum": "Σ",
+    r"\min": "min",
+    r"\ldots": "…",
 }
 SUBSCRIPT = str.maketrans("0123456789inxy", "₀₁₂₃₄₅₆₇₈₉ᵢₙₓᵧ")
-SUPERSCRIPT = str.maketrans("0123456789+-", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻")
+SUPERSCRIPT = str.maketrans("0123456789+-n", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁿ")
 
 
 def _take_group(value: str, start: int) -> tuple[str, int]:
@@ -66,12 +69,51 @@ def _take_group(value: str, start: int) -> tuple[str, int]:
             depth -= 1
             if depth == 0:
                 return value[start + 1 : index], index + 1
-    return value[start + 1 :], len(value)
+    raise ValueError("Unclosed group in mathematical expression")
+
+
+def _take_argument(value: str, start: int) -> tuple[str, int]:
+    while start < len(value) and value[start].isspace():
+        start += 1
+    if start >= len(value):
+        raise ValueError("Missing argument in mathematical expression")
+    if value[start] == "{":
+        return _take_group(value, start)
+    return value[start], start + 1
 
 
 def latex_to_text(value: str) -> str:
-    """Convert the book's small LaTeX subset to readable Unicode text."""
-    value = re.sub(r"\\begin\{(?:aligned|cases)\}|\\end\{(?:aligned|cases)\}", "", value)
+    """Convert the book's supported LaTeX subset to readable Unicode text."""
+    matrix = re.compile(r"\\begin\{bmatrix\}(.*?)\\end\{bmatrix\}", flags=re.S)
+    value = matrix.sub(
+        lambda match: (
+            "["
+            + ", ".join(
+                "[" + ", ".join(latex_to_text(cell) for cell in row.split("&")) + "]"
+                for row in match.group(1).split(r"\\")
+            )
+            + "]"
+        ),
+        value,
+    )
+
+    cases = re.compile(r"\\begin\{cases\}(.*?)\\end\{cases\}", flags=re.S)
+    value = cases.sub(
+        lambda match: (
+            "cases: "
+            + "; ".join(
+                " ".join(latex_to_text(cell).strip() for cell in row.split("&") if cell.strip())
+                for row in match.group(1).split(r"\\")
+            )
+        ),
+        value,
+    )
+    value = re.sub(r"\\begin\{aligned\}|\\end\{aligned\}", "", value)
+    value = re.sub(
+        r"\\sum_\{([^{}]+)\}\^\{([^{}]+)\}",
+        lambda match: f"Σ({match.group(1)} to {match.group(2)})",
+        value,
+    )
     value = value.replace(r"\\", "\n").replace("&", "")
     value = value.replace(r"\qquad", "    ").replace(r"\quad", "  ")
     value = value.replace(r"\,", " ").replace(r"\left", "").replace(r"\right", "")
@@ -83,34 +125,69 @@ def latex_to_text(value: str) -> str:
     # Resolve grouped commands and fractions from the inside out.
     for _ in range(12):
         old = value
-        for command in (r"\frac", r"\mathrm", r"\text", r"\boldsymbol", r"\mathbf"):
+        for command in (r"\tfrac", r"\frac"):
+            match = re.search(re.escape(command), value)
+            while match:
+                first, after_first = _take_argument(value, match.end())
+                second, after_second = _take_argument(value, after_first)
+                replacement = f"({latex_to_text(first)})/({latex_to_text(second)})"
+                value = value[: match.start()] + replacement + value[after_second:]
+                match = re.search(re.escape(command), value)
+        for command, suffix in ((r"\bar", "\u0304"), (r"\hat", "\u0302")):
             match = re.search(re.escape(command) + r"\{", value)
             while match:
-                first, after_first = _take_group(value, match.end() - 1)
-                if command == r"\frac":
-                    second, after_second = _take_group(value, after_first)
-                    replacement = f"({latex_to_text(first)})/({latex_to_text(second)})"
-                    value = value[: match.start()] + replacement + value[after_second:]
-                else:
-                    replacement = latex_to_text(first)
-                    value = value[: match.start()] + replacement + value[after_first:]
+                group, after_group = _take_group(value, match.end() - 1)
+                replacement = latex_to_text(group) + suffix
+                value = value[: match.start()] + replacement + value[after_group:]
+                match = re.search(re.escape(command) + r"\{", value)
+        for command in (r"\mathrm", r"\text", r"\boldsymbol", r"\mathbf"):
+            match = re.search(re.escape(command) + r"\{", value)
+            while match:
+                group, after_group = _take_group(value, match.end() - 1)
+                replacement = latex_to_text(group)
+                value = value[: match.start()] + replacement + value[after_group:]
                 match = re.search(re.escape(command) + r"\{", value)
         if value == old:
             break
 
     for command, replacement in GREEK.items():
         value = value.replace(command, replacement)
-    value = re.sub(r"_\{([^{}]+)\}", lambda m: m.group(1).translate(SUBSCRIPT), value)
-    value = re.sub(r"\^\{([^{}]+)\}", lambda m: m.group(1).translate(SUPERSCRIPT), value)
-    value = re.sub(r"_([A-Za-z0-9]+)", lambda m: m.group(1).translate(SUBSCRIPT), value)
-    value = re.sub(r"\^([A-Za-z0-9+-]+)", lambda m: m.group(1).translate(SUPERSCRIPT), value)
-    value = re.sub(r"\\[a-zA-Z]+", "", value)
+    value = re.sub(
+        r"_\{([^{}]+)\}",
+        lambda match: _format_script(match.group(1), SUBSCRIPT),
+        value,
+    )
+    value = re.sub(
+        r"\^\{([^{}]+)\}",
+        lambda match: _format_script(match.group(1), SUPERSCRIPT, "^"),
+        value,
+    )
+    value = re.sub(
+        r"_([A-Za-z0-9]+)",
+        lambda match: _format_script(match.group(1), SUBSCRIPT),
+        value,
+    )
+    value = re.sub(
+        r"\^([A-Za-z0-9+-]+)",
+        lambda match: _format_script(match.group(1), SUPERSCRIPT, "^"),
+        value,
+    )
+    value = re.sub(r"\\([{}_% ])", r"\1", value)
+    unsupported = re.search(r"\\[a-zA-Z]+", value)
+    if unsupported:
+        raise ValueError(f"Unsupported mathematical command: {unsupported.group()}")
     value = value.replace(r"\{", "{").replace(r"\}", "}")
     value = value.replace(r"\_", "_").replace(r"\ ", " ")
     value = value.replace("{", "").replace("}", "")
-    value = value.replace("=", " = ").replace("\n", "\n")
+    value = value.replace("=", " = ")
     value = re.sub(r"[ \t]+", " ", value)
     return value.strip()
+
+
+def _format_script(value: str, translation: dict[int, str], marker: str = "_") -> str:
+    if all(ord(char) in translation for char in value):
+        return value.translate(translation)
+    return f"{marker}({value})"
 
 
 def _split_table_row(line: str) -> tuple[str, ...]:
